@@ -1,0 +1,63 @@
+from django.db import models
+
+class ProgramContent(models.Model):
+    """
+    Stores simple dynamic key-value text blocks (like About TOXIQ, Instructions, Contacts)
+    in a JSON format for complete CMS flexibility.
+    """
+    key = models.CharField(max_length=100, unique=True)
+    value = models.JSONField(default=dict)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.key
+
+class Banner(models.Model):
+    title = models.CharField(max_length=200)
+    subtitle = models.CharField(max_length=500, blank=True)
+    image = models.ImageField(upload_to='banners/', blank=True, null=True)
+    cta_text = models.CharField(max_length=50, default='Register Now')
+    cta_link = models.CharField(max_length=200, default='#registration')
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+class Speaker(models.Model):
+    name = models.CharField(max_length=150)
+    designation = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    photo = models.ImageField(upload_to='speakers/', blank=True, null=True)
+    order = models.IntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
+
+class Sponsor(models.Model):
+    name = models.CharField(max_length=150)
+    logo = models.ImageField(upload_to='sponsors/')
+    website_url = models.URLField(blank=True, null=True)
+    order = models.IntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
+
+class GalleryImage(models.Model):
+    image = models.ImageField(upload_to='gallery/')
+    caption = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.caption or f"Gallery Image {self.id}"
