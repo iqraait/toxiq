@@ -44,15 +44,67 @@ class RegistrationFormViewSet(viewsets.ModelViewSet):
                 currency='INR',
                 is_active=True
             )
-            # Create a couple of default fields
+            # Prefix dropdown
             RegistrationField.objects.create(
-                form=form, label='Full Name', field_type='text', is_required=True, order=1
+                form=form, label='Prefix', field_type='dropdown', options=['Mr.', 'Ms.', 'Mrs.', 'Dr.'], is_required=True, order=1
             )
+            # Full Name
             RegistrationField.objects.create(
-                form=form, label='Email Address', field_type='email', is_required=True, order=2
+                form=form, label='Full Name', field_type='text', is_required=True, order=2
             )
+            # Email Address
             RegistrationField.objects.create(
-                form=form, label='Phone Number', field_type='phone', is_required=True, order=3
+                form=form, label='Email Address', field_type='email', is_required=True, order=3
+            )
+            # Phone Number
+            RegistrationField.objects.create(
+                form=form, label='Phone Number (WhatsApp)', field_type='phone', is_required=True, order=4
+            )
+            # Designation
+            RegistrationField.objects.create(
+                form=form, label='Designation', field_type='text', is_required=True, order=5
+            )
+            # Institute / Hospital
+            RegistrationField.objects.create(
+                form=form, label='Institute / Hospital', field_type='text', is_required=True, order=6
+            )
+            # Department
+            RegistrationField.objects.create(
+                form=form, label='Department', field_type='text', is_required=True, order=7
+            )
+            # Specialty
+            RegistrationField.objects.create(
+                form=form, 
+                label='Specialty / Department of Practice', 
+                field_type='checkbox', 
+                options=[
+                    'Emergency Medicine', 'Clinical Pharmacy', 'Critical Care', 
+                    'General Medicine', 'Pediatrics', 'Forensic Medicine', 
+                    'Family Medicine', 'General practitioner', 'Others'
+                ], 
+                is_required=True, 
+                order=8
+            )
+            # Registration Category
+            RegistrationField.objects.create(
+                form=form, 
+                label='Registration Category', 
+                field_type='checkbox', 
+                options=[
+                    'Invited speakers', 'Specialist/Consultant', 
+                    'Residents/General Practitioners', 
+                    'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics'
+                ], 
+                is_required=True, 
+                order=9
+            )
+            # Medical Council Name
+            RegistrationField.objects.create(
+                form=form, label='Medical Council Name', field_type='text', is_required=True, order=10
+            )
+            # Food Preference
+            RegistrationField.objects.create(
+                form=form, label='Food Preference', field_type='radio', options=['Veg', 'Non-Veg'], is_required=True, order=11
             )
             
         serializer = self.get_serializer(form)

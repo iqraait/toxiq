@@ -6,6 +6,9 @@ from registration.serializers import RegistrationSerializer
 class ArticleSubmissionSerializer(serializers.ModelSerializer):
     registration_id = serializers.CharField(write_only=True)
     registration = RegistrationSerializer(read_only=True)
+    author_name = serializers.CharField(required=False, allow_blank=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    article_title = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = ArticleSubmission
@@ -38,6 +41,17 @@ class ArticleSubmissionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("This registration ID does not have a successful payment completed.")
             
         return registration
+
+    def validate(self, attrs):
+        registration = attrs.get('registration_id')
+        if registration:
+            if not attrs.get('author_name'):
+                attrs['author_name'] = registration.participant_name or 'Participant'
+            if not attrs.get('email'):
+                attrs['email'] = registration.participant_email or 'no-email@hospital.com'
+            if not attrs.get('article_title'):
+                attrs['article_title'] = f"Manuscript - {registration.registration_id}"
+        return attrs
 
     def create(self, validated_data):
         # Map validated registration object

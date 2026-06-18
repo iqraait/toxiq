@@ -20,9 +20,6 @@ const ArticleSubmission = () => {
   
   // Form State
   const [registrationId, setRegistrationId] = useState('');
-  const [authorName, setAuthorName] = useState('');
-  const [email, setEmail] = useState('');
-  const [articleTitle, setArticleTitle] = useState('');
   const [remarks, setRemarks] = useState('');
   const [file, setFile] = useState(null);
 
@@ -65,8 +62,8 @@ const ArticleSubmission = () => {
     setValidationErrors({});
     setSuccess(false);
 
-    if (!registrationId || !authorName || !email || !articleTitle || !file) {
-      setError('Please fill in all required fields and upload your file.');
+    if (!registrationId || !file) {
+      setError('Please enter your Registration ID and upload your file.');
       return;
     }
 
@@ -74,9 +71,6 @@ const ArticleSubmission = () => {
 
     const formData = new FormData();
     formData.append('registration_id', registrationId.trim());
-    formData.append('author_name', authorName.trim());
-    formData.append('email', email.trim());
-    formData.append('article_title', articleTitle.trim());
     formData.append('remarks', remarks.trim());
     formData.append('file', file);
 
@@ -90,9 +84,6 @@ const ArticleSubmission = () => {
       });
       // Clear form
       setRegistrationId('');
-      setAuthorName('');
-      setEmail('');
-      setArticleTitle('');
       setRemarks('');
       setFile(null);
     } catch (err) {
@@ -123,9 +114,25 @@ const ArticleSubmission = () => {
       <Navbar />
 
       <Container maxWidth="md" sx={{ py: 6, flexGrow: 1 }}>
-        <GlassCard sx={{ p: 5, border: '1px solid rgba(255, 255, 255, 0.6)' }}>
+        <GlassCard sx={{ 
+          p: 5, 
+          border: '1px solid rgba(30, 58, 138, 0.12)', 
+          boxShadow: '0 10px 45px rgba(30, 58, 138, 0.05)',
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '4px',
+            background: 'linear-gradient(90deg, #1e3a8a 0%, #7c3aed 100%)',
+            borderRadius: '16px 16px 0 0'
+          }
+        }}>
           
-          <Box mb={3}>
+          <Box mb={3} textAlign="center">
             <Typography 
               variant="h4" 
               fontWeight="900" 
@@ -163,7 +170,7 @@ const ArticleSubmission = () => {
           )}
 
           <form onSubmit={handleSubmit}>
-            <Stack spacing={3}>
+            <Stack spacing={4}>
               
               <TextField
                 required
@@ -177,45 +184,11 @@ const ArticleSubmission = () => {
               />
 
               <TextField
-                required
-                fullWidth
-                label="Lead Author Name"
-                placeholder="Enter lead author's full name"
-                value={authorName}
-                onChange={(e) => setAuthorName(e.target.value)}
-                error={!!validationErrors.author_name}
-                helperText={validationErrors.author_name?.[0]}
-              />
-
-              <TextField
-                required
-                fullWidth
-                label="Contact Email Address"
-                placeholder="Enter email address"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                error={!!validationErrors.email}
-                helperText={validationErrors.email?.[0]}
-              />
-
-              <TextField
-                required
-                fullWidth
-                label="Article / Abstract Title"
-                placeholder="Enter your research article title"
-                value={articleTitle}
-                onChange={(e) => setArticleTitle(e.target.value)}
-                error={!!validationErrors.article_title}
-                helperText={validationErrors.article_title?.[0]}
-              />
-
-              <TextField
                 fullWidth
                 multiline
-                rows={3}
-                label="Co-Authors & Remarks"
-                placeholder="List co-authors (if any) or specify remarks"
+                rows={4}
+                label="Remarks & Comments"
+                placeholder="Enter any comments for the academic review panel, list co-authors (if any), etc."
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
                 error={!!validationErrors.remarks}
@@ -264,16 +237,28 @@ const ArticleSubmission = () => {
                 <FormHelperText>File must be PDF or DOCX format under 10MB.</FormHelperText>
               </Box>
 
-              <Box display="flex" justifyContent="flex-end" pt={2}>
+              <Box display="flex" justifyContent="flex-end" sx={{ mt: 2 }}>
                 <Button
                   type="submit"
                   variant="contained"
                   color="primary"
                   size="large"
                   disabled={submitting}
-                  sx={{ px: 5, py: 1.5, borderRadius: '30px', fontWeight: 'bold' }}
+                  startIcon={submitting ? <CircularProgress size={20} color="inherit" /> : <CloudUploadIcon />}
+                  sx={{ 
+                    px: 6, 
+                    py: 1.8, 
+                    fontSize: '1.1rem', 
+                    borderRadius: '30px',
+                    fontWeight: '800',
+                    boxShadow: '0 8px 20px rgba(30, 58, 138, 0.2)',
+                    '&:hover': {
+                      boxShadow: '0 12px 28px rgba(30, 58, 138, 0.3)',
+                    },
+                    width: { xs: '100%', sm: 'auto' }
+                  }}
                 >
-                  {submitting ? <CircularProgress size={24} color="inherit" /> : 'Submit Article'}
+                  {submitting ? 'Submitting...' : 'Submit Manuscript'}
                 </Button>
               </Box>
 

@@ -186,19 +186,35 @@ const Registration = () => {
       <Navbar />
 
       <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>
-        <Grid container spacing={4}>
+        <Grid container spacing={4} justifyContent="center">
           
           {/* Main Registration Form */}
           <Grid item xs={12} lg={8}>
-            <GlassCard sx={{ p: 4, border: '1px solid rgba(255,255,255,0.6)' }}>
+            <GlassCard sx={{ 
+              p: 4, 
+              border: '1px solid rgba(30, 58, 138, 0.12)', 
+              boxShadow: '0 10px 45px rgba(30, 58, 138, 0.05)',
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '4px',
+                background: 'linear-gradient(90deg, #1e3a8a 0%, #0d9488 50%, #7c3aed 100%)',
+                borderRadius: '16px 16px 0 0'
+              }
+            }}>
               
-              <Box mb={3} display="flex" alignItems="center" gap={1.5}>
+              <Box mb={3} display="flex" alignItems="center" justifyContent="center" gap={1.5}>
                 <AssignmentTurnedInIcon color="primary" sx={{ fontSize: '2.2rem' }} />
                 <Typography 
                   variant="h4" 
                   fontWeight="900" 
                   fontFamily="'Raleway', sans-serif" 
-                  sx={purpleGradientText}
+                  sx={{ ...purpleGradientText, textAlign: 'center' }}
                 >
                   {formConfig.title}
                 </Typography>
@@ -220,41 +236,43 @@ const Registration = () => {
                 </Alert>
               )}
  
-              {/* Form Render */}
               <form onSubmit={handleSubmit}>
-                <DynamicFormRenderer
-                  fields={formConfig.fields}
-                  values={formValues}
-                  onChange={handleValueChange}
-                  files={formFiles}
-                  onFileChange={handleFileChange}
-                  errors={validationErrors}
-                />
- 
-                <Box mt={6} display="flex" justifyContent="flex-end">
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    size="large"
-                    disabled={submitting}
-                    startIcon={submitting ? <CircularProgress size={20} color="inherit" /> : <PaymentIcon />}
-                    sx={{ 
-                      px: 6, 
-                      py: 1.8, 
-                      fontSize: '1.1rem', 
-                      borderRadius: '30px',
-                      fontWeight: '800',
-                      boxShadow: '0 8px 20px rgba(13, 148, 136, 0.2)',
-                      '&:hover': {
-                        boxShadow: '0 12px 28px rgba(13, 148, 136, 0.3)',
-                      },
-                      width: { xs: '100%', sm: 'auto' }
-                    }}
-                  >
-                    {submitting ? 'Processing...' : `Register & Pay ${formConfig.currency} ${totalAmt.toFixed(2)}`}
-                  </Button>
-                </Box>
+                <Stack spacing={4}>
+                  <DynamicFormRenderer
+                    fields={formConfig.fields}
+                    values={formValues}
+                    onChange={handleValueChange}
+                    files={formFiles}
+                    onFileChange={handleFileChange}
+                    errors={validationErrors}
+                  />
+
+                  <Box display="flex" justifyContent="flex-end">
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="secondary"
+                      size="large"
+                      disabled={submitting}
+                      startIcon={submitting ? <CircularProgress size={20} color="inherit" /> : <PaymentIcon />}
+                      sx={{ 
+                        px: 6, 
+                        py: 1.8, 
+                        fontSize: '1.1rem', 
+                        mt: 3,
+                        borderRadius: '30px',
+                        fontWeight: '800',
+                        boxShadow: '0 8px 20px rgba(13, 148, 136, 0.2)',
+                        '&:hover': {
+                          boxShadow: '0 12px 28px rgba(13, 148, 136, 0.3)',
+                        },
+                        width: { xs: '100%', sm: 'auto' }
+                      }}
+                    >
+                      {submitting ? 'Processing...' : `Register & Pay ${formConfig.currency} ${totalAmt.toFixed(2)}`}
+                    </Button>
+                  </Box>
+                </Stack>
               </form>
 
             </GlassCard>
@@ -262,7 +280,24 @@ const Registration = () => {
 
           {/* Pricing & Summary Card */}
           <Grid item xs={12} lg={4}>
-            <GlassCard sx={{ p: 4, position: 'sticky', top: '90px', border: '1px solid rgba(13, 148, 136, 0.15)' }}>
+            <GlassCard sx={{ 
+              p: 4, 
+              position: 'sticky', 
+              top: '90px', 
+              border: '1px solid rgba(13, 148, 136, 0.15)',
+              boxShadow: '0 10px 45px rgba(13, 148, 136, 0.05)',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '4px',
+                background: 'linear-gradient(90deg, #0d9488 0%, #7c3aed 100%)',
+                borderRadius: '16px 16px 0 0'
+              }
+            }}>
               <Typography variant="h6" fontWeight="bold" fontFamily="'Raleway', sans-serif" mb={3} color="primary.main">
                 Fee Summary
               </Typography>

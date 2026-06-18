@@ -31,8 +31,22 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
         const value = values[fieldId] || '';
         const error = errors[field.label] || errors[fieldId];
 
+        // Responsive grid sizes for professional design alignment
+        let gridSize = { xs: 12 };
+        if (field.label === 'Prefix') {
+          gridSize = { xs: 12, sm: 3, md: 2 };
+        } else if (field.label === 'Full Name') {
+          gridSize = { xs: 12, sm: 9, md: 10 };
+        } else if (['Email Address', 'Phone Number (WhatsApp)'].includes(field.label)) {
+          gridSize = { xs: 12, md: 6 };
+        } else if (['Designation', 'Department', 'Institute / Hospital'].includes(field.label)) {
+          gridSize = { xs: 12, md: 4 };
+        } else if (['Medical Council Name', 'Food Preference'].includes(field.label)) {
+          gridSize = { xs: 12, md: 6 };
+        }
+
         return (
-          <Grid item xs={12} key={field.id}>
+          <Grid item {...gridSize} key={field.id}>
             {/* TEXT & TEXTAREA & NUMBER & EMAIL & PHONE & DATE */}
             {['text', 'textarea', 'number', 'email', 'phone', 'date'].includes(field.field_type) && (
               <TextField
