@@ -29,6 +29,15 @@ const Home = () => {
   const location = useLocation();
   const theme = useTheme();
   
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
+    return `${host}${path}`;
+  };
+  
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -124,7 +133,7 @@ const Home = () => {
       <Box 
         sx={{ 
           background: activeBanner.image 
-            ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url(${activeBanner.image}) no-repeat center center / cover`
+            ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url(${getImageUrl(activeBanner.image)}) no-repeat center center / cover`
             : 'linear-gradient(135deg, #091b29 0%, #062425 100%)', // Fallback premium dark gradient
           color: '#ffffff',
           py: { xs: 10, md: 15 },
@@ -499,7 +508,7 @@ const Home = () => {
                   <GlassCard sx={{ height: '100%', textAlign: 'center', transition: 'all 0.3s', '&:hover': { transform: 'translateY(-5px)' } }}>
                     <CardContent sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                       <Avatar 
-                        src={sp.photo} 
+                        src={getImageUrl(sp.photo)} 
                         alt={sp.name} 
                         sx={{ width: 100, height: 100, mb: 2, border: '3px solid rgba(13, 148, 136, 0.2)', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}
                       >
@@ -548,7 +557,7 @@ const Home = () => {
                   }}
                 >
                   <img 
-                    src={g.image} 
+                    src={getImageUrl(g.image)} 
                     alt={g.caption} 
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'all 0.3s ease-in-out' }}
                   />
@@ -585,7 +594,7 @@ const Home = () => {
               {sponsors.map((sp) => (
                 <Grid item xs={6} sm={4} md={2} key={sp.id} textAlign="center">
                   {sp.logo ? (
-                    <img src={sp.logo} alt={sp.name} style={{ maxHeight: '45px', maxWidth: '100%', filter: 'grayscale(100%) opacity(0.7)' }} />
+                    <img src={getImageUrl(sp.logo)} alt={sp.name} style={{ maxHeight: '45px', maxWidth: '100%', filter: 'grayscale(100%) opacity(0.7)' }} />
                   ) : (
                     <Typography variant="body1" fontWeight="bold" color="text.light" sx={{ fontStyle: 'italic' }}>
                       {sp.name}
