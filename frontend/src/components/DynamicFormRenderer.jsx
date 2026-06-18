@@ -25,7 +25,7 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
   };
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3.5} rowSpacing={4}>
       {fields.map((field) => {
         const fieldId = String(field.id);
         const value = values[fieldId] || '';
@@ -37,12 +37,12 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
           gridSize = { xs: 12, sm: 3, md: 2 };
         } else if (field.label === 'Full Name') {
           gridSize = { xs: 12, sm: 9, md: 10 };
-        } else if (['Email Address', 'Phone Number (WhatsApp)'].includes(field.label)) {
-          gridSize = { xs: 12, md: 6 };
-        } else if (['Designation', 'Department', 'Institute / Hospital'].includes(field.label)) {
-          gridSize = { xs: 12, md: 4 };
-        } else if (['Medical Council Name', 'Food Preference'].includes(field.label)) {
-          gridSize = { xs: 12, md: 6 };
+        } else if ([
+          'Email Address', 'Phone Number (WhatsApp)', 
+          'Designation', 'Department', 'Institute / Hospital', 
+          'Medical Council Name', 'Food Preference'
+        ].includes(field.label)) {
+          gridSize = { xs: 12, sm: 6, md: 6 };
         }
 
         return (

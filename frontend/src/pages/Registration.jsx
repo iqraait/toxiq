@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Container, Typography, Box, Button, 
-  CircularProgress, Alert, AlertTitle, Grid, Stack, Divider 
+  CircularProgress, Alert, AlertTitle, Grid, Stack, Divider, Chip
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import PaymentIcon from '@mui/icons-material/Payment';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 import API from '../services/api';
 import Navbar from '../components/Navbar';
@@ -20,6 +21,7 @@ const Registration = () => {
   const [formConfig, setFormConfig] = useState(null);
   const [formValues, setFormValues] = useState({});
   const [formFiles, setFormFiles] = useState({});
+  const [dates, setDates] = useState(null);
   
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -29,12 +31,22 @@ const Registration = () => {
   useEffect(() => {
     const fetchForm = async () => {
       try {
-        const res = await API.get('registration/forms/active/');
-        setFormConfig(res.data);
+        const [formRes, cmsRes] = await Promise.all([
+          API.get('registration/forms/active/'),
+          API.get('cms/home/').catch(err => {
+            console.error('Failed to load CMS content:', err);
+            return null;
+          })
+        ]);
+
+        setFormConfig(formRes.data);
+        if (cmsRes && cmsRes.data && cmsRes.data.content) {
+          setDates(cmsRes.data.content.important_dates);
+        }
         
         // Initialize form values
         const initialValues = {};
-        res.data.fields.forEach(field => {
+        formRes.data.fields.forEach(field => {
           if (field.field_type === 'checkbox') {
             initialValues[field.id] = [];
           } else {
@@ -238,14 +250,16 @@ const Registration = () => {
  
               <form onSubmit={handleSubmit}>
                 <Stack spacing={4}>
-                  <DynamicFormRenderer
-                    fields={formConfig.fields}
-                    values={formValues}
-                    onChange={handleValueChange}
-                    files={formFiles}
-                    onFileChange={handleFileChange}
-                    errors={validationErrors}
-                  />
+                  <Box sx={{ width: '100%' }}>
+                    <DynamicFormRenderer
+                      fields={formConfig.fields}
+                      values={formValues}
+                      onChange={handleValueChange}
+                      files={formFiles}
+                      onFileChange={handleFileChange}
+                      errors={validationErrors}
+                    />
+                  </Box>
 
                   <Box display="flex" justifyContent="flex-end">
                     <Button
@@ -341,6 +355,187 @@ const Registration = () => {
 
         </Grid>
       </Container>
+
+      {/* Important Dates Section */}
+      {dates && (
+        <Container maxWidth="lg" sx={{ mb: 8 }}>
+          <GlassCard sx={{ 
+            p: 4, 
+            border: '1px solid rgba(13, 148, 136, 0.12)', 
+            boxShadow: '0 10px 45px rgba(13, 148, 136, 0.04)',
+            background: 'rgba(255, 255, 255, 0.55)',
+            backdropFilter: 'blur(10px)',
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '4px',
+              background: 'linear-gradient(90deg, #1e3a8a 0%, #0d9488 50%, #7c3aed 100%)',
+              borderRadius: '16px 16px 0 0'
+            }
+          }}>
+            <Typography 
+              variant="h5" 
+              fontWeight="800" 
+              color="primary.main" 
+              align="center"
+              mb={4} 
+              display="flex" 
+              alignItems="center" 
+              justifyContent="center" 
+              gap={1.5}
+              fontFamily="'Raleway', sans-serif"
+            >
+              <CalendarMonthIcon color="secondary" sx={{ fontSize: '2rem' }} />
+              Important Dates
+            </Typography>
+
+            <Grid container spacing={3}>
+              {/* Registration Opens */}
+              <Grid item xs={12} sm={4}>
+                <Box 
+                  sx={{ 
+                    p: 3, 
+                    height: '100%',
+                    bgcolor: 'rgba(30, 58, 138, 0.02)', 
+                    border: '1px solid rgba(30, 58, 138, 0.05)', 
+                    borderRadius: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                      bgcolor: 'rgba(30, 58, 138, 0.04)',
+                      transform: 'translateY(-3px)',
+                      boxShadow: '0 6px 20px rgba(30, 58, 138, 0.05)'
+                    }
+                  }}
+                >
+                  <Box mb={2}>
+                    <Typography variant="subtitle1" fontWeight="700" color="primary.main" mb={0.5}>
+                      Registration Opens
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Participant registration starts
+                    </Typography>
+                  </Box>
+                  <Chip 
+                    label={dates.registration_open || 'N/A'} 
+                    sx={{ 
+                      fontWeight: '800', 
+                      fontSize: '0.9rem',
+                      bgcolor: 'rgba(30, 58, 138, 0.08)', 
+                      color: 'primary.main', 
+                      border: '1.5px solid rgba(30, 58, 138, 0.15)',
+                      borderRadius: '10px',
+                      px: 1.5,
+                      py: 2
+                    }} 
+                  />
+                </Box>
+              </Grid>
+
+              {/* Registration Closes */}
+              <Grid item xs={12} sm={4}>
+                <Box 
+                  sx={{ 
+                    p: 3, 
+                    height: '100%',
+                    bgcolor: 'rgba(239, 68, 68, 0.02)', 
+                    border: '1px solid rgba(239, 68, 68, 0.05)', 
+                    borderRadius: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                      bgcolor: 'rgba(239, 68, 68, 0.04)',
+                      transform: 'translateY(-3px)',
+                      boxShadow: '0 6px 20px rgba(239, 68, 68, 0.05)'
+                    }
+                  }}
+                >
+                  <Box mb={2}>
+                    <Typography variant="subtitle1" fontWeight="700" color="error.main" mb={0.5}>
+                      Registration Closes
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Final deadline for standard payments
+                    </Typography>
+                  </Box>
+                  <Chip 
+                    label={dates.registration_close || 'N/A'} 
+                    sx={{ 
+                      fontWeight: '800', 
+                      fontSize: '0.9rem',
+                      bgcolor: 'rgba(239, 68, 68, 0.08)', 
+                      color: 'error.main', 
+                      border: '1.5px solid rgba(239, 68, 68, 0.15)',
+                      borderRadius: '10px',
+                      px: 1.5,
+                      py: 2
+                    }} 
+                  />
+                </Box>
+              </Grid>
+
+              {/* Submission Deadline */}
+              <Grid item xs={12} sm={4}>
+                <Box 
+                  sx={{ 
+                    p: 3, 
+                    height: '100%',
+                    bgcolor: 'rgba(13, 148, 136, 0.02)', 
+                    border: '1px solid rgba(13, 148, 136, 0.05)', 
+                    borderRadius: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                      bgcolor: 'rgba(13, 148, 136, 0.04)',
+                      transform: 'translateY(-3px)',
+                      boxShadow: '0 6px 20px rgba(13, 148, 136, 0.05)'
+                    }
+                  }}
+                >
+                  <Box mb={2}>
+                    <Typography variant="subtitle1" fontWeight="700" color="secondary.main" mb={0.5}>
+                      Submission Deadline
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Paper abstract delivery closes
+                    </Typography>
+                  </Box>
+                  <Chip 
+                    label={dates.article_deadline || 'N/A'} 
+                    sx={{ 
+                      fontWeight: '800', 
+                      fontSize: '0.9rem',
+                      bgcolor: 'rgba(13, 148, 136, 0.08)', 
+                      color: 'secondary.main', 
+                      border: '1.5px solid rgba(13, 148, 136, 0.15)',
+                      borderRadius: '10px',
+                      px: 1.5,
+                      py: 2
+                    }} 
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+          </GlassCard>
+        </Container>
+      )}
 
       <Footer />
     </Box>
