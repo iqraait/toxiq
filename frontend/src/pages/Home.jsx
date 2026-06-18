@@ -495,10 +495,10 @@ const Home = () => {
       {speakers.length > 0 && (
         <Box id="speakers-section" sx={{ bgcolor: 'rgba(30, 58, 138, 0.02)', py: 10, borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9' }}>
           <Container maxWidth="lg">
-            <Typography variant="h4" fontWeight="800" align="center" mb={1} color="primary.main">
+            <Typography variant="h4" align="center" color="primary.main" sx={{ fontWeight: 800, mb: 2 }}>
               Distinguished Guest Speakers
             </Typography>
-            <Typography variant="body2" color="textSecondary" align="center" mb={8}>
+            <Typography variant="body2" color="textSecondary" align="center" sx={{ mb: 6 }}>
               Interact with international medical toxicologists and emergency medicine heads.
             </Typography>
             
