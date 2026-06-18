@@ -502,32 +502,73 @@ const Home = () => {
               Interact with international medical toxicologists and emergency medicine heads.
             </Typography>
             
-            <Grid container spacing={4}>
+            <Box 
+              sx={{ 
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)'
+                },
+                gap: '30px',
+                alignItems: 'stretch'
+              }}
+            >
               {speakers.map((sp) => (
-                <Grid item xs={12} sm={6} md={4} key={sp.id}>
-                  <GlassCard sx={{ height: '100%', textAlign: 'center', transition: 'all 0.3s', '&:hover': { transform: 'translateY(-5px)' } }}>
-                    <CardContent sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Avatar 
-                        src={getImageUrl(sp.photo)} 
-                        alt={sp.name} 
-                        sx={{ width: 100, height: 100, mb: 2, border: '3px solid rgba(13, 148, 136, 0.2)', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}
-                      >
-                        {sp.name.split(' ').map(n => n[0]).join('')}
-                      </Avatar>
-                      <Typography variant="h6" fontWeight="bold" color="text.primary">
-                        {sp.name}
-                      </Typography>
-                      <Typography variant="caption" fontWeight="bold" color="secondary.main" mb={2}>
-                        {sp.designation}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary" sx={{ lineHeight: 1.5 }}>
-                        {sp.description}
-                      </Typography>
-                    </CardContent>
-                  </GlassCard>
-                </Grid>
+                <GlassCard 
+                  key={sp.id}
+                  sx={{ 
+                    height: '100%', 
+                    bgcolor: '#ffffff',
+                    borderRadius: '20px',
+                    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.04)',
+                    border: '1.5px solid rgba(226, 232, 240, 0.8)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    '&:hover': {
+                      transform: 'translateY(-10px)',
+                      boxShadow: '0 20px 50px rgba(0, 0, 0, 0.08)',
+                      borderColor: 'secondary.main'
+                    }
+                  }}
+                >
+                  <CardContent sx={{ p: 4, display: 'flex', gap: 3, alignItems: 'flex-start', flexGrow: 1, flexDirection: 'row' }}>
+                    <Avatar 
+                      src={getImageUrl(sp.photo)} 
+                      alt={sp.name} 
+                      sx={{ 
+                        width: 70, 
+                        height: 70, 
+                        flexShrink: 0, 
+                        border: '3px solid rgba(13, 148, 136, 0.15)', 
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+                        bgcolor: 'secondary.main',
+                        color: '#ffffff',
+                        fontWeight: 'bold',
+                        fontSize: '1.3rem'
+                      }}
+                    >
+                      {sp.name.split(' ').map(n => n[0]).join('')}
+                    </Avatar>
+                    
+                    <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%" flexGrow={1}>
+                      <Box>
+                        <Typography variant="h6" fontWeight="800" mb={0.5} color="text.primary" sx={{ fontSize: '1.2rem', fontFamily: "'Raleway', sans-serif" }}>
+                          {sp.name}
+                        </Typography>
+                        <Typography variant="caption" fontWeight="bold" color="secondary.main" mb={1.5} sx={{ display: 'block' }}>
+                          {sp.designation}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" sx={{ lineHeight: 1.6, fontSize: '0.9rem' }}>
+                          {sp.description}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </GlassCard>
               ))}
-            </Grid>
+            </Box>
           </Container>
         </Box>
       )}
