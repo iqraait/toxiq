@@ -9,5 +9,6 @@ django-environ>=0.11.0
 psycopg2-binary>=2.9.0
 django-filter>=23.0
 django-unfold>=0.30.0
+gunicorn>=20.1.0
 
 
