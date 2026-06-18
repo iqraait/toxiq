@@ -185,7 +185,7 @@ const Registration = () => {
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }} className="gradient-bg">
       <Navbar />
 
-      <Container maxWidth="lg" sx={{ py: 6, flexGrow: 1 }}>
+      <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>
         <Grid container spacing={4}>
           
           {/* Main Registration Form */}
@@ -203,9 +203,9 @@ const Registration = () => {
                   {formConfig.title}
                 </Typography>
               </Box>
-
+ 
               <Divider sx={{ mb: 3 }} />
-
+ 
               {/* Instructions Banner */}
               {formConfig.instructions && (
                 <Alert severity="info" sx={{ mb: 4, borderRadius: '10px' }}>
@@ -213,13 +213,13 @@ const Registration = () => {
                   {formConfig.instructions}
                 </Alert>
               )}
-
+ 
               {error && (
                 <Alert severity="error" sx={{ mb: 4, borderRadius: '8px' }}>
                   {error}
                 </Alert>
               )}
-
+ 
               {/* Form Render */}
               <form onSubmit={handleSubmit}>
                 <DynamicFormRenderer
@@ -230,8 +230,8 @@ const Registration = () => {
                   onFileChange={handleFileChange}
                   errors={validationErrors}
                 />
-
-                <Box mt={5} display="flex" justifyContent="flex-end">
+ 
+                <Box mt={6} display="flex" justifyContent="flex-end">
                   <Button
                     type="submit"
                     variant="contained"
@@ -239,7 +239,18 @@ const Registration = () => {
                     size="large"
                     disabled={submitting}
                     startIcon={submitting ? <CircularProgress size={20} color="inherit" /> : <PaymentIcon />}
-                    sx={{ px: 5, py: 1.5, fontSize: '1.05rem', borderRadius: '30px' }}
+                    sx={{ 
+                      px: 6, 
+                      py: 1.8, 
+                      fontSize: '1.1rem', 
+                      borderRadius: '30px',
+                      fontWeight: '800',
+                      boxShadow: '0 8px 20px rgba(13, 148, 136, 0.2)',
+                      '&:hover': {
+                        boxShadow: '0 12px 28px rgba(13, 148, 136, 0.3)',
+                      },
+                      width: { xs: '100%', sm: 'auto' }
+                    }}
                   >
                     {submitting ? 'Processing...' : `Register & Pay ${formConfig.currency} ${totalAmt.toFixed(2)}`}
                   </Button>

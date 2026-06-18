@@ -498,7 +498,7 @@ const Home = () => {
             <Typography variant="h4" fontWeight="800" align="center" mb={1} color="primary.main">
               Distinguished Guest Speakers
             </Typography>
-            <Typography variant="body2" color="textSecondary" align="center" mb={6}>
+            <Typography variant="body2" color="textSecondary" align="center" mb={8}>
               Interact with international medical toxicologists and emergency medicine heads.
             </Typography>
             
