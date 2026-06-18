@@ -11,7 +11,7 @@ venv/
 backend/.env
 .env
 backend/staticfiles/
-backend/media/
+# backend/media/
 
 # Node / React Frontend
 node_modules/
