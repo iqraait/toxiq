@@ -13,9 +13,7 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
     if (typeof opt === 'object' && opt !== null) {
       return {
         value: opt.value,
-        label: opt.price !== undefined && opt.price !== null 
-          ? `${opt.value} (${currency} ${parseFloat(opt.price).toFixed(2)})` 
-          : opt.value
+        label: opt.value
       };
     }
     return { value: opt, label: opt };
