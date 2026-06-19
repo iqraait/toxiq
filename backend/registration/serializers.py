@@ -6,7 +6,7 @@ import re
 class RegistrationFieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = RegistrationField
-        fields = ('id', 'label', 'field_type', 'is_required', 'placeholder', 'help_text', 'options', 'validation_rules', 'order')
+        fields = ('id', 'form', 'label', 'field_type', 'is_required', 'placeholder', 'help_text', 'options', 'validation_rules', 'order')
 
 class RegistrationFormSerializer(serializers.ModelSerializer):
     fields = RegistrationFieldSerializer(many=True, read_only=True)

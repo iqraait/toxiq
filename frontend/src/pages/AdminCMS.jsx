@@ -40,7 +40,8 @@ const AdminCMS = () => {
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
 
-  // 2. Collections States (Speakers, Sponsors, Gallery)
+  // 2. Collections States (Banners, Speakers, Sponsors, Gallery)
+  const [banners, setBanners] = useState([]);
   const [speakers, setSpeakers] = useState([]);
   const [sponsors, setSponsors] = useState([]);
   const [gallery, setGallery] = useState([]);
@@ -97,6 +98,7 @@ const AdminCMS = () => {
       setContactPhone(content.contact_details?.phone || '');
 
       // Lists
+      setBanners(banners || []);
       setSpeakers(speakers);
       setSponsors(sponsors);
       setGallery(gallery);
@@ -135,7 +137,7 @@ const AdminCMS = () => {
 
       // 2. Save Banner Details
       // We will create a FormData to upload banner image if selected
-      const activeBanner = data?.banners?.[0];
+      const activeBanner = banners?.[0];
       const formData = new FormData();
       formData.append('title', bannerTitle);
       formData.append('subtitle', bannerSubtitle);
@@ -145,8 +147,8 @@ const AdminCMS = () => {
         formData.append('image', bannerFile);
       }
 
-      if (data?.banners?.[0]) {
-        await API.put(`cms/banners/${data.banners[0].id}/`, formData);
+      if (activeBanner) {
+        await API.put(`cms/banners/${activeBanner.id}/`, formData);
       } else {
         // If no banner existed, POST a new one
         await API.post('cms/banners/', formData);
