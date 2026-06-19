@@ -238,7 +238,7 @@ class RegistrationSubmitView(APIView):
         checkout_details = {
             'key': settings.PAYU_MERCHANT_KEY,
             'txnid': txnid,
-            'amount': float(amount),
+            'amount': f"{float(amount):.2f}",
             'productinfo': form.title,
             'firstname': registration.participant_name or 'Participant',
             'email': registration.participant_email or 'no-email@hospital.com',
