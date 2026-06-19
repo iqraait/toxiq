@@ -95,6 +95,19 @@ const AdminFormBuilder = () => {
     setFieldOpen(true);
   };
 
+  const getOptionsString = (options) => {
+    if (!options) return '';
+    return options.map(opt => {
+      if (opt && typeof opt === 'object') {
+        if (opt.price !== undefined && opt.price !== null) {
+          return `${opt.value}:${opt.price}`;
+        }
+        return opt.value;
+      }
+      return opt;
+    }).join(', ');
+  };
+
   const handleOpenEditField = (field) => {
     setEditingField(field);
     setLabel(field.label);
@@ -102,7 +115,7 @@ const AdminFormBuilder = () => {
     setRequired(field.is_required);
     setPlaceholder(field.placeholder || '');
     setHelpText(field.help_text || '');
-    setOptionsStr(field.options ? field.options.join(', ') : '');
+    setOptionsStr(getOptionsString(field.options));
     setOrder(field.order);
     setFieldOpen(true);
   };
@@ -111,8 +124,20 @@ const AdminFormBuilder = () => {
     if (!label) return;
     setFieldSubmitting(true);
     
-    // Format options from comma-separated string to list
-    const options = optionsStr ? optionsStr.split(',').map(s => s.trim()).filter(Boolean) : null;
+    // Format options from comma-separated string to list of objects
+    const options = optionsStr ? optionsStr.split(',').map(s => {
+      const trimmed = s.trim();
+      if (!trimmed) return null;
+      const colonIndex = trimmed.lastIndexOf(':');
+      if (colonIndex !== -1) {
+        const val = trimmed.substring(0, colonIndex).trim();
+        const price = parseFloat(trimmed.substring(colonIndex + 1).trim());
+        if (!isNaN(price)) {
+          return { value: val, price };
+        }
+      }
+      return { value: trimmed };
+    }).filter(Boolean) : null;
     
     const payload = {
       label,

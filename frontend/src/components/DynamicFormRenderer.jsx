@@ -7,21 +7,43 @@ import {
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
-const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, onFileChange, errors = {} }) => {
+const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, onFileChange, errors = {}, currency = 'INR' }) => {
+
+  const getOptionInfo = (opt) => {
+    if (typeof opt === 'object' && opt !== null) {
+      return {
+        value: opt.value,
+        label: opt.price !== undefined && opt.price !== null 
+          ? `${opt.value} (${currency} ${parseFloat(opt.price).toFixed(2)})` 
+          : opt.value
+      };
+    }
+    return { value: opt, label: opt };
+  };
 
   const handleInputChange = (fieldId, value) => {
     onChange(fieldId, value);
   };
 
   const handleCheckboxChange = (fieldId, option, isChecked) => {
-    const currentValues = values[fieldId] || [];
-    let newValues = [...currentValues];
-    if (isChecked) {
-      newValues.push(option);
+    const field = fields.find(f => String(f.id) === String(fieldId));
+    const isSingleSelectField = field && [
+      'Specialty / Department of Practice',
+      'Registration Category'
+    ].includes(field.label);
+
+    if (isSingleSelectField) {
+      onChange(fieldId, isChecked ? [option] : []);
     } else {
-      newValues = newValues.filter(v => v !== option);
+      const currentValues = values[fieldId] || [];
+      let newValues = [...currentValues];
+      if (isChecked) {
+        newValues.push(option);
+      } else {
+        newValues = newValues.filter(v => v !== option);
+      }
+      onChange(fieldId, newValues);
     }
-    onChange(fieldId, newValues);
   };
 
   return (
@@ -81,9 +103,12 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
                   onChange={(e) => handleInputChange(fieldId, e.target.value)}
                 >
                   <MenuItem value=""><em>None</em></MenuItem>
-                  {(field.options || []).map((opt) => (
-                    <MenuItem key={opt} value={opt}>{opt}</MenuItem>
-                  ))}
+                  {(field.options || []).map((opt) => {
+                    const { value: optValue, label: optLabel } = getOptionInfo(opt);
+                    return (
+                      <MenuItem key={optValue} value={optValue}>{optLabel}</MenuItem>
+                    );
+                  })}
                 </Select>
                 <FormHelperText>{error || field.help_text || ''}</FormHelperText>
               </FormControl>
@@ -100,14 +125,17 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
                   value={value}
                   onChange={(e) => handleInputChange(fieldId, e.target.value)}
                 >
-                  {(field.options || []).map((opt) => (
-                    <FormControlLabel 
-                      key={opt} 
-                      value={opt} 
-                      control={<Radio color="primary" />} 
-                      label={opt} 
-                    />
-                  ))}
+                  {(field.options || []).map((opt) => {
+                    const { value: optValue, label: optLabel } = getOptionInfo(opt);
+                    return (
+                      <FormControlLabel 
+                        key={optValue} 
+                        value={optValue} 
+                        control={<Radio color="primary" />} 
+                        label={optLabel} 
+                      />
+                    );
+                  })}
                 </RadioGroup>
                 <FormHelperText>{error || field.help_text || ''}</FormHelperText>
               </FormControl>
@@ -121,18 +149,19 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
                 </FormLabel>
                 <FormGroup row>
                   {(field.options || []).map((opt) => {
-                    const isChecked = Array.isArray(value) && value.includes(opt);
+                    const { value: optValue, label: optLabel } = getOptionInfo(opt);
+                    const isChecked = Array.isArray(value) && value.includes(optValue);
                     return (
                       <FormControlLabel
-                        key={opt}
+                        key={optValue}
                         control={
                           <Checkbox
                             checked={isChecked}
-                            onChange={(e) => handleCheckboxChange(fieldId, opt, e.target.checked)}
+                            onChange={(e) => handleCheckboxChange(fieldId, optValue, e.target.checked)}
                             color="primary"
                           />
                         }
-                        label={opt}
+                        label={optLabel}
                       />
                     );
                   })}

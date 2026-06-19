@@ -42,9 +42,10 @@ class Command(BaseCommand):
                 'label': 'Registration Category', 
                 'field_type': 'checkbox', 
                 'options': [
-                    'Invited speakers', 'Specialist/Consultant', 
-                    'Residents/General Practitioners', 
-                    'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics'
+                    {'value': 'Invited speakers', 'price': 0.00},
+                    {'value': 'Specialist/Consultant', 'price': 500.00},
+                    {'value': 'Residents/General Practitioners', 'price': 400.00},
+                    {'value': 'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics', 'price': 300.00}
                 ], 
                 'is_required': True, 
                 'order': 9

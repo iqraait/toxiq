@@ -91,9 +91,10 @@ class RegistrationFormViewSet(viewsets.ModelViewSet):
                 label='Registration Category', 
                 field_type='checkbox', 
                 options=[
-                    'Invited speakers', 'Specialist/Consultant', 
-                    'Residents/General Practitioners', 
-                    'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics'
+                    {'value': 'Invited speakers', 'price': 0.00},
+                    {'value': 'Specialist/Consultant', 'price': 500.00},
+                    {'value': 'Residents/General Practitioners', 'price': 400.00},
+                    {'value': 'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics', 'price': 300.00}
                 ], 
                 is_required=True, 
                 order=9
@@ -209,8 +210,33 @@ class RegistrationSubmitView(APIView):
         registration = serializer.save()
         
         # Calculate fee
+        import decimal
         form = registration.form
-        amount = form.fee_amount
+        base_fee = float(form.fee_amount)
+        
+        # Check if there's any custom option fee selected
+        field_answers = registration.field_data or {}
+        custom_fee = None
+        
+        for field in form.fields.all():
+            if field.field_type in ['checkbox', 'radio', 'dropdown'] and field.options:
+                val = field_answers.get(str(field.id))
+                if val:
+                    for opt in field.options:
+                        if isinstance(opt, dict) and 'value' in opt and 'price' in opt and opt['price'] is not None:
+                            is_selected = False
+                            if isinstance(val, list):
+                                is_selected = opt['value'] in val
+                            else:
+                                is_selected = str(val) == str(opt['value'])
+                                
+                            if is_selected:
+                                custom_fee = float(opt['price'])
+                                break
+                    if custom_fee is not None:
+                        break
+                        
+        amount = decimal.Decimal(str(custom_fee)) if custom_fee is not None else form.fee_amount
         if form.tax_percentage > 0:
             amount += amount * (form.tax_percentage / 100)
             

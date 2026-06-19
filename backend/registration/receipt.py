@@ -145,6 +145,8 @@ def generate_receipt_pdf(registration, payment):
     
     if field_data:
         story.append(Paragraph("Registration Questionnaire Details", section_heading))
+        # Resolve field labels from form configuration
+        field_labels = {str(f.id): f.label for f in registration.form.fields.all()}
         for key, val in field_data.items():
             # If the value is a dictionary or list, print as string
             val_str = str(val)
@@ -154,8 +156,8 @@ def generate_receipt_pdf(registration, payment):
                 # If it's file data e.g. {"url": "...", "name": "..."}
                 val_str = val.get('name', val.get('url', str(val)))
             
-            # Format key nicely (e.g. remove underscores, capitalize)
-            label = key.replace('_', ' ').title()
+            # Use field label if available, fallback to title-cased key
+            label = field_labels.get(str(key), key.replace('_', ' ').title())
             dynamic_responses.append([
                 Paragraph(label + ":", cell_bold),
                 Paragraph(val_str, cell_normal)

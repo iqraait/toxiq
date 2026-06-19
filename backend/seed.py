@@ -52,7 +52,7 @@ def seed_db():
             ('Phone Number', 'phone', True, 'e.g. +91 9876543210', None, None, 3),
             ('Institution/Hospital', 'text', True, 'Enter your workplace/college name', None, None, 4),
             ('Designation', 'dropdown', True, None, ['Doctor', 'Nurse', 'Medical Student', 'Researcher', 'Other'], None, 5),
-            ('Registration Category', 'radio', True, None, ['Regular Delegate', 'Presenter', 'International Delegate'], None, 6),
+            ('Registration Category', 'radio', True, None, [{'value': 'Regular Delegate', 'price': 500.00}, {'value': 'Presenter', 'price': 400.00}, {'value': 'International Delegate', 'price': 1000.00}], None, 6),
             ('Upload Medical Registration Certificate (Optional)', 'file', False, None, None, {'allowed_types': ['.pdf', '.jpg', '.jpeg'], 'max_size_mb': 5}, 7),
         ]
         

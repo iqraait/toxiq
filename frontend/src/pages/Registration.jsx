@@ -188,7 +188,29 @@ const Registration = () => {
     );
   }
 
-  const baseFee = parseFloat(formConfig.fee_amount);
+  const getSelectedBaseFee = () => {
+    let selectedFee = null;
+    if (formConfig && formConfig.fields) {
+      formConfig.fields.forEach(field => {
+        if (['checkbox', 'radio', 'dropdown'].includes(field.field_type) && field.options) {
+          const val = formValues[field.id];
+          if (val) {
+            field.options.forEach(opt => {
+              if (opt && typeof opt === 'object' && opt.price !== undefined && opt.price !== null) {
+                const isSelected = Array.isArray(val) ? val.includes(opt.value) : val === opt.value;
+                if (isSelected) {
+                  selectedFee = parseFloat(opt.price);
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+    return selectedFee !== null ? selectedFee : parseFloat(formConfig.fee_amount);
+  };
+
+  const baseFee = getSelectedBaseFee();
   const taxPercent = parseFloat(formConfig.tax_percentage);
   const taxAmt = baseFee * (taxPercent / 100);
   const totalAmt = baseFee + taxAmt;
@@ -258,6 +280,7 @@ const Registration = () => {
                       files={formFiles}
                       onFileChange={handleFileChange}
                       errors={validationErrors}
+                      currency={formConfig.currency}
                     />
                   </Box>
 
