@@ -84,6 +84,7 @@ const AdminDashboard = () => {
     ]
   };
 
+
   // 2. Bar Chart Data (Revenue Timeline)
   const barChartData = {
     labels: charts.revenue.map(r => r.month),
@@ -112,10 +113,10 @@ const AdminDashboard = () => {
           kpi.articles.rejected
         ],
         backgroundColor: [
-          '#64748b', // Slate
-          '#f59e0b', // Amber
-          '#10b981', // Emerald
-          '#ef4444'  // Rose
+          '#64748b', 
+          '#f59e0b', 
+          '#10b981', 
+          '#ef4444'  
         ],
         borderWidth: 1,
       }
