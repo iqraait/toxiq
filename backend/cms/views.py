@@ -1,13 +1,15 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import ProgramContent, Banner, Speaker, Sponsor, GalleryImage
+from .models import ProgramContent, Banner, Speaker, Sponsor, GalleryImage, Brochure, SiteSettings
 from .serializers import (
     ProgramContentSerializer,
     BannerSerializer,
     SpeakerSerializer,
     SponsorSerializer,
-    GalleryImageSerializer
+    GalleryImageSerializer,
+    BrochureSerializer,
+    SiteSettingsSerializer
 )
 from authentication.permissions import IsAdminRoleOrReadOnly, IsAdminUserRole
 
@@ -90,6 +92,12 @@ class PublicHomeContentView(APIView):
             'article_instructions': 'Upload files in PDF format, maximum 10MB.'
         }
         
+        # Fetch brochures
+        brochures = Brochure.objects.all()
+
+        # Fetch site settings
+        settings_obj, created = SiteSettings.objects.get_or_create(id=1)
+        
         for key, def_val in default_contents.items():
             if key not in contents:
                 contents[key] = def_val
@@ -99,5 +107,33 @@ class PublicHomeContentView(APIView):
             'speakers': SpeakerSerializer(speakers, many=True, context={'request': request}).data,
             'sponsors': SponsorSerializer(sponsors, many=True, context={'request': request}).data,
             'gallery': GalleryImageSerializer(gallery, many=True, context={'request': request}).data,
+            'brochures': BrochureSerializer(brochures, many=True, context={'request': request}).data,
+            'settings': SiteSettingsSerializer(settings_obj, context={'request': request}).data,
             'content': contents
         })
+
+class BrochureViewSet(viewsets.ModelViewSet):
+    queryset = Brochure.objects.all()
+    serializer_class = BrochureSerializer
+    permission_classes = [IsAdminRoleOrReadOnly]
+
+class SiteSettingsView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        obj, created = SiteSettings.objects.get_or_create(id=1)
+        serializer = SiteSettingsSerializer(obj, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request):
+        # Admin only
+        if not request.user or not request.user.is_authenticated or request.user.role not in ['ADMIN', 'SUPER_ADMIN']:
+            return Response({"detail": "Not authorized"}, status=status.HTTP_403_FORBIDDEN)
+            
+        obj, created = SiteSettings.objects.get_or_create(id=1)
+        serializer = SiteSettingsSerializer(obj, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

@@ -224,7 +224,7 @@ logger.warning(f"PAYU_SANDBOX={PAYU_SANDBOX}")
 UNFOLD = {
     "SITE_HEADER": "TOXIQ Program Management",
     "SITE_TITLE": "TOXIQ Admin",
-    "SITE_SYMBOL": "local_hospital",  # Material icon
+    "SITE_SYMBOL": "local_hospital",  
     "SHOW_HISTORY": True,
     "COLORS": {
         "primary": {
@@ -233,7 +233,7 @@ UNFOLD = {
             "200": "191, 219, 254",
             "300": "147, 197, 253",
             "400": "96, 165, 250",
-            "500": "30, 58, 138",  # Royal Blue (#1e3a8a)
+            "500": "30, 58, 138",  
             "600": "37, 99, 235",
             "700": "29, 78, 216",
             "800": "30, 58, 138",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, Container, Grid, Typography, Link, IconButton, 
   TextField, Button, Divider
@@ -14,10 +14,33 @@ import EventIcon from '@mui/icons-material/Event';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import API from '../services/api';
 
 const Footer = ({ contact = {} }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [settings, setSettings] = useState(null);
+
+  const getFileUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
+    return `${host}${path}`;
+  };
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await API.get('cms/settings/');
+        setSettings(res.data);
+      } catch (err) {
+        console.error('Error fetching settings:', err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const address = 'Iqraa International Hospital, Calicut, Kerala';
   const email = contact.email || 'toxiq2026@gmail.com';
@@ -59,11 +82,11 @@ const Footer = ({ contact = {} }) => {
 
   const quickLinks = [
     { label: 'Home', path: '/' },
+    { label: 'Brochure & Gallery', path: '/brochure-gallery' },
     { label: 'Registration', path: '/registration' },
     { label: 'Article Submission', path: '/article-submission' },
     { label: 'Speakers', scrollToId: 'speakers-section' },
-    { label: 'Important Dates', scrollToId: 'dates-section' },
-    { label: 'Contact Us', scrollToId: 'contact-section' }
+    { label: 'Important Dates', scrollToId: 'dates-section' }
   ];
 
   const programItems = [
@@ -122,22 +145,26 @@ const Footer = ({ contact = {} }) => {
           {/* Column 1 – Brand Area (5/12 columns) */}
           <Grid item xs={12} sm={6} md={5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', sm: 'flex-start' }, gap: 1.5, mb: 3 }}>
-              <Box 
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  width: 44, 
-                  height: 44, 
-                  borderRadius: '12px', 
-                  bgcolor: 'rgba(30, 200, 200, 0.08)', 
-                  border: '2.5px solid #1EC8C8',
-                  color: '#1EC8C8',
-                  boxShadow: '0 0 15px rgba(30, 200, 200, 0.2)'
-                }}
-              >
-                <ScienceIcon sx={{ fontSize: '1.55rem' }} />
-              </Box>
+              {settings?.logo ? (
+                <img src={getFileUrl(settings.logo)} alt="logo" style={{ width: '44px', height: '44px', objectFit: 'contain' }} />
+              ) : (
+                <Box 
+                  sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    width: 44, 
+                    height: 44, 
+                    borderRadius: '12px', 
+                    bgcolor: 'rgba(30, 200, 200, 0.08)', 
+                    border: '2.5px solid #1EC8C8',
+                    color: '#1EC8C8',
+                    boxShadow: '0 0 15px rgba(30, 200, 200, 0.2)'
+                  }}
+                >
+                  <ScienceIcon sx={{ fontSize: '1.55rem' }} />
+                </Box>
+              )}
               <Box sx={{ textAlign: 'left' }}>
                 <Typography 
                   variant="h6" 
@@ -150,7 +177,7 @@ const Footer = ({ contact = {} }) => {
                     lineHeight: 1.1
                   }}
                 >
-                  TOXIQ <span style={{ color: '#1EC8C8' }}>2026</span>
+                  {settings?.site_name || <>TOXIQ <span style={{ color: '#1EC8C8' }}>2026</span></>}
                 </Typography>
                 <Typography 
                   variant="caption" 

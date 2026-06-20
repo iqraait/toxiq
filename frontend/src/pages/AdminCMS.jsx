@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Box, Typography, Tabs, Tab, TextField, Button, Grid, Stack, 
   CardContent, Card, IconButton, Avatar, Dialog, DialogTitle, 
-  DialogContent, DialogActions, Alert, CircularProgress, Divider 
+  DialogContent, DialogActions, Alert, CircularProgress, Divider, Link 
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -67,11 +67,25 @@ const AdminCMS = () => {
   const [galFile, setGalFile] = useState(null);
   const [galSubmitting, setGalSubmitting] = useState(false);
 
+  // 3. Logo & Brochures States
+  const [brochures, setBrochures] = useState([]);
+  const [siteName, setSiteName] = useState('TOXIQ');
+  const [siteLogo, setSiteLogo] = useState('');
+  const [logoFile, setLogoFile] = useState(null);
+  const [settingsSaving, setSettingsSaving] = useState(false);
+
+  // Modals for Brochures
+  const [brochureOpen, setBrochureOpen] = useState(false);
+  const [brochureName, setBrochureName] = useState('');
+  const [brochureDesc, setBrochureDesc] = useState('');
+  const [brochureFile, setBrochureFile] = useState(null);
+  const [brochureSubmitting, setBrochureSubmitting] = useState(false);
+
   const fetchCMSData = async () => {
     setLoading(true);
     try {
       const res = await API.get('cms/home/');
-      const { banners, speakers, sponsors, gallery, content } = res.data;
+      const { banners, speakers, sponsors, gallery, content, brochures, settings } = res.data;
 
       // Banner values
       if (banners?.[0]) {
@@ -102,6 +116,11 @@ const AdminCMS = () => {
       setSpeakers(speakers);
       setSponsors(sponsors);
       setGallery(gallery);
+      setBrochures(brochures || []);
+      if (settings) {
+        setSiteName(settings.site_name || 'TOXIQ');
+        setSiteLogo(settings.logo || '');
+      }
     } catch (err) {
       console.error('Error fetching CMS data:', err);
       setError('Failed to query CMS details.');
@@ -260,6 +279,66 @@ const AdminCMS = () => {
     }
   };
 
+  const handleSaveSettings = async () => {
+    setSettingsSaving(true);
+    const formData = new FormData();
+    formData.append('site_name', siteName);
+    if (logoFile) {
+      formData.append('logo', logoFile);
+    }
+    try {
+      const res = await API.post('cms/settings/', formData);
+      setSiteLogo(res.data.logo);
+      setSiteName(res.data.site_name);
+      setLogoFile(null);
+      setSuccessMsg('Site settings updated successfully.');
+      fetchCMSData();
+    } catch (err) {
+      console.error(err);
+      setError('Failed to save site settings.');
+    } finally {
+      setSettingsSaving(false);
+    }
+  };
+
+  const handleAddBrochure = async () => {
+    if (!brochureName || !brochureFile) {
+      alert('Name and PDF file are required.');
+      return;
+    }
+    setBrochureSubmitting(true);
+    const formData = new FormData();
+    formData.append('name', brochureName);
+    formData.append('description', brochureDesc);
+    formData.append('pdf', brochureFile);
+    try {
+      await API.post('cms/brochures/', formData);
+      setBrochureOpen(false);
+      setBrochureName('');
+      setBrochureDesc('');
+      setBrochureFile(null);
+      setSuccessMsg('Brochure added successfully.');
+      fetchCMSData();
+    } catch (err) {
+      console.error(err);
+      setError('Failed to upload brochure.');
+    } finally {
+      setBrochureSubmitting(false);
+    }
+  };
+
+  const handleDeleteBrochure = async (id) => {
+    if (!window.confirm('Delete this brochure?')) return;
+    try {
+      await API.delete(`cms/brochures/${id}/`);
+      setSuccessMsg('Brochure deleted.');
+      fetchCMSData();
+    } catch (err) {
+      console.error(err);
+      setError('Failed to delete brochure.');
+    }
+  };
+
   if (loading && activeTab === 0) {
     return (
       <Box display="flex" justifyContent="center" py={10}>
@@ -291,6 +370,7 @@ const AdminCMS = () => {
         <Tab label="Banner & Static Text Blocks" sx={{ fontWeight: 'bold' }} />
         <Tab label="Guest Speakers" sx={{ fontWeight: 'bold' }} />
         <Tab label="Sponsors & Gallery" sx={{ fontWeight: 'bold' }} />
+        <Tab label="Logo & Brochures" sx={{ fontWeight: 'bold' }} />
       </Tabs>
 
       {/* TAB 0: TEXT INFO */}
@@ -507,6 +587,112 @@ const AdminCMS = () => {
         </Grid>
       )}
 
+      {/* TAB 3: LOGO & BROCHURES */}
+      {activeTab === 3 && (
+        <Stack spacing={4}>
+          <Grid container spacing={3}>
+            {/* Site Settings / Logo Form */}
+            <Grid item xs={12} md={5}>
+              <GlassCard sx={{ p: 4 }}>
+                <Typography variant="h6" fontWeight="bold" mb={3} color="primary.main" fontFamily="'Raleway', sans-serif">
+                  Site Logo & Name
+                </Typography>
+                <Stack spacing={3}>
+                  <TextField 
+                    fullWidth 
+                    label="Site Name / Title" 
+                    value={siteName} 
+                    onChange={(e) => setSiteName(e.target.value)} 
+                  />
+                  
+                  <Box>
+                    <Typography variant="body2" color="textSecondary" mb={1} fontWeight="bold">
+                      Main Brand Logo
+                    </Typography>
+                    {siteLogo && (
+                      <Box mb={2} sx={{ p: 2, border: '1px solid #e2e8f0', borderRadius: '8px', display: 'flex', justifyContent: 'center', bgcolor: '#f8fafc' }}>
+                        <img src={siteLogo.startsWith('http') ? siteLogo : `${API.defaults.baseURL.replace(/\/api\/?$/, '')}${siteLogo}`} alt="Site Logo" style={{ maxHeight: '80px', maxWidth: '100%', objectFit: 'contain' }} />
+                      </Box>
+                    )}
+                    
+                    <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />} color="secondary" fullWidth>
+                      Select Logo Image
+                      <input type="file" hidden onChange={(e) => setLogoFile(e.target.files[0])} />
+                    </Button>
+                    {logoFile && (
+                      <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'success.main', fontWeight: 'bold' }}>
+                        Selected: {logoFile.name}
+                      </Typography>
+                    )}
+                  </Box>
+
+                  <Button 
+                    variant="contained" 
+                    color="primary" 
+                    startIcon={<SaveIcon />}
+                    onClick={handleSaveSettings}
+                    disabled={settingsSaving}
+                    fullWidth
+                    sx={{ py: 1.5, borderRadius: '10px' }}
+                  >
+                    {settingsSaving ? 'Saving Settings...' : 'Save Site Settings'}
+                  </Button>
+                </Stack>
+              </GlassCard>
+            </Grid>
+
+            {/* Brochures List */}
+            <Grid item xs={12} md={7}>
+              <GlassCard sx={{ p: 4 }}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                  <Typography variant="h6" fontWeight="bold" color="primary.main" fontFamily="'Raleway', sans-serif">
+                    Conference Brochures (PDF)
+                  </Typography>
+                  <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={() => setBrochureOpen(true)}>
+                    Add Brochure
+                  </Button>
+                </Box>
+                
+                <Stack spacing={2}>
+                  {brochures.map((b) => (
+                    <Box 
+                      key={b.id} 
+                      sx={{ 
+                        p: 2.5, 
+                        border: '1.5px solid #e2e8f0', 
+                        borderRadius: '16px', 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        transition: 'all 0.2s',
+                        '&:hover': {
+                          borderColor: 'primary.main',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+                        }
+                      }}
+                    >
+                      <Box>
+                        <Typography variant="subtitle2" fontWeight="bold" color="text.primary">{b.name}</Typography>
+                        <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>{b.description || 'No description provided'}</Typography>
+                        <Link href={b.pdf.startsWith('http') ? b.pdf : `${API.defaults.baseURL.replace(/\/api\/?$/, '')}${b.pdf}`} target="_blank" rel="noreferrer" sx={{ display: 'inline-block', mt: 1, fontSize: '0.8rem', fontWeight: 'bold' }}>
+                          View PDF Guide &rarr;
+                        </Link>
+                      </Box>
+                      <IconButton color="error" onClick={() => handleDeleteBrochure(b.id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  ))}
+                  {brochures.length === 0 && (
+                    <Typography variant="body2" color="textSecondary" align="center" py={4}>No brochures uploaded yet.</Typography>
+                  )}
+                </Stack>
+              </GlassCard>
+            </Grid>
+          </Grid>
+        </Stack>
+      )}
+
       {/* Speakers Dialog */}
       <Dialog open={spOpen} onClose={() => setSpOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 'bold' }}>Add Guest Speaker</DialogTitle>
@@ -572,6 +758,33 @@ const AdminCMS = () => {
           <Button onClick={() => setGalOpen(false)}>Cancel</Button>
           <Button onClick={handleAddGallery} variant="contained" disabled={galSubmitting}>
             {galSubmitting ? 'Uploading...' : 'Upload Image'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Brochure Dialog */}
+      <Dialog open={brochureOpen} onClose={() => setBrochureOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ fontWeight: 'bold' }}>Add PDF Brochure</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2.5} mt={1.5}>
+            <TextField fullWidth label="Brochure Name" value={brochureName} onChange={(e) => setBrochureName(e.target.value)} required />
+            <TextField fullWidth multiline rows={3} label="Description" value={brochureDesc} onChange={(e) => setBrochureDesc(e.target.value)} />
+            
+            <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />} color="secondary" required>
+              Select PDF File *
+              <input type="file" accept="application/pdf" hidden onChange={(e) => setBrochureFile(e.target.files[0])} />
+            </Button>
+            {brochureFile && (
+              <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                Selected: {brochureFile.name}
+              </Typography>
+            )}
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setBrochureOpen(false)}>Cancel</Button>
+          <Button onClick={handleAddBrochure} variant="contained" disabled={brochureSubmitting}>
+            {brochureSubmitting ? 'Uploading...' : 'Save Brochure'}
           </Button>
         </DialogActions>
       </Dialog>

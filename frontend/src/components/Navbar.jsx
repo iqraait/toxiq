@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { 
   AppBar, Toolbar, Typography, Button, Box, IconButton, Drawer, 
   List, ListItem, ListItemText, useTheme, useMediaQuery 
@@ -9,6 +9,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { glassmorphismStyles } from '../theme';
+import API from '../services/api';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useContext(AuthContext);
@@ -18,12 +19,34 @@ const Navbar = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [settings, setSettings] = useState(null);
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
   };
 
   const isHome = location.pathname === '/';
+
+  const getFileUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
+    return `${host}${path}`;
+  };
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await API.get('cms/settings/');
+        setSettings(res.data);
+      } catch (err) {
+        console.error('Error fetching settings:', err);
+      }
+    };
+    fetchSettings();
+  }, []);
   
   const handleNavClick = (sectionId) => {
     if (isHome) {
@@ -38,6 +61,7 @@ const Navbar = () => {
 
   const navLinks = [
     { label: 'Home', action: () => isHome ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate('/') },
+    { label: 'Brochure & Gallery', action: () => navigate('/brochure-gallery') },
     { label: 'Registration', action: () => navigate('/registration') },
     { label: 'Article Submission', action: () => navigate('/article-submission') }
   ];
@@ -111,21 +135,25 @@ const Navbar = () => {
           onClick={() => navigate('/')} 
           sx={{ cursor: 'pointer', gap: 1.2 }}
         >
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              width: 40, 
-              height: 40, 
-              borderRadius: '10px', 
-              bgcolor: 'rgba(13, 148, 136, 0.08)', 
-              border: '2.5px solid #0d9488',
-              color: '#0d9488'
-            }}
-          >
-            <ScienceIcon sx={{ fontSize: '1.5rem' }} />
-          </Box>
+          {settings?.logo ? (
+            <img src={getFileUrl(settings.logo)} alt="logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+          ) : (
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                width: 40, 
+                height: 40, 
+                borderRadius: '10px', 
+                bgcolor: 'rgba(13, 148, 136, 0.08)', 
+                border: '2.5px solid #0d9488',
+                color: '#0d9488'
+              }}
+            >
+              <ScienceIcon sx={{ fontSize: '1.5rem' }} />
+            </Box>
+          )}
           <Box>
             <Typography 
               variant="h6" 
@@ -138,7 +166,7 @@ const Navbar = () => {
                 fontSize: '1.25rem'
               }}
             >
-              TOXIQ <span style={{ color: '#0d9488' }}>2026</span>
+              {settings?.site_name || <>TOXIQ <span style={{ color: '#0d9488' }}>2026</span></>}
             </Typography>
             <Typography 
               variant="caption" 
@@ -217,23 +245,27 @@ const Navbar = () => {
           mb={3}
           px={1}
         >
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              width: 32, 
-              height: 32, 
-              borderRadius: '8px', 
-              bgcolor: 'rgba(13, 148, 136, 0.08)', 
-              border: '2px solid #0d9488',
-              color: '#0d9488'
-            }}
-          >
-            <ScienceIcon sx={{ fontSize: '1.1rem' }} />
-          </Box>
+          {settings?.logo ? (
+            <img src={getFileUrl(settings.logo)} alt="logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+          ) : (
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                width: 32, 
+                height: 32, 
+                borderRadius: '8px', 
+                bgcolor: 'rgba(13, 148, 136, 0.08)', 
+                border: '2px solid #0d9488',
+                color: '#0d9488'
+              }}
+            >
+              <ScienceIcon sx={{ fontSize: '1.1rem' }} />
+            </Box>
+          )}
           <Typography variant="subtitle1" fontWeight="800" color="#0f172a">
-            TOXIQ <span style={{ color: '#0d9488' }}>2026</span>
+            {settings?.site_name || <>TOXIQ <span style={{ color: '#0d9488' }}>2026</span></>}
           </Typography>
         </Box>
         <List>

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ProgramContent, Banner, Speaker, Sponsor, GalleryImage
+from .models import ProgramContent, Banner, Speaker, Sponsor, GalleryImage, Brochure, SiteSettings
 
 class ProgramContentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,3 +30,18 @@ class GalleryImageSerializer(serializers.ModelSerializer):
         model = GalleryImage
         fields = ('id', 'image', 'caption', 'created_at')
         read_only_fields = ('id', 'created_at')
+
+
+class BrochureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brochure
+        fields = ('id', 'name', 'description', 'pdf', 'created_at')
+        read_only_fields = ('id', 'created_at')
+
+
+class SiteSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteSettings
+        fields = ('id', 'site_name', 'logo', 'updated_at')
+        read_only_fields = ('id', 'updated_at')
+

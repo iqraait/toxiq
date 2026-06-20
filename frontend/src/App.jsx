@@ -6,6 +6,7 @@ import ArticleSubmission from './pages/ArticleSubmission';
 import Login from './pages/Login';
 import PayUSimulator from './pages/PayUSimulator';
 import RegistrationSuccess from './pages/RegistrationSuccess';
+import BrochureGallery from './pages/BrochureGallery';
 
 // Admin imports
 import AdminLayout from './pages/AdminLayout';
@@ -27,6 +28,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/payment/simulator" element={<PayUSimulator />} />
       <Route path="/registration/success" element={<RegistrationSuccess />} />
+      <Route path="/brochure-gallery" element={<BrochureGallery />} />
 
       {/* Admin Panel Nested Routes */}
       <Route path="/admin" element={<AdminLayout />}>

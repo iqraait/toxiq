@@ -61,3 +61,30 @@ class GalleryImage(models.Model):
 
     def __str__(self):
         return self.caption or f"Gallery Image {self.id}"
+
+
+class Brochure(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    pdf = models.FileField(upload_to='brochures/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
+
+
+class SiteSettings(models.Model):
+    site_name = models.CharField(max_length=100, default='TOXIQ')
+    logo = models.ImageField(upload_to='logos/', blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Site Settings'
+        verbose_name_plural = 'Site Settings'
+
+    def __str__(self):
+        return f"Site Settings ({self.site_name})"
+
