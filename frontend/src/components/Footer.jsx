@@ -150,7 +150,7 @@ const Footer = ({ contact = {} }) => {
                   src={getFileUrl(settings.logo)} 
                   alt="logo" 
                   style={{ 
-                    height: '64px', 
+                    height: '52px', 
                     width: 'auto', 
                     objectFit: 'contain', 
                     display: 'block' 

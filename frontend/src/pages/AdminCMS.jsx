@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import EditIcon from '@mui/icons-material/Edit';
 
 import API from '../services/api';
 import GlassCard from '../components/GlassCard';
@@ -74,12 +75,23 @@ const AdminCMS = () => {
   const [logoFile, setLogoFile] = useState(null);
   const [settingsSaving, setSettingsSaving] = useState(false);
 
+  const [editingSpeakerId, setEditingSpeakerId] = useState(null);
+
   // Modals for Brochures
   const [brochureOpen, setBrochureOpen] = useState(false);
   const [brochureName, setBrochureName] = useState('');
   const [brochureDesc, setBrochureDesc] = useState('');
   const [brochureFile, setBrochureFile] = useState(null);
   const [brochureSubmitting, setBrochureSubmitting] = useState(false);
+
+  const getImageUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
+    return `${host}${path}`;
+  };
 
   const fetchCMSData = async () => {
     setLoading(true);
@@ -181,7 +193,25 @@ const AdminCMS = () => {
     }
   };
 
-  const handleAddSpeaker = async () => {
+  const handleOpenAddSpeaker = () => {
+    setEditingSpeakerId(null);
+    setSpName('');
+    setSpDes('');
+    setSpDesc('');
+    setSpFile(null);
+    setSpOpen(true);
+  };
+
+  const handleOpenEditSpeaker = (sp) => {
+    setEditingSpeakerId(sp.id);
+    setSpName(sp.name);
+    setSpDes(sp.designation);
+    setSpDesc(sp.description || '');
+    setSpFile(null);
+    setSpOpen(true);
+  };
+
+  const handleSaveSpeaker = async () => {
     if (!spName || !spDes) return;
     setSpSubmitting(true);
     const formData = new FormData();
@@ -192,16 +222,23 @@ const AdminCMS = () => {
       formData.append('photo', spFile);
     }
     try {
-      await API.post('cms/speakers/', formData);
+      if (editingSpeakerId) {
+        await API.patch(`cms/speakers/${editingSpeakerId}/`, formData);
+        setSuccessMsg('Speaker profile updated successfully.');
+      } else {
+        await API.post('cms/speakers/', formData);
+        setSuccessMsg('Speaker profile added successfully.');
+      }
       setSpOpen(false);
       setSpName('');
       setSpDes('');
       setSpDesc('');
       setSpFile(null);
+      setEditingSpeakerId(null);
       fetchCMSData();
     } catch (err) {
       console.error(err);
-      alert('Failed to save speaker.');
+      alert(editingSpeakerId ? 'Failed to update speaker.' : 'Failed to add speaker.');
     } finally {
       setSpSubmitting(false);
     }
@@ -478,7 +515,7 @@ const AdminCMS = () => {
       {activeTab === 1 && (
         <Box>
           <Box display="flex" justifyContent="flex-end" mb={3}>
-            <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={() => setSpOpen(true)}>
+            <Button variant="contained" color="secondary" startIcon={<AddIcon />} onClick={handleOpenAddSpeaker}>
               Add Speaker
             </Button>
           </Box>
@@ -488,17 +525,27 @@ const AdminCMS = () => {
               <Grid item xs={12} sm={6} md={4} key={sp.id}>
                 <Card sx={{ height: '100%', position: 'relative' }}>
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3, textAlign: 'center' }}>
-                    <Avatar src={sp.photo} sx={{ width: 80, height: 80, mb: 2 }} />
+                    <Avatar src={getImageUrl(sp.photo)} sx={{ width: 80, height: 80, mb: 2 }} />
                     <Typography variant="h6" fontWeight="bold">{sp.name}</Typography>
                     <Typography variant="caption" color="secondary.main" fontWeight="bold" mb={1}>{sp.designation}</Typography>
                     <Typography variant="body2" color="textSecondary" sx={{ height: '60px', overflow: 'hidden' }}>{sp.description}</Typography>
                   </CardContent>
-                  <IconButton 
-                    onClick={() => handleDeleteSpeaker(sp.id)}
-                    sx={{ position: 'absolute', top: 10, right: 10, color: 'error.main' }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  <Box sx={{ position: 'absolute', top: 10, right: 10, display: 'flex', gap: 0.5 }}>
+                    <IconButton 
+                      onClick={() => handleOpenEditSpeaker(sp)}
+                      sx={{ color: 'primary.main', bgcolor: 'rgba(255,255,255,0.85)', '&:hover': { bgcolor: '#ffffff' } }}
+                      size="small"
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton 
+                      onClick={() => handleDeleteSpeaker(sp.id)}
+                      sx={{ color: 'error.main', bgcolor: 'rgba(255,255,255,0.85)', '&:hover': { bgcolor: '#ffffff' } }}
+                      size="small"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
                 </Card>
               </Grid>
             ))}
@@ -532,7 +579,7 @@ const AdminCMS = () => {
                 {sponsors.map((spon) => (
                   <Box key={spon.id} display="flex" alignItems="center" justifyContent="space-between" sx={{ p: 1.5, border: '1px solid #e2e8f0', borderRadius: '8px' }}>
                     <Box display="flex" alignItems="center" gap={2}>
-                      <Avatar src={spon.logo} variant="square" sx={{ width: 50, height: 30 }} />
+                      <Avatar src={getImageUrl(spon.logo)} variant="square" sx={{ width: 50, height: 30 }} />
                       <Typography variant="body2" fontWeight="bold">{spon.name}</Typography>
                     </Box>
                     <IconButton color="error" onClick={() => handleDeleteSponsor(spon.id)}>
@@ -565,7 +612,7 @@ const AdminCMS = () => {
                 {gallery.map((g) => (
                   <Grid item xs={6} key={g.id} sx={{ position: 'relative' }}>
                     <Box sx={{ height: 100, border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden' }}>
-                      <img src={g.image} alt={g.caption} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={getImageUrl(g.image)} alt={g.caption} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </Box>
                     <IconButton 
                       size="small" 
@@ -611,7 +658,7 @@ const AdminCMS = () => {
                     </Typography>
                     {siteLogo && (
                       <Box mb={2} sx={{ p: 2, border: '1px solid #e2e8f0', borderRadius: '8px', display: 'flex', justifyContent: 'center', bgcolor: '#f8fafc' }}>
-                        <img src={siteLogo.startsWith('http') ? siteLogo : `${API.defaults.baseURL.replace(/\/api\/?$/, '')}${siteLogo}`} alt="Site Logo" style={{ maxHeight: '80px', maxWidth: '100%', objectFit: 'contain' }} />
+                        <img src={getImageUrl(siteLogo)} alt="Site Logo" style={{ maxHeight: '80px', maxWidth: '100%', objectFit: 'contain' }} />
                       </Box>
                     )}
                     
@@ -674,7 +721,7 @@ const AdminCMS = () => {
                       <Box>
                         <Typography variant="subtitle2" fontWeight="bold" color="text.primary">{b.name}</Typography>
                         <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>{b.description || 'No description provided'}</Typography>
-                        <Link href={b.pdf.startsWith('http') ? b.pdf : `${API.defaults.baseURL.replace(/\/api\/?$/, '')}${b.pdf}`} target="_blank" rel="noreferrer" sx={{ display: 'inline-block', mt: 1, fontSize: '0.8rem', fontWeight: 'bold' }}>
+                        <Link href={getImageUrl(b.pdf)} target="_blank" rel="noreferrer" sx={{ display: 'inline-block', mt: 1, fontSize: '0.8rem', fontWeight: 'bold' }}>
                           View PDF Guide &rarr;
                         </Link>
                       </Box>
@@ -695,7 +742,7 @@ const AdminCMS = () => {
 
       {/* Speakers Dialog */}
       <Dialog open={spOpen} onClose={() => setSpOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 'bold' }}>Add Guest Speaker</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 'bold' }}>{editingSpeakerId ? 'Edit Guest Speaker' : 'Add Guest Speaker'}</DialogTitle>
         <DialogContent>
           <Stack spacing={2.5} mt={1.5}>
             <TextField fullWidth label="Full Name" value={spName} onChange={(e) => setSpName(e.target.value)} />
@@ -703,16 +750,25 @@ const AdminCMS = () => {
             <TextField fullWidth multiline rows={3} label="Brief Description / Profile" value={spDesc} onChange={(e) => setSpDesc(e.target.value)} />
             
             <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />} color="secondary">
-              Upload Photo
+              {editingSpeakerId ? 'Change Photo' : 'Upload Photo'}
               <input type="file" hidden onChange={(e) => setSpFile(e.target.files[0])} />
             </Button>
-            {spFile && <Typography variant="caption">{spFile.name}</Typography>}
+            {spFile && (
+              <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                Selected: {spFile.name}
+              </Typography>
+            )}
+            {editingSpeakerId && !spFile && (
+              <Typography variant="caption" color="textSecondary">
+                (Leave empty to keep current photo)
+              </Typography>
+            )}
           </Stack>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={() => setSpOpen(false)}>Cancel</Button>
-          <Button onClick={handleAddSpeaker} variant="contained" disabled={spSubmitting}>
-            {spSubmitting ? 'Saving...' : 'Add Speaker'}
+          <Button onClick={handleSaveSpeaker} variant="contained" disabled={spSubmitting}>
+            {spSubmitting ? 'Saving...' : editingSpeakerId ? 'Save Changes' : 'Add Speaker'}
           </Button>
         </DialogActions>
       </Dialog>

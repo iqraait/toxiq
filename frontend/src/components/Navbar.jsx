@@ -140,7 +140,7 @@ const Navbar = () => {
               src={getFileUrl(settings.logo)} 
               alt="logo" 
               style={{ 
-                height: '56px', 
+                height: '46px', 
                 width: 'auto', 
                 objectFit: 'contain', 
                 display: 'block',
@@ -261,7 +261,7 @@ const Navbar = () => {
               src={getFileUrl(settings.logo)} 
               alt="logo" 
               style={{ 
-                height: '48px', 
+                height: '38px', 
                 width: 'auto', 
                 objectFit: 'contain', 
                 display: 'block' 
