@@ -2,6 +2,9 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
+import logging
+
+logger = logging.getLogger(__name__)
 from django.core.files.storage import default_storage
 from django.conf import settings
 from django.http import FileResponse, HttpResponseRedirect
@@ -271,10 +274,28 @@ class RegistrationSubmitView(APIView):
             'phone': registration.participant_phone or '9999999999',
             'surl': f"{request.build_absolute_uri('/api/payment/payu-callback/')}",
             'furl': f"{request.build_absolute_uri('/api/payment/payu-callback/')}",
+            'service_provider': 'payu_paisa',
             'hash': hash_val,
             'action': PayUService.get_payment_url(),
             'registration_id_temp': registration.id  # helper for local tracking
         }
+
+        # Log the payment payload before redirecting
+        payload = {
+            "key": checkout_details['key'],
+            "txnid": checkout_details['txnid'],
+            "amount": checkout_details['amount'],
+            "productinfo": checkout_details['productinfo'],
+            "firstname": checkout_details['firstname'],
+            "email": checkout_details['email'],
+            "phone": checkout_details['phone'],
+            "surl": checkout_details['surl'],
+            "furl": checkout_details['furl'],
+            "service_provider": checkout_details['service_provider'],
+            "hash": checkout_details['hash']
+        }
+        logger.warning("PAYU PAYMENT PAYLOAD")
+        logger.warning(payload)
         
         return Response({
             'registration': RegistrationSerializer(registration).data,
@@ -403,3 +424,27 @@ class PaymentListView(APIView):
             
         serializer = PaymentSerializer(payments, many=True)
         return Response(serializer.data)
+
+class PayUDebugView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        if not request.user.is_superuser:
+            return Response({"detail": "You must be a superuser to access this endpoint."}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Test hash generation
+        test_hash = PayUService.generate_hash(
+            txnid="TXN9D61ECE61B27",
+            amount=500.00,
+            productinfo="TOXIQ Program Registration Form",
+            firstname="test",
+            email="testing@gmail.com"
+        )
+        
+        return Response({
+            "sandbox": settings.PAYU_SANDBOX,
+            "payment_url": PayUService.get_payment_url(),
+            "merchant_key": settings.PAYU_MERCHANT_KEY,
+            "hash_test": test_hash
+        }, status=status.HTTP_200_OK)
+

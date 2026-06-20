@@ -211,8 +211,14 @@ else:
 # PayU Credentials settings
 PAYU_MERCHANT_KEY = env('PAYU_MERCHANT_KEY')
 PAYU_SALT = env('PAYU_SALT')
-PAYU_SANDBOX = env('PAYU_SANDBOX')
+PAYU_SANDBOX = env.bool('PAYU_SANDBOX', default=False)
 FRONTEND_URL = env('FRONTEND_URL')
+
+import logging
+logger = logging.getLogger(__name__)
+logger.warning(f"PAYU_KEY={PAYU_MERCHANT_KEY}")
+logger.warning(f"PAYU_SANDBOX={PAYU_SANDBOX}")
+
 
 # Unfold Theme custom settings matching TOXIQ healthcare conference branding
 UNFOLD = {

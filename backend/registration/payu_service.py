@@ -1,5 +1,8 @@
 import hashlib
+import logging
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 class PayUService:
     @staticmethod
@@ -8,6 +11,9 @@ class PayUService:
         Generates payment hash to be sent to PayU.
         Formula: sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||SALT)
         """
+        logger.warning(f"PAYU MODE = {'TEST' if settings.PAYU_SANDBOX else 'LIVE'}")
+        logger.warning(f"PAYU URL = {PayUService.get_payment_url()}")
+
         key = settings.PAYU_MERCHANT_KEY
         salt = settings.PAYU_SALT
 
