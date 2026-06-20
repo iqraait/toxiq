@@ -146,53 +146,64 @@ const Footer = ({ contact = {} }) => {
           <Grid item xs={12} sm={6} md={5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', sm: 'flex-start' }, gap: 1.5, mb: 3 }}>
               {settings?.logo ? (
-                <img src={getFileUrl(settings.logo)} alt="logo" style={{ width: '44px', height: '44px', objectFit: 'contain' }} />
+                <img 
+                  src={getFileUrl(settings.logo)} 
+                  alt="logo" 
+                  style={{ 
+                    height: '64px', 
+                    width: 'auto', 
+                    objectFit: 'contain', 
+                    display: 'block' 
+                  }} 
+                />
               ) : (
-                <Box 
-                  sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    width: 44, 
-                    height: 44, 
-                    borderRadius: '12px', 
-                    bgcolor: 'rgba(30, 200, 200, 0.08)', 
-                    border: '2.5px solid #1EC8C8',
-                    color: '#1EC8C8',
-                    boxShadow: '0 0 15px rgba(30, 200, 200, 0.2)'
-                  }}
-                >
-                  <ScienceIcon sx={{ fontSize: '1.55rem' }} />
-                </Box>
+                <>
+                  <Box 
+                    sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      width: 44, 
+                      height: 44, 
+                      borderRadius: '12px', 
+                      bgcolor: 'rgba(30, 200, 200, 0.08)', 
+                      border: '2.5px solid #1EC8C8',
+                      color: '#1EC8C8',
+                      boxShadow: '0 0 15px rgba(30, 200, 200, 0.2)'
+                    }}
+                  >
+                    <ScienceIcon sx={{ fontSize: '1.55rem' }} />
+                  </Box>
+                  <Box sx={{ textAlign: 'left' }}>
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontFamily: "'Raleway', sans-serif", 
+                        fontWeight: 900, 
+                        color: '#ffffff',
+                        fontSize: '1.35rem',
+                        letterSpacing: '-0.3px',
+                        lineHeight: 1.1
+                      }}
+                    >
+                      {settings?.site_name || <>TOXIQ <span style={{ color: '#1EC8C8' }}>2026</span></>}
+                    </Typography>
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        fontWeight: 700, 
+                        color: '#94a3b8',
+                        letterSpacing: '0.5px',
+                        fontSize: '0.68rem',
+                        display: 'block',
+                        mt: 0.1
+                      }}
+                    >
+                      Toxicology Program
+                    </Typography>
+                  </Box>
+                </>
               )}
-              <Box sx={{ textAlign: 'left' }}>
-                <Typography 
-                  variant="h6" 
-                  sx={{ 
-                    fontFamily: "'Raleway', sans-serif", 
-                    fontWeight: 900, 
-                    color: '#ffffff',
-                    fontSize: '1.35rem',
-                    letterSpacing: '-0.3px',
-                    lineHeight: 1.1
-                  }}
-                >
-                  {settings?.site_name || <>TOXIQ <span style={{ color: '#1EC8C8' }}>2026</span></>}
-                </Typography>
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    fontWeight: 700, 
-                    color: '#94a3b8',
-                    letterSpacing: '0.5px',
-                    fontSize: '0.68rem',
-                    display: 'block',
-                    mt: 0.1
-                  }}
-                >
-                  Toxicology Program
-                </Typography>
-              </Box>
             </Box>
             
             <Typography variant="body2" sx={{ lineHeight: 1.8, mb: 4, color: '#94a3b8', fontSize: '0.92rem', pr: { md: 5 } }}>

@@ -210,7 +210,7 @@ const BrochureGallery = () => {
                           textTransform: 'none'
                         }}
                       >
-                        Download PDF
+                       Read Me 
                       </Button>
                     </CardActions>
                   </Card>

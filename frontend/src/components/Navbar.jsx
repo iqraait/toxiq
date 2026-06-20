@@ -136,53 +136,65 @@ const Navbar = () => {
           sx={{ cursor: 'pointer', gap: 1.2 }}
         >
           {settings?.logo ? (
-            <img src={getFileUrl(settings.logo)} alt="logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
-          ) : (
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                width: 40, 
-                height: 40, 
-                borderRadius: '10px', 
-                bgcolor: 'rgba(13, 148, 136, 0.08)', 
-                border: '2.5px solid #0d9488',
-                color: '#0d9488'
-              }}
-            >
-              <ScienceIcon sx={{ fontSize: '1.5rem' }} />
-            </Box>
-          )}
-          <Box>
-            <Typography 
-              variant="h6" 
-              sx={{ 
-                fontFamily: "'Raleway', sans-serif", 
-                fontWeight: 900, 
-                lineHeight: 1.1,
-                letterSpacing: '-0.3px',
-                color: '#0f172a',
-                fontSize: '1.25rem'
-              }}
-            >
-              {settings?.site_name || <>TOXIQ <span style={{ color: '#0d9488' }}>2026</span></>}
-            </Typography>
-            <Typography 
-              variant="caption" 
-              sx={{ 
-                fontFamily: "'Raleway', sans-serif", 
-                fontWeight: 700, 
-                color: '#64748b',
-                letterSpacing: '0.2px',
-                fontSize: '0.7rem',
+            <img 
+              src={getFileUrl(settings.logo)} 
+              alt="logo" 
+              style={{ 
+                height: '56px', 
+                width: 'auto', 
+                objectFit: 'contain', 
                 display: 'block',
-                mt: 0.1
-              }}
-            >
-              Toxicology Program
-            </Typography>
-          </Box>
+                transition: 'transform 0.2s ease-in-out'
+              }} 
+            />
+          ) : (
+            <>
+              <Box 
+                sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  width: 40, 
+                  height: 40, 
+                  borderRadius: '10px', 
+                  bgcolor: 'rgba(13, 148, 136, 0.08)', 
+                  border: '2.5px solid #0d9488',
+                  color: '#0d9488'
+                }}
+              >
+                <ScienceIcon sx={{ fontSize: '1.5rem' }} />
+              </Box>
+              <Box>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    fontFamily: "'Raleway', sans-serif", 
+                    fontWeight: 900, 
+                    lineHeight: 1.1,
+                    letterSpacing: '-0.3px',
+                    color: '#0f172a',
+                    fontSize: '1.25rem'
+                  }}
+                >
+                  {settings?.site_name || <>TOXIQ <span style={{ color: '#0d9488' }}>2026</span></>}
+                </Typography>
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    fontFamily: "'Raleway', sans-serif", 
+                    fontWeight: 700, 
+                    color: '#64748b',
+                    letterSpacing: '0.2px',
+                    fontSize: '0.7rem',
+                    display: 'block',
+                    mt: 0.1
+                  }}
+                >
+                  Toxicology Program
+                </Typography>
+              </Box>
+            </>
+          )}
         </Box>
 
         {/* Desktop Navigation Links */}
@@ -241,32 +253,43 @@ const Navbar = () => {
         <Box 
           display="flex" 
           alignItems="center" 
-          gap={1.5}
           mb={3}
           px={1}
         >
           {settings?.logo ? (
-            <img src={getFileUrl(settings.logo)} alt="logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+            <img 
+              src={getFileUrl(settings.logo)} 
+              alt="logo" 
+              style={{ 
+                height: '48px', 
+                width: 'auto', 
+                objectFit: 'contain', 
+                display: 'block' 
+              }} 
+            />
           ) : (
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                width: 32, 
-                height: 32, 
-                borderRadius: '8px', 
-                bgcolor: 'rgba(13, 148, 136, 0.08)', 
-                border: '2px solid #0d9488',
-                color: '#0d9488'
-              }}
-            >
-              <ScienceIcon sx={{ fontSize: '1.1rem' }} />
-            </Box>
+            <>
+              <Box 
+                sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  width: 32, 
+                  height: 32, 
+                  borderRadius: '8px', 
+                  bgcolor: 'rgba(13, 148, 136, 0.08)', 
+                  border: '2px solid #0d9488',
+                  color: '#0d9488',
+                  mr: 1.5
+                }}
+              >
+                <ScienceIcon sx={{ fontSize: '1.1rem' }} />
+              </Box>
+              <Typography variant="subtitle1" fontWeight="800" color="#0f172a">
+                {settings?.site_name || <>TOXIQ <span style={{ color: '#0d9488' }}>2026</span></>}
+              </Typography>
+            </>
           )}
-          <Typography variant="subtitle1" fontWeight="800" color="#0f172a">
-            {settings?.site_name || <>TOXIQ <span style={{ color: '#0d9488' }}>2026</span></>}
-          </Typography>
         </Box>
         <List>
           {navLinks.map((link) => (
