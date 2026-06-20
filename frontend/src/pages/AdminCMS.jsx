@@ -76,6 +76,7 @@ const AdminCMS = () => {
   const [settingsSaving, setSettingsSaving] = useState(false);
 
   const [editingSpeakerId, setEditingSpeakerId] = useState(null);
+  const [spOrder, setSpOrder] = useState(0);
 
   // Modals for Brochures
   const [brochureOpen, setBrochureOpen] = useState(false);
@@ -199,6 +200,7 @@ const AdminCMS = () => {
     setSpDes('');
     setSpDesc('');
     setSpFile(null);
+    setSpOrder(0);
     setSpOpen(true);
   };
 
@@ -208,6 +210,7 @@ const AdminCMS = () => {
     setSpDes(sp.designation);
     setSpDesc(sp.description || '');
     setSpFile(null);
+    setSpOrder(sp.order || 0);
     setSpOpen(true);
   };
 
@@ -218,6 +221,7 @@ const AdminCMS = () => {
     formData.append('name', spName);
     formData.append('designation', spDes);
     formData.append('description', spDesc);
+    formData.append('order', spOrder);
     if (spFile) {
       formData.append('photo', spFile);
     }
@@ -748,6 +752,7 @@ const AdminCMS = () => {
             <TextField fullWidth label="Full Name" value={spName} onChange={(e) => setSpName(e.target.value)} />
             <TextField fullWidth label="Designation / Affiliation" value={spDes} onChange={(e) => setSpDes(e.target.value)} />
             <TextField fullWidth multiline rows={3} label="Brief Description / Profile" value={spDesc} onChange={(e) => setSpDesc(e.target.value)} />
+            <TextField fullWidth type="number" label="Listing Order (e.g. 0, 1, 2...)" value={spOrder} onChange={(e) => setSpOrder(parseInt(e.target.value) || 0)} />
             
             <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />} color="secondary">
               {editingSpeakerId ? 'Change Photo' : 'Upload Photo'}
