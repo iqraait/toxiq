@@ -17,11 +17,21 @@ import { purpleGradientText } from '../theme';
 
 const Registration = () => {
   const navigate = useNavigate();
+
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
+    return `${host}${path}`;
+  };
   
   const [formConfig, setFormConfig] = useState(null);
   const [formValues, setFormValues] = useState({});
   const [formFiles, setFormFiles] = useState({});
   const [dates, setDates] = useState(null);
+  const [settings, setSettings] = useState(null);
   
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -40,8 +50,13 @@ const Registration = () => {
         ]);
 
         setFormConfig(formRes.data);
-        if (cmsRes && cmsRes.data && cmsRes.data.content) {
-          setDates(cmsRes.data.content.important_dates);
+        if (cmsRes && cmsRes.data) {
+          if (cmsRes.data.content) {
+            setDates(cmsRes.data.content.important_dates);
+          }
+          if (cmsRes.data.settings) {
+            setSettings(cmsRes.data.settings);
+          }
         }
         
         // Initialize form values
@@ -223,7 +238,7 @@ const Registration = () => {
         <Grid container spacing={4} justifyContent="center">
           
           {/* Main Registration Form */}
-          <Grid item xs={12} lg={8}>
+          <Grid item xs={12} md={10} lg={9}>
             <GlassCard sx={{ 
               p: 4, 
               border: '1px solid rgba(30, 58, 138, 0.12)', 
@@ -242,6 +257,23 @@ const Registration = () => {
               }
             }}>
               
+              {settings?.registration_banner && (
+                <Box mb={4} sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                  <img 
+                    src={getImageUrl(settings.registration_banner)} 
+                    alt="Registration Details" 
+                    style={{ 
+                      width: '100%', 
+                      maxHeight: '450px', 
+                      objectFit: 'contain', 
+                      borderRadius: '12px',
+                      border: '1.5px solid rgba(226, 232, 240, 0.8)',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+                    }} 
+                  />
+                </Box>
+              )}
+
               <Box mb={3} display="flex" alignItems="center" justifyContent="center" gap={1.5}>
                 <AssignmentTurnedInIcon color="primary" sx={{ fontSize: '2.2rem' }} />
                 <Typography 
@@ -312,67 +344,6 @@ const Registration = () => {
                 </Stack>
               </form>
 
-            </GlassCard>
-          </Grid>
-
-          {/* Pricing & Summary Card */}
-          <Grid item xs={12} lg={4}>
-            <GlassCard sx={{ 
-              p: 4, 
-              position: 'sticky', 
-              top: '90px', 
-              border: '1px solid rgba(13, 148, 136, 0.15)',
-              boxShadow: '0 10px 45px rgba(13, 148, 136, 0.05)',
-              overflow: 'hidden',
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '4px',
-                background: 'linear-gradient(90deg, #0d9488 0%, #7c3aed 100%)',
-                borderRadius: '16px 16px 0 0'
-              }
-            }}>
-              <Typography variant="h6" fontWeight="bold" fontFamily="'Raleway', sans-serif" mb={3} color="primary.main">
-                Fee Summary
-              </Typography>
-
-              <Stack spacing={2}>
-                <Box display="flex" justifyContent="space-between">
-                  <Typography variant="body2" color="textSecondary">Base Registration Fee</Typography>
-                  <Typography variant="body2" fontWeight="bold">
-                    {formConfig.currency} {baseFee.toFixed(2)}
-                  </Typography>
-                </Box>
-
-                {taxPercent > 0 && (
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography variant="body2" color="textSecondary">Taxes / GST ({taxPercent}%)</Typography>
-                    <Typography variant="body2" fontWeight="bold" color="textSecondary">
-                      {formConfig.currency} {taxAmt.toFixed(2)}
-                    </Typography>
-                  </Box>
-                )}
-
-                <Divider sx={{ my: 1 }} />
-
-                <Box display="flex" justifyContent="space-between">
-                  <Typography variant="subtitle1" fontWeight="bold" color="primary.main">Total Payable Amount</Typography>
-                  <Typography variant="h6" fontWeight="bold" color="secondary.main">
-                    {formConfig.currency} {totalAmt.toFixed(2)}
-                  </Typography>
-                </Box>
-              </Stack>
-
-              <Box mt={4} sx={{ bgcolor: 'rgba(13, 148, 136, 0.04)', p: 2, borderRadius: '8px', border: '1px solid rgba(13, 148, 136, 0.1)' }}>
-                <Typography variant="caption" color="textSecondary" sx={{ display: 'block', lineHeight: 1.5 }}>
-                  <strong>Secure Checkout:</strong> Your payment transactions are routed securely. Upon successful completion, 
-                  your unique <strong>Registration ID</strong> will be compiled and a confirmation receipt PDF will be delivered 
-                  to your registered email.
-                </Typography>
-              </Box>
             </GlassCard>
           </Grid>
 

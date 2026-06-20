@@ -42,6 +42,6 @@ class BrochureSerializer(serializers.ModelSerializer):
 class SiteSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteSettings
-        fields = ('id', 'site_name', 'logo', 'updated_at')
+        fields = ('id', 'site_name', 'logo', 'registration_banner', 'updated_at')
         read_only_fields = ('id', 'updated_at')
 

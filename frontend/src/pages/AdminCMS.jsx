@@ -74,6 +74,8 @@ const AdminCMS = () => {
   const [siteLogo, setSiteLogo] = useState('');
   const [logoFile, setLogoFile] = useState(null);
   const [settingsSaving, setSettingsSaving] = useState(false);
+  const [siteRegBanner, setSiteRegBanner] = useState('');
+  const [regBannerFile, setRegBannerFile] = useState(null);
 
   const [editingSpeakerId, setEditingSpeakerId] = useState(null);
   const [spOrder, setSpOrder] = useState(0);
@@ -133,6 +135,7 @@ const AdminCMS = () => {
       if (settings) {
         setSiteName(settings.site_name || 'TOXIQ');
         setSiteLogo(settings.logo || '');
+        setSiteRegBanner(settings.registration_banner || '');
       }
     } catch (err) {
       console.error('Error fetching CMS data:', err);
@@ -327,11 +330,16 @@ const AdminCMS = () => {
     if (logoFile) {
       formData.append('logo', logoFile);
     }
+    if (regBannerFile) {
+      formData.append('registration_banner', regBannerFile);
+    }
     try {
       const res = await API.post('cms/settings/', formData);
       setSiteLogo(res.data.logo);
+      setSiteRegBanner(res.data.registration_banner);
       setSiteName(res.data.site_name);
       setLogoFile(null);
+      setRegBannerFile(null);
       setSuccessMsg('Site settings updated successfully.');
       fetchCMSData();
     } catch (err) {
@@ -673,6 +681,27 @@ const AdminCMS = () => {
                     {logoFile && (
                       <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'success.main', fontWeight: 'bold' }}>
                         Selected: {logoFile.name}
+                      </Typography>
+                    )}
+                  </Box>
+
+                  <Box>
+                    <Typography variant="body2" color="textSecondary" mb={1} fontWeight="bold">
+                      Registration Page Banner
+                    </Typography>
+                    {siteRegBanner && (
+                      <Box mb={2} sx={{ p: 2, border: '1px solid #e2e8f0', borderRadius: '8px', display: 'flex', justifyContent: 'center', bgcolor: '#f8fafc' }}>
+                        <img src={getImageUrl(siteRegBanner)} alt="Registration Banner" style={{ maxHeight: '80px', maxWidth: '100%', objectFit: 'contain' }} />
+                      </Box>
+                    )}
+                    
+                    <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />} color="secondary" fullWidth>
+                      Select Banner Image
+                      <input type="file" hidden onChange={(e) => setRegBannerFile(e.target.files[0])} />
+                    </Button>
+                    {regBannerFile && (
+                      <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'success.main', fontWeight: 'bold' }}>
+                        Selected: {regBannerFile.name}
                       </Typography>
                     )}
                   </Box>

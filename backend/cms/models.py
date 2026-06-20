@@ -79,6 +79,7 @@ class Brochure(models.Model):
 class SiteSettings(models.Model):
     site_name = models.CharField(max_length=100, default='TOXIQ')
     logo = models.ImageField(upload_to='logos/', blank=True, null=True)
+    registration_banner = models.ImageField(upload_to='banners/', blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
