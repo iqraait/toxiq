@@ -217,16 +217,17 @@ class RegistrationSubmitView(APIView):
         form = registration.form
         base_fee = float(form.fee_amount)
         
-        # Check if there's any custom option fee selected
+        # Check if there's any custom option fee or link selected
         field_answers = registration.field_data or {}
         custom_fee = None
+        custom_link = None
         
         for field in form.fields.all():
             if field.field_type in ['checkbox', 'radio', 'dropdown'] and field.options:
                 val = field_answers.get(str(field.id))
                 if val:
                     for opt in field.options:
-                        if isinstance(opt, dict) and 'value' in opt and 'price' in opt and opt['price'] is not None:
+                        if isinstance(opt, dict) and 'value' in opt:
                             is_selected = False
                             if isinstance(val, list):
                                 is_selected = opt['value'] in val
@@ -234,9 +235,12 @@ class RegistrationSubmitView(APIView):
                                 is_selected = str(val) == str(opt['value'])
                                 
                             if is_selected:
-                                custom_fee = float(opt['price'])
+                                if 'price' in opt and opt['price'] is not None:
+                                    custom_fee = float(opt['price'])
+                                if 'link' in opt and opt['link']:
+                                    custom_link = opt['link']
                                 break
-                    if custom_fee is not None:
+                    if custom_fee is not None or custom_link is not None:
                         break
                         
         amount = decimal.Decimal(str(custom_fee)) if custom_fee is not None else form.fee_amount
@@ -297,11 +301,35 @@ class RegistrationSubmitView(APIView):
         logger.warning("PAYU PAYMENT PAYLOAD")
         logger.warning(payload)
         
-        return Response({
+        response_data = {
             'registration': RegistrationSerializer(registration).data,
             'payment': PaymentSerializer(payment).data,
             'checkout': checkout_details
-        }, status=status.HTTP_201_CREATED)
+        }
+        if custom_link:
+            response_data['custom_payment_link'] = custom_link
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
+
+class MarkPaymentSuccessView(APIView):
+    permission_classes = [IsAdminUserRole]
+
+    def post(self, request, pk):
+        try:
+            payment = Payment.objects.get(pk=pk)
+        except Payment.DoesNotExist:
+            return Response({"error": "Payment not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if payment.payment_status == 'SUCCESS':
+            return Response({"message": "Payment is already marked as SUCCESS"}, status=status.HTTP_200_OK)
+
+        # Call process_successful_payment
+        registration = process_successful_payment(payment, gateway_response={"marked_by_admin": request.user.username})
+        return Response({
+            "message": "Payment marked as successful.",
+            "registration_id": registration.registration_id,
+            "status": "SUCCESS"
+        }, status=status.HTTP_200_OK)
 
 class SimulatePaymentCallbackView(APIView):
     permission_classes = [permissions.AllowAny]

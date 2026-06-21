@@ -29,3 +29,16 @@ class PaymentAdmin(ModelAdmin):
     list_display = ('transaction_id', 'registration', 'amount', 'payment_status', 'payment_mode', 'created_at')
     list_filter = ('payment_status', 'payment_mode')
     search_fields = ('transaction_id', 'registration__participant_name', 'registration__registration_id')
+
+    def save_model(self, request, obj, form, change):
+        if change and 'payment_status' in form.changed_data and obj.payment_status == 'SUCCESS':
+            if not obj.registration.registration_id:
+                from .services import process_successful_payment
+                gateway_response = obj.gateway_response or {}
+                if isinstance(gateway_response, dict):
+                    gateway_response['marked_by_admin_via_django'] = request.user.username
+                process_successful_payment(obj, gateway_response=gateway_response)
+            else:
+                super().save_model(request, obj, form, change)
+        else:
+            super().save_model(request, obj, form, change)

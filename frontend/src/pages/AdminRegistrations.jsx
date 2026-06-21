@@ -10,6 +10,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DownloadIcon from '@mui/icons-material/Download';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import API from '../services/api';
 import GlassCard from '../components/GlassCard';
@@ -97,6 +98,18 @@ const AdminRegistrations = () => {
   const handleDownloadReceipt = (regId) => {
     const url = `http://localhost:8001/api/registration/${regId}/receipt/`;
     window.open(url, '_blank');
+  };
+
+  const handleMarkAsPaid = async (paymentId) => {
+    if (!window.confirm('Are you sure you want to mark this registration as SUCCESS? This will generate a registration ID and send the confirmation email to the participant.')) return;
+    try {
+      await API.post(`registration/payment/${paymentId}/mark-success/`);
+      alert('Registration updated to SUCCESS successfully.');
+      fetchRegistrations();
+    } catch (err) {
+      console.error('Error marking payment as success:', err);
+      alert(err.response?.data?.error || 'Failed to update registration.');
+    }
   };
 
   const getActivePaymentStatus = (reg) => {
@@ -241,6 +254,16 @@ const AdminRegistrations = () => {
                         <IconButton size="small" color="secondary" onClick={() => handleOpenEdit(reg)}>
                           <EditIcon fontSize="small" />
                         </IconButton>
+                        {payStatus === 'PENDING' && reg.payments?.[0]?.id && (
+                          <IconButton 
+                            size="small" 
+                            color="success" 
+                            title="Mark as Paid" 
+                            onClick={() => handleMarkAsPaid(reg.payments[0].id)}
+                          >
+                            <CheckCircleIcon fontSize="small" />
+                          </IconButton>
+                        )}
                         <IconButton 
                           size="small" 
                           color="action" 

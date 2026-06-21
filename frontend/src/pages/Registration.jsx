@@ -146,9 +146,15 @@ const Registration = () => {
     try {
       const res = await API.post('registration/submit/', formData);
       
-      // Success -> Perform direct HTML form POST redirect to PayU payment gateway
-      const { checkout } = res.data;
+      const { checkout, custom_payment_link } = res.data;
       
+      if (custom_payment_link) {
+        // Redirect directly to the custom Easebuzz payment link
+        window.location.href = custom_payment_link;
+        return;
+      }
+      
+      // Success -> Perform direct HTML form POST redirect to PayU payment gateway
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = checkout.action;

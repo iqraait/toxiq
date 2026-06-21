@@ -41,6 +41,18 @@ const AdminPayments = () => {
     }
   };
 
+  const handleMarkAsPaid = async (paymentId) => {
+    if (!window.confirm('Are you sure you want to mark this transaction as SUCCESS? This will generate a registration ID and send the confirmation email to the participant.')) return;
+    try {
+      await API.post(`registration/payment/${paymentId}/mark-success/`);
+      alert('Transaction updated to SUCCESS successfully.');
+      fetchPayments();
+    } catch (err) {
+      console.error('Error marking payment as success:', err);
+      alert(err.response?.data?.error || 'Failed to update transaction.');
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h5" fontWeight="bold" fontFamily="'Raleway', sans-serif" color="primary.main" mb={4}>
@@ -114,6 +126,7 @@ const AdminPayments = () => {
                 <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Mode</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Date & Time</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', width: '120px' }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -142,11 +155,24 @@ const AdminPayments = () => {
                       year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                     })}
                   </TableCell>
+                  <TableCell>
+                    {pay.payment_status === 'PENDING' && (
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="success"
+                        onClick={() => handleMarkAsPaid(pay.id)}
+                        sx={{ fontSize: '0.75rem', py: 0.5, borderRadius: '4px' }}
+                      >
+                        Mark Paid
+                      </Button>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
               {payments.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
+                  <TableCell colSpan={8} align="center" sx={{ py: 6 }}>
                     No transactions found matching the filter logs.
                   </TableCell>
                 </TableRow>

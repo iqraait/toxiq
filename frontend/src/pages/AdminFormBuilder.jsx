@@ -36,6 +36,7 @@ const AdminFormBuilder = () => {
   const [placeholder, setPlaceholder] = useState('');
   const [helpText, setHelpText] = useState('');
   const [optionsStr, setOptionsStr] = useState('');
+  const [optionsList, setOptionsList] = useState([]);
   const [order, setOrder] = useState(0);
   const [fieldSubmitting, setFieldSubmitting] = useState(false);
 
@@ -91,6 +92,7 @@ const AdminFormBuilder = () => {
     setPlaceholder('');
     setHelpText('');
     setOptionsStr('');
+    setOptionsList([]);
     setOrder((form?.fields?.length || 0) + 1);
     setFieldOpen(true);
   };
@@ -116,6 +118,22 @@ const AdminFormBuilder = () => {
     setPlaceholder(field.placeholder || '');
     setHelpText(field.help_text || '');
     setOptionsStr(getOptionsString(field.options));
+    
+    if (field.options) {
+      setOptionsList(field.options.map(opt => {
+        if (opt && typeof opt === 'object') {
+          return {
+            value: opt.value || '',
+            price: opt.price !== undefined && opt.price !== null ? String(opt.price) : '',
+            link: opt.link || ''
+          };
+        }
+        return { value: String(opt), price: '', link: '' };
+      }));
+    } else {
+      setOptionsList([]);
+    }
+    
     setOrder(field.order);
     setFieldOpen(true);
   };
@@ -124,20 +142,28 @@ const AdminFormBuilder = () => {
     if (!label) return;
     setFieldSubmitting(true);
     
-    // Format options from comma-separated string to list of objects
-    const options = optionsStr ? optionsStr.split(',').map(s => {
-      const trimmed = s.trim();
-      if (!trimmed) return null;
-      const colonIndex = trimmed.lastIndexOf(':');
-      if (colonIndex !== -1) {
-        const val = trimmed.substring(0, colonIndex).trim();
-        const price = parseFloat(trimmed.substring(colonIndex + 1).trim());
-        if (!isNaN(price)) {
-          return { value: val, price };
-        }
+    // Format options from optionsList
+    let options = null;
+    if (['radio', 'dropdown', 'checkbox'].includes(type)) {
+      options = optionsList
+        .filter(opt => opt.value.trim() !== '')
+        .map(opt => {
+          const item = { value: opt.value.trim() };
+          if (opt.price !== '') {
+            const priceVal = parseFloat(opt.price);
+            if (!isNaN(priceVal)) {
+              item.price = priceVal;
+            }
+          }
+          if (opt.link && opt.link.trim() !== '') {
+            item.link = opt.link.trim();
+          }
+          return item;
+        });
+      if (options.length === 0) {
+        options = null;
       }
-      return { value: trimmed };
-    }).filter(Boolean) : null;
+    }
     
     const payload = {
       label,
@@ -345,14 +371,80 @@ const AdminFormBuilder = () => {
             </Grid>
 
             {['radio', 'dropdown', 'checkbox'].includes(type) && (
-              <TextField
-                fullWidth
-                label="Options (Comma Separated)"
-                placeholder="e.g. Male, Female, Other"
-                value={optionsStr}
-                onChange={(e) => setOptionsStr(e.target.value)}
-                helperText="Provide choices separated by commas."
-              />
+              <Box sx={{ mt: 1, mb: 1 }}>
+                <Typography variant="subtitle2" fontWeight="bold" color="primary.main" mb={1.5}>
+                  Configure Field Options
+                </Typography>
+                <Stack spacing={2}>
+                  {optionsList.map((opt, index) => (
+                    <Grid container spacing={1.5} key={index} alignItems="center">
+                      <Grid item xs={5}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label="Option Name"
+                          placeholder="e.g. Regular Delegate"
+                          value={opt.value}
+                          onChange={(e) => {
+                            const newList = [...optionsList];
+                            newList[index].value = e.target.value;
+                            setOptionsList(newList);
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={3}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          type="number"
+                          label="Fee (Optional)"
+                          placeholder="500"
+                          value={opt.price}
+                          onChange={(e) => {
+                            const newList = [...optionsList];
+                            newList[index].price = e.target.value;
+                            setOptionsList(newList);
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={3.2}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label="Payment Link (Optional)"
+                          placeholder="https://..."
+                          value={opt.link}
+                          onChange={(e) => {
+                            const newList = [...optionsList];
+                            newList[index].link = e.target.value;
+                            setOptionsList(newList);
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={0.8} sx={{ textAlign: 'right' }}>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => {
+                            setOptionsList(optionsList.filter((_, idx) => idx !== index));
+                          }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  ))}
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    onClick={() => setOptionsList([...optionsList, { value: '', price: '', link: '' }])}
+                    sx={{ alignSelf: 'flex-start', mt: 0.5, borderRadius: '8px' }}
+                  >
+                    Add Option
+                  </Button>
+                </Stack>
+              </Box>
             )}
 
             <TextField
