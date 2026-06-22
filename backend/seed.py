@@ -104,6 +104,7 @@ def seed_db():
         Banner.objects.create(
             title='12th Annual Clinical Toxicology Symposium',
             subtitle='TOXIQ 2026: Navigating Complex Poisoning & Venomous Bites',
+            image='banners/media__1782138882664.jpg',
             cta_text='Register Now',
             cta_link='#registration',
             is_active=True

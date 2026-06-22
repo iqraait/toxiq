@@ -145,8 +145,8 @@ const Home = () => {
         sx={{ 
           background: activeBanner.image 
             ? (activeBanner.title || activeBanner.subtitle 
-                ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url(${getImageUrl(activeBanner.image)}) no-repeat center center / cover`
-                : `url(${getImageUrl(activeBanner.image)}) no-repeat center center / cover`)
+                ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url('${getImageUrl(activeBanner.image)}') no-repeat center center / cover`
+                : `url('${getImageUrl(activeBanner.image)}') no-repeat center center / cover`)
             : 'linear-gradient(135deg, #091b29 0%, #062425 100%)', // Fallback premium dark gradient
           color: '#ffffff',
           py: activeBanner.title || activeBanner.subtitle ? { xs: 10, md: 15 } : 0,
@@ -360,7 +360,7 @@ const Home = () => {
       {/* About Section */}
       <Container maxWidth="lg" sx={{ mb: 10 }} id="about-section">
         <Grid container spacing={5} alignItems="flex-start">
-          <Grid item xs={12} md={7}>
+          <Grid item xs={12}>
             <Typography variant="h4" fontWeight="800" color="primary.main" gutterBottom>
               {about.title}
             </Typography>
@@ -373,148 +373,6 @@ const Home = () => {
               }}
               dangerouslySetInnerHTML={{ __html: about.text }}
             />
-          </Grid>
-          {/* Important Dates Box */}
-          <Grid item xs={12} md={5} id="dates-section">
-            <GlassCard sx={{ 
-              p: { xs: 3.5, md: 4.5 }, 
-              border: '1.5px solid rgba(13, 148, 136, 0.2)', 
-              boxShadow: '0 12px 30px rgba(13, 148, 136, 0.08)',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
-              <Box>
-                <Typography variant="h5" fontWeight="700" mb={3.5} color="primary.main" display="flex" alignItems="center" gap={1.5}>
-                  <CalendarMonthIcon color="secondary" sx={{ fontSize: '1.75rem' }} />
-                  Important Dates
-                </Typography>
-                
-                <Box display="flex" flexDirection="column" gap={2}>
-                  {/* Row 1 */}
-                  <Box 
-                    sx={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center', 
-                      p: 2, 
-                      bgcolor: 'rgba(30, 58, 138, 0.02)', 
-                      border: '1px solid rgba(30, 58, 138, 0.05)', 
-                      borderRadius: '12px',
-                      transition: 'all 0.2s ease-in-out',
-                      '&:hover': {
-                        bgcolor: 'rgba(30, 58, 138, 0.04)',
-                        transform: 'translateY(-2px)'
-                      }
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight="700" color="text.primary">Registration Opens</Typography>
-                      <Typography variant="caption" color="textSecondary">Participant entry start</Typography>
-                    </Box>
-                    <Chip 
-                      label={dates.registration_open || 'N/A'} 
-                      sx={{ 
-                        fontWeight: '800', 
-                        fontSize: '0.8rem',
-                        bgcolor: 'rgba(30, 58, 138, 0.08)', 
-                        color: 'primary.main', 
-                        border: '1.5px solid rgba(30, 58, 138, 0.15)',
-                        borderRadius: '8px',
-                        px: 1,
-                        height: '32px'
-                      }} 
-                    />
-                  </Box>
-
-                  {/* Row 2 */}
-                  <Box 
-                    sx={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center', 
-                      p: 2, 
-                      bgcolor: 'rgba(239, 68, 68, 0.02)', 
-                      border: '1px solid rgba(239, 68, 68, 0.05)', 
-                      borderRadius: '12px',
-                      transition: 'all 0.2s ease-in-out',
-                      '&:hover': {
-                        bgcolor: 'rgba(239, 68, 68, 0.04)',
-                        transform: 'translateY(-2px)'
-                      }
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight="700" color="error.main">Registration Closes</Typography>
-                      <Typography variant="caption" color="textSecondary">Final deadline for payments</Typography>
-                    </Box>
-                    <Chip 
-                      label={dates.registration_close || 'N/A'} 
-                      sx={{ 
-                        fontWeight: '800', 
-                        fontSize: '0.8rem',
-                        bgcolor: 'rgba(239, 68, 68, 0.08)', 
-                        color: 'error.main', 
-                        border: '1.5px solid rgba(239, 68, 68, 0.15)',
-                        borderRadius: '8px',
-                        px: 1,
-                        height: '32px'
-                      }} 
-                    />
-                  </Box>
-
-                  {/* Row 3 */}
-                  <Box 
-                    sx={{ 
-                      display: 'flex', 
-                      justifyContent: 'space-between', 
-                      alignItems: 'center', 
-                      p: 2, 
-                      bgcolor: 'rgba(13, 148, 136, 0.02)', 
-                      border: '1px solid rgba(13, 148, 136, 0.05)', 
-                      borderRadius: '12px',
-                      transition: 'all 0.2s ease-in-out',
-                      '&:hover': {
-                        bgcolor: 'rgba(13, 148, 136, 0.04)',
-                        transform: 'translateY(-2px)'
-                      }
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight="700" color="secondary.main">Submission Deadline</Typography>
-                      <Typography variant="caption" color="textSecondary">Paper abstract delivery</Typography>
-                    </Box>
-                    <Chip 
-                      label={dates.article_deadline || 'N/A'} 
-                      sx={{ 
-                        fontWeight: '800', 
-                        fontSize: '0.8rem',
-                        bgcolor: 'rgba(13, 148, 136, 0.08)', 
-                        color: 'secondary.main', 
-                        border: '1.5px solid rgba(13, 148, 136, 0.15)',
-                        borderRadius: '8px',
-                        px: 1,
-                        height: '32px'
-                      }} 
-                    />
-                  </Box>
-                </Box>
-              </Box>
-
-              <Box mt={4}>
-                <Button 
-                  fullWidth 
-                  variant="contained" 
-                  color="secondary"
-                  size="large"
-                  onClick={() => navigate('/registration')}
-                  sx={{ py: 1.5, fontWeight: '700', borderRadius: '30px' }}
-                >
-                  Go to Registration Form
-                </Button>
-              </Box>
-            </GlassCard>
           </Grid>
         </Grid>
       </Container>
@@ -709,12 +567,6 @@ const Home = () => {
               </Box>
             </CardContent>
           </Card>
-        </Box>
-        
-        <Box sx={{ mt: 5, p: 3, bgcolor: 'rgba(13, 148, 136, 0.05)', borderRadius: '16px', border: '1.5px solid rgba(13, 148, 136, 0.1)' }}>
-          <Typography variant="body2" color="text.secondary" align="center" sx={{ fontWeight: '500', lineHeight: '1.7', fontSize: '0.92rem' }}>
-            ToxIQ 2026 aims to enhance clinical knowledge, promote evidence-based poison management, foster collaborative learning, and strengthen the network of healthcare professionals dedicated to improving outcomes in poisoned patients.
-          </Typography>
         </Box>
       </Container>
 

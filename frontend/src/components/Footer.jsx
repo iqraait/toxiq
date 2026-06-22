@@ -20,6 +20,7 @@ const Footer = ({ contact = {} }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [settings, setSettings] = useState(null);
+  const [dates, setDates] = useState({ registration_open: 'N/A', registration_close: 'N/A', article_deadline: 'N/A' });
 
   const getFileUrl = (path) => {
     if (!path) return null;
@@ -31,15 +32,21 @@ const Footer = ({ contact = {} }) => {
   };
 
   useEffect(() => {
-    const fetchSettings = async () => {
+    const fetchData = async () => {
       try {
-        const res = await API.get('cms/settings/');
-        setSettings(res.data);
+        const [settingsRes, homeRes] = await Promise.all([
+          API.get('cms/settings/'),
+          API.get('cms/home/')
+        ]);
+        setSettings(settingsRes.data);
+        if (homeRes.data?.content?.important_dates) {
+          setDates(homeRes.data.content.important_dates);
+        }
       } catch (err) {
-        console.error('Error fetching settings:', err);
+        console.error('Error fetching footer data:', err);
       }
     };
-    fetchSettings();
+    fetchData();
   }, []);
 
   const address = 'Iqraa International Hospital, Calicut, Kerala';
@@ -90,10 +97,8 @@ const Footer = ({ contact = {} }) => {
   ];
 
   const programItems = [
-    { label: 'Registration Deadline', value: 'June 30, 2026', icon: <EventIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
-    { label: 'Article Submission Deadline', value: 'July 15, 2026', icon: <AssignmentIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
     { label: 'Conference Venue', value: 'Iqraa Auditorium, Calicut', icon: <RoomIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
-    { label: 'CME Credit Hours', value: 'Accredited with 4 CME Hours', icon: <WorkspacePremiumIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
+    { label: 'CME Credit Hours', value: 'Applied for KSMC credit hours', icon: <WorkspacePremiumIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
     { label: 'Guidelines', value: 'Author Guidelines & Forms', icon: <MenuBookIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> }
   ];
 
@@ -103,7 +108,7 @@ const Footer = ({ contact = {} }) => {
       sx={{ 
         background: 'linear-gradient(135deg, #041B3A 0%, #062856 50%, #03142D 100%)', // Premium dark medical conference gradient
         color: '#94a3b8',   
-        pt: '80px',
+        pt: '50px',
         pb: '30px',
         position: 'relative',
         overflow: 'hidden',
@@ -139,18 +144,18 @@ const Footer = ({ contact = {} }) => {
 
       <Container maxWidth={false} sx={{ maxWidth: '1400px', mx: 'auto', px: { xs: '20px', md: '40px' }, zIndex: 2, position: 'relative' }}>
         
-        {/* Main 3-Column Layout */}
-        <Grid container spacing={{ xs: 5, md: 7.5 }} sx={{ mb: 8 }}>
+        {/* Main 4-Column Layout */}
+        <Grid container spacing={{ xs: 4, md: 5 }} sx={{ mb: 6 }}>
           
-          {/* Column 1 – Brand Area (5/12 columns) */}
-          <Grid item xs={12} sm={6} md={5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+          {/* Column 1 – Brand Area (3.5/12 columns) */}
+          <Grid item xs={12} sm={6} md={3.5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', sm: 'flex-start' }, gap: 1.5, mb: 3 }}>
               {settings?.logo ? (
                 <img 
                   src={getFileUrl(settings.logo)} 
                   alt="logo" 
                   style={{ 
-                    height: '44px', 
+                    height: '70px', 
                     width: 'auto', 
                     objectFit: 'contain', 
                     display: 'block' 
@@ -206,7 +211,7 @@ const Footer = ({ contact = {} }) => {
               )}
             </Box>
             
-            <Typography variant="body2" sx={{ lineHeight: 1.8, mb: 4, color: '#94a3b8', fontSize: '0.92rem', pr: { md: 5 } }}>
+            <Typography variant="body2" sx={{ lineHeight: 1.8, mb: 4, color: '#94a3b8', fontSize: '0.92rem', pr: { md: 2 } }}>
               Advancing Toxicology Knowledge for Safer Healthcare through education, innovation and scientific excellence.
             </Typography>
 
@@ -242,8 +247,8 @@ const Footer = ({ contact = {} }) => {
             </Box>
           </Grid>
 
-          {/* Column 2 – Quick Links (3.5/12 columns) */}
-          <Grid item xs={12} sm={6} md={3.5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+          {/* Column 2 – Quick Links (2/12 columns) */}
+          <Grid item xs={12} sm={6} md={2} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
             <Typography 
               variant="subtitle1" 
               fontWeight="800" 
@@ -295,8 +300,47 @@ const Footer = ({ contact = {} }) => {
             </Box>
           </Grid>
 
-          {/* Column 3 – Program Information (3.5/12 columns) */}
-          <Grid item xs={12} sm={6} md={3.5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+          {/* Column 3 – Important Dates (3.25/12 columns) */}
+          <Grid item xs={12} sm={6} md={3.25} id="dates-section" sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+            <Typography 
+              variant="subtitle1" 
+              fontWeight="800" 
+              color="#ffffff" 
+              mb={3.5}
+              sx={{ fontSize: '1rem', letterSpacing: '0.5px', textTransform: 'uppercase', color: '#1EC8C8', pb: 1, borderBottom: '2px solid rgba(30, 200, 200, 0.15)', width: { xs: '100%', sm: 'fit-content' } }}
+            >
+              Important Dates
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.2, alignItems: { xs: 'center', sm: 'flex-start' } }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', sm: 'flex-start' }, gap: 0.5 }}>
+                <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.68rem', letterSpacing: '0.5px' }}>
+                  Registration Opens
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: 500 }}>
+                  {dates.registration_open || 'N/A'}
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', sm: 'flex-start' }, gap: 0.5 }}>
+                <Typography variant="caption" sx={{ color: '#ef4444', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.68rem', letterSpacing: '0.5px' }}>
+                  Registration Closes
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: 500 }}>
+                  {dates.registration_close || 'N/A'}
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', sm: 'flex-start' }, gap: 0.5 }}>
+                <Typography variant="caption" sx={{ color: '#1EC8C8', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.68rem', letterSpacing: '0.5px' }}>
+                  Submission Deadline
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: 500 }}>
+                  {dates.article_deadline || 'N/A'}
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+
+          {/* Column 4 – Program Details (3.25/12 columns) */}
+          <Grid item xs={12} sm={6} md={3.25} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
             <Typography 
               variant="subtitle1" 
               fontWeight="800" 

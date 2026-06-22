@@ -185,6 +185,7 @@ const AdminCMS = () => {
       formData.append('subtitle', bannerSubtitle);
       formData.append('cta_text', bannerCtaText);
       formData.append('cta_link', bannerCtaLink);
+      formData.append('is_active', 'true');
       if (bannerFile) {
         formData.append('image', bannerFile);
       }
