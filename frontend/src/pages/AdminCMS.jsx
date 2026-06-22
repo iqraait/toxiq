@@ -89,7 +89,7 @@ const AdminCMS = () => {
 
   const getImageUrl = (path) => {
     if (!path) return '';
-    if (path.startsWith('http://') || path.startsWith('https://')) {
+    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
       return path;
     }
     const host = API.defaults.baseURL.replace(/\/api\/?$/, '');

@@ -20,7 +20,7 @@ const Registration = () => {
 
   const getImageUrl = (path) => {
     if (!path) return null;
-    if (path.startsWith('http://') || path.startsWith('https://')) {
+    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
       return path;
     }
     const host = API.defaults.baseURL.replace(/\/api\/?$/, '');

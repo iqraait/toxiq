@@ -31,7 +31,7 @@ const Home = () => {
   
   const getImageUrl = (path) => {
     if (!path) return null;
-    if (path.startsWith('http://') || path.startsWith('https://')) {
+    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
       return path;
     }
     const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
@@ -91,22 +91,25 @@ const Home = () => {
   // Custom highlights
   const highlights = [
     { 
-      title: 'Antidotes & Overdoses', 
-      desc: 'Practical protocols on antidotes, toxicity management and ICU emergencies.', 
+      title: 'ToxIQUEST', 
+      desc: 'National Toxicology Quiz Competition', 
       icon: <MedicationIcon sx={{ fontSize: 24, color: '#ffffff' }} />,
-      color: '#0d9488'
+      color: '#0d9488',
+      link: '/toxiquest'
     },
     { 
-      title: 'Scientific Papers', 
-      desc: 'Submit abstracts and research articles for review and publication.', 
+      title: 'Abstract Submission Guidelines', 
+      desc: 'Guidelines for case reports, case series, completed research, and oral/poster presentations.', 
       icon: <AssignmentIcon sx={{ fontSize: 24, color: '#ffffff' }} />,
-      color: '#1e3a8a'
+      color: '#1e3a8a',
+      link: '/abstract-guidelines'
     },
     { 
       title: 'Credit Points', 
       desc: 'Earn CME credit hours recognized by medical councils.', 
       icon: <GroupsIcon sx={{ fontSize: 24, color: '#ffffff' }} />,
-      color: '#7c3aed'
+      color: '#7c3aed',
+      link: '#dates-section'
     }
   ];
 
@@ -301,8 +304,17 @@ const Home = () => {
                     </Typography>
                   </Box>
                   <Link 
-                    href="#" 
-                    onClick={(e) => { e.preventDefault(); }}
+                    href={hl.link} 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (hl.link.startsWith('#')) {
+                        const element = document.getElementById(hl.link.substring(1));
+                        if (element) element.scrollIntoView({ behavior: 'smooth' });
+                      } else {
+                        navigate(hl.link);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                    }}
                     sx={{ 
                       color: hl.color, 
                       fontWeight: '700', 
@@ -488,6 +500,120 @@ const Home = () => {
             </GlassCard>
           </Grid>
         </Grid>
+      </Container>
+
+      {/* What to Expect, Topics Covered, Who Will Benefit */}
+      <Container maxWidth="lg" sx={{ mb: 10 }}>
+        <Grid container spacing={4}>
+          {/* Card 1: What to Expect */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ 
+              height: '100%', 
+              bgcolor: '#ffffff',
+              borderRadius: '20px',
+              border: '1px solid rgba(226, 232, 240, 0.8)',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
+              transition: 'transform 0.3s ease',
+              '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 40px rgba(0,0,0,0.06)' }
+            }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h5" fontWeight="800" color="primary.main" mb={2.5} sx={{ fontFamily: "'Raleway', sans-serif", fontSize: '1.25rem' }}>
+                  What to Expect?
+                </Typography>
+                <ul style={{ paddingLeft: '18px', color: '#475569', lineHeight: '1.6', margin: 0, fontSize: '0.88rem' }}>
+                  <li style={{ marginBottom: '8px' }}>Expert Sessions by Renowned National Faculty</li>
+                  <li style={{ marginBottom: '8px' }}>Interactive Panel Discussions</li>
+                  <li style={{ marginBottom: '8px' }}>Engaging Debates on Key Toxicology Topics</li>
+                  <li style={{ marginBottom: '8px' }}>Clinical Case-Based Learning</li>
+                  <li style={{ marginBottom: '8px' }}>Toxicology Quiz Competition</li>
+                  <li style={{ marginBottom: '8px' }}>Oral Scientific Presentations</li>
+                  <li style={{ marginBottom: '8px' }}>Poster Presentations</li>
+                  <li style={{ marginBottom: '8px' }}>Networking and Collaboration Opportunities</li>
+                  <li style={{ marginBottom: '8px' }}>Evidence-Based Updates in Clinical Toxicology and Poison Management</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+          {/* Card 2: Topics Covered */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ 
+              height: '100%', 
+              bgcolor: '#ffffff',
+              borderRadius: '20px',
+              border: '1px solid rgba(226, 232, 240, 0.8)',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
+              transition: 'transform 0.3s ease',
+              '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 40px rgba(0,0,0,0.06)' }
+            }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h5" fontWeight="800" color="secondary.main" mb={2.5} sx={{ fontFamily: "'Raleway', sans-serif", fontSize: '1.25rem' }}>
+                  Topics Covered
+                </Typography>
+                <ul style={{ paddingLeft: '18px', color: '#475569', lineHeight: '1.6', margin: 0, fontSize: '0.88rem' }}>
+                  <li style={{ marginBottom: '8px' }}>Decontamination in the Emergency Department</li>
+                  <li style={{ marginBottom: '8px' }}>Extracorporeal Methods in Poisoning</li>
+                  <li style={{ marginBottom: '8px' }}>Setting Up a Clinical Toxicology Centre and Poison Information Centre</li>
+                  <li style={{ marginBottom: '8px' }}>Snakebite Management</li>
+                  <li style={{ marginBottom: '8px' }}>Plant Poisoning</li>
+                  <li style={{ marginBottom: '8px' }}>Newer Insecticides</li>
+                  <li style={{ marginBottom: '8px' }}>Paraquat Poisoning</li>
+                  <li style={{ marginBottom: '8px' }}>Controversies in the Management of Organophosphate Poisoning</li>
+                  <li style={{ marginBottom: '8px' }}>Rodenticide Poisoning</li>
+                  <li style={{ marginBottom: '8px' }}>Common Drug Overdoses</li>
+                  <li style={{ marginBottom: '8px' }}>Psychiatric Drug Overdose</li>
+                  <li style={{ marginBottom: '8px' }}>Substance Abuse and Recreational Drug Toxicity</li>
+                  <li style={{ marginBottom: '8px' }}>Research in Clinical Toxicology</li>
+                  <li style={{ marginBottom: '8px' }}>Approach to Pediatric Poisoning</li>
+                  <li style={{ marginBottom: '8px' }}>Common Pediatric Poisonings</li>
+                  <li style={{ marginBottom: '8px' }}>Medicolegal Aspects of Clinical Toxicology</li>
+                </ul>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 2, fontStyle: 'italic', fontSize: '0.82rem' }}>
+                  And many more topics in Clinical Toxicology...
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+          {/* Card 3: Who Will Benefit */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ 
+              height: '100%', 
+              bgcolor: '#ffffff',
+              borderRadius: '20px',
+              border: '1px solid rgba(226, 232, 240, 0.8)',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
+              transition: 'transform 0.3s ease',
+              '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 40px rgba(0,0,0,0.06)' }
+            }}>
+              <CardContent sx={{ p: 4 }}>
+                <Typography variant="h5" fontWeight="800" mb={2.5} sx={{ fontFamily: "'Raleway', sans-serif", color: '#7c3aed', fontSize: '1.25rem' }}>
+                  Who Will Benefit?
+                </Typography>
+                <ul style={{ paddingLeft: '18px', color: '#475569', lineHeight: '1.6', margin: 0, fontSize: '0.88rem' }}>
+                  <li style={{ marginBottom: '8px' }}>Clinical Toxicologists and Trainees</li>
+                  <li style={{ marginBottom: '8px' }}>Emergency Medicine Physicians and Residents</li>
+                  <li style={{ marginBottom: '8px' }}>Critical Care & Intensive Care Physicians and Residents</li>
+                  <li style={{ marginBottom: '8px' }}>Internal Medicine Physicians and Residents</li>
+                  <li style={{ marginBottom: '8px' }}>Pediatricians and Pediatric Residents</li>
+                  <li style={{ marginBottom: '8px' }}>Family Medicine Physicians and Residents</li>
+                  <li style={{ marginBottom: '8px' }}>Forensic Medicine Specialists and Residents</li>
+                  <li style={{ marginBottom: '8px' }}>General Practitioners (GPs)</li>
+                  <li style={{ marginBottom: '8px' }}>Pharmacologists, Clinical Pharmacists, and Trainees</li>
+                  <li style={{ marginBottom: '8px' }}>Nurses and Allied Health Professionals</li>
+                  <li style={{ marginBottom: '8px' }}>Researchers, Academicians, and Students in Toxicology</li>
+                  <li style={{ marginBottom: '8px' }}>Public Health Professionals and Poison Centre Personnel</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+        
+        <Box sx={{ mt: 4, p: 3, bgcolor: 'rgba(13, 148, 136, 0.05)', borderRadius: '16px', border: '1.5px solid rgba(13, 148, 136, 0.1)' }}>
+          <Typography variant="body2" color="text.secondary" align="center" sx={{ fontWeight: '500', lineHeight: '1.7', fontSize: '0.92rem' }}>
+            ToxIQ 2026 aims to enhance clinical knowledge, promote evidence-based poison management, foster collaborative learning, and strengthen the network of healthcare professionals dedicated to improving outcomes in poisoned patients.
+          </Typography>
+        </Box>
       </Container>
 
 
