@@ -430,9 +430,13 @@ const Home = () => {
                   'Clinical Case-Based Learning',
                   'Toxicology Quiz Competition',
                   'Oral Scientific Presentations',
-                  'Poster Presentations',
+                  'E-Poster Presentations',
                   'Networking and Collaboration Opportunities',
-                  'Evidence-Based Updates in Clinical Toxicology and Poison Management'
+                  'Evidence-Based Updates in Clinical Toxicology and Poison Management',
+                  'Multidisciplinary Learning with Experts from Emergency Medicine, Critical Care, Pediatrics, and Forensic Medicine',
+                  'Insights into Emerging Trends and Advances in Clinical Toxicology',
+                  'Opportunities to Present Research, Case Reports, and Innovative Practices in Toxicology',
+                  'Practical Pearls for Managing Common and Challenging Poisonings'
                 ].map((item, i) => (
                   <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start', mb: 1.8 }}>
                     <Box sx={{ width: '6px', height: '6px', borderRadius: '50%', bgcolor: '#0d9488', mt: 1, flexShrink: 0 }} />

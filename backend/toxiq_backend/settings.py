@@ -119,9 +119,10 @@ if not pg_db_url:
     else:
         # Default fallback to SQLite
         print("Warning: PostgreSQL credentials not found. Falling back to SQLite database.")
+        sqlite_path = env('SQLITE_PATH', default=str(BASE_DIR / 'db.sqlite3'))
         DATABASES['default'] = {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': Path(sqlite_path),
         }
 
 # Custom User Model
@@ -158,7 +159,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Media Files (User uploads)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = Path(env('MEDIA_ROOT', default=str(BASE_DIR / 'media')))
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -190,12 +190,8 @@ const AbstractGuidelines = () => {
                       </Typography>
                       <Stack spacing={2}>
                         <Box sx={{ p: 2, bgcolor: '#ffffff', borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.8)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="subtitle2" fontWeight="750" color="primary.main">Dr Vinayak</Typography>
-                          <Typography variant="body2" fontWeight="800" color="secondary.main">7994956313</Typography>
-                        </Box>
-                        <Box sx={{ p: 2, bgcolor: '#ffffff', borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.8)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Typography variant="subtitle2" fontWeight="750" color="primary.main">Dr Ashida</Typography>
-                          <Typography variant="body2" fontWeight="800" color="secondary.main">8547053889</Typography>
+                          <Typography variant="subtitle2" fontWeight="750" color="primary.main">Dr Greg Paul</Typography>
+                          <Typography variant="body2" fontWeight="800" color="secondary.main">8281859664</Typography>
                         </Box>
                       </Stack>
                     </Box>
