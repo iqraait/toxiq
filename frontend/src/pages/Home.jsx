@@ -898,10 +898,8 @@ const Home = () => {
           CME Credit Hours
         </DialogTitle>
         <DialogContent>
-          <Typography variant="body1" sx={{ mt: 1, lineHeight: 1.8, color: 'text.secondary', fontWeight: 500, fontSize: '0.96rem' }}>
-            ToxIQ 2026 is accredited for official CME Credit Hours recognized by leading medical and healthcare councils. 
-            All registered delegates, presenters, and attendees who complete the conference sessions will be awarded certificates stating the exact credit hours. 
-            The certificate will be sent to your registered email address post-conference.
+          <Typography variant="body1" sx={{ mt: 1, lineHeight: 1.8, color: 'text.secondary', fontWeight: 600, fontSize: '1.1rem', textAlign: 'center', py: 2 }}>
+            Applied for KSMC credit hours
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2, justifyContent: 'flex-end' }}>
