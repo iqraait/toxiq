@@ -12,3 +12,6 @@ django-unfold>=0.30.0
 gunicorn>=20.1.0
 whitenoise>=6.5.0
 requests>=2.31.0
+django-cloudinary-storage>=0.3.0
+cloudinary>=1.36.0
+

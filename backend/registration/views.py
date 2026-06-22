@@ -188,10 +188,9 @@ class RegistrationSubmitView(APIView):
         # Process uploaded files
         for file_key, file_obj in request.FILES.items():
             # file_key will be like 'field_5' representing RegistrationField ID 5
-            # Save file to local disk
             filename = f"registration_uploads/{uuid.uuid4()}_{file_obj.name}"
             saved_path = default_storage.save(filename, file_obj)
-            file_url = settings.MEDIA_URL + saved_path
+            file_url = default_storage.url(saved_path)
             
             # Extract field ID from file_key (e.g. 'field_5' -> '5')
             field_id = file_key.replace('field_', '')

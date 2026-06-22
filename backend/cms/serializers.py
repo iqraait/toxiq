@@ -25,7 +25,12 @@ class HybridImageField(serializers.ImageField):
             else:
                 # Existing URL/path, extract path relative to media
                 clean_data = data
-                if 'http' in clean_data or '/media/' in clean_data:
+                if 'cloudinary.com' in clean_data:
+                    import re
+                    match = re.search(r'/(?:raw|image|video|files)/upload/(?:v\d+/)?(.*)$', clean_data)
+                    if match:
+                        clean_data = match.group(1)
+                elif 'http' in clean_data or '/media/' in clean_data:
                     parts = clean_data.split('/media/')
                     if len(parts) > 1:
                         clean_data = parts[1]
@@ -54,7 +59,12 @@ class HybridFileField(serializers.FileField):
                     raise serializers.ValidationError(f"Invalid base64 file: {str(e)}")
             else:
                 clean_data = data
-                if 'http' in clean_data or '/media/' in clean_data:
+                if 'cloudinary.com' in clean_data:
+                    import re
+                    match = re.search(r'/(?:raw|image|video|files)/upload/(?:v\d+/)?(.*)$', clean_data)
+                    if match:
+                        clean_data = match.group(1)
+                elif 'http' in clean_data or '/media/' in clean_data:
                     parts = clean_data.split('/media/')
                     if len(parts) > 1:
                         clean_data = parts[1]

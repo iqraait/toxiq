@@ -42,12 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
     
     # Third party packages
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'cloudinary',
     
     # Project apps
     'authentication',
@@ -90,15 +92,14 @@ WSGI_APPLICATION = 'toxiq_backend.wsgi.application'
 
 # Database configuration with PostgreSQL default & SQLite fallback
 # If DATABASE_URL is defined, use it, else try standard individual PG settings.
-# Fallback to local SQLite if PG fails to connect or is not specified.
 DATABASES = {}
 pg_db_url = env('DATABASE_URL')
 if pg_db_url:
-    try:
-        DATABASES['default'] = env.db_url('DATABASE_URL')
-    except Exception as e:
-        print(f"Warning: Failed to parse DATABASE_URL. Falling back to SQLite. Error: {e}")
-        pg_db_url = None
+    DATABASES['default'] = env.db_url('DATABASE_URL')
+    # Render PostgreSQL requires SSL mode
+    if 'postgresql' in DATABASES['default'].get('ENGINE', ''):
+        DATABASES['default'].setdefault('OPTIONS', {})
+        DATABASES['default']['OPTIONS']['sslmode'] = 'require'
 
 if not pg_db_url:
     db_name = env('DB_NAME', default='')
@@ -160,6 +161,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 # Media Files (User uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(env('MEDIA_ROOT', default=str(BASE_DIR / 'media')))
+
+# Cloudinary Storage Configuration
+CLOUDINARY_CLOUD_NAME = env('CLOUDINARY_CLOUD_NAME', default='')
+CLOUDINARY_API_KEY = env('CLOUDINARY_API_KEY', default='')
+CLOUDINARY_API_SECRET = env('CLOUDINARY_API_SECRET', default='')
+
+if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+        'API_KEY': CLOUDINARY_API_KEY,
+        'API_SECRET': CLOUDINARY_API_SECRET,
+    }
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
