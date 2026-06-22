@@ -422,7 +422,7 @@ const Home = () => {
                   What to Expect?
                 </Typography>
               </Box>
-              <Box sx={{ flexGrow: 1 }}>
+              <Box sx={{ flexGrow: 1, pt: 2 }}>
                 {[
                   'Expert Sessions by Renowned National Faculty',
                   'Interactive Panel Discussions',
@@ -477,7 +477,7 @@ const Home = () => {
                   Topics Covered
                 </Typography>
               </Box>
-              <Box sx={{ flexGrow: 1 }}>
+              <Box sx={{ flexGrow: 1, pt: 2 }}>
                 {[
                   'Decontamination in the Emergency Department',
                   'Extracorporeal Methods in Poisoning',
@@ -542,7 +542,7 @@ const Home = () => {
                   Who Will Benefit?
                 </Typography>
               </Box>
-              <Box sx={{ flexGrow: 1 }}>
+              <Box sx={{ flexGrow: 1, pt: 2 }}>
                 {[
                   'Clinical Toxicologists and Trainees',
                   'Emergency Medicine Physicians and Residents',

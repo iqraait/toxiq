@@ -2,32 +2,65 @@ import base64
 from rest_framework import serializers
 from .models import ProgramContent, Banner, Speaker, Sponsor, GalleryImage, Brochure, SiteSettings
 
-class Base64FileSerializerField(serializers.Field):
+class HybridImageField(serializers.ImageField):
     """
-    A custom serializer field to handle file uploads as Base64 strings.
-    If the incoming data is a file (has read method), it converts it to a base64 Data URI.
-    If it is a string (starts with data: or http), it leaves it as-is.
+    A custom serializer field to handle image uploads as standard files,
+    while accepting base64 data URIs and existing media paths for compatibility.
     """
     def to_internal_value(self, data):
         if not data:
             return None
-        # If it's a file upload object (like InMemoryUploadedFile or TemporaryUploadedFile)
-        if hasattr(data, 'read'):
-            try:
-                data.seek(0)
-                file_bytes = data.read()
-                encoded = base64.b64encode(file_bytes).decode('utf-8')
-                mime_type = getattr(data, 'content_type', 'application/octet-stream')
-                return f"data:{mime_type};base64,{encoded}"
-            except Exception as e:
-                raise serializers.ValidationError(f"Failed to encode file to base64: {str(e)}")
-        # If it's already a string, keep it as-is
+        
+        # If it's a string, handle existing URLs/paths or base64 data URIs
         if isinstance(data, str):
-            return data
-        return None
+            if data.startswith('data:'):
+                try:
+                    format, imgstr = data.split(';base64,')
+                    ext = format.split('/')[-1]
+                    import uuid
+                    from django.core.files.base import ContentFile
+                    return ContentFile(base64.b64decode(imgstr), name=f"{uuid.uuid4()}.{ext}")
+                except Exception as e:
+                    raise serializers.ValidationError(f"Invalid base64 image: {str(e)}")
+            else:
+                # Existing URL/path, extract path relative to media
+                clean_data = data
+                if 'http' in clean_data or '/media/' in clean_data:
+                    parts = clean_data.split('/media/')
+                    if len(parts) > 1:
+                        clean_data = parts[1]
+                return clean_data
+                
+        return super().to_internal_value(data)
 
-    def to_representation(self, value):
-        return value
+class HybridFileField(serializers.FileField):
+    """
+    A custom serializer field to handle file/pdf uploads as standard files,
+    while accepting base64 data URIs and existing media paths for compatibility.
+    """
+    def to_internal_value(self, data):
+        if not data:
+            return None
+            
+        if isinstance(data, str):
+            if data.startswith('data:'):
+                try:
+                    format, filestr = data.split(';base64,')
+                    ext = format.split('/')[-1]
+                    import uuid
+                    from django.core.files.base import ContentFile
+                    return ContentFile(base64.b64decode(filestr), name=f"{uuid.uuid4()}.{ext}")
+                except Exception as e:
+                    raise serializers.ValidationError(f"Invalid base64 file: {str(e)}")
+            else:
+                clean_data = data
+                if 'http' in clean_data or '/media/' in clean_data:
+                    parts = clean_data.split('/media/')
+                    if len(parts) > 1:
+                        clean_data = parts[1]
+                return clean_data
+                
+        return super().to_internal_value(data)
 
 class ProgramContentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,7 +69,7 @@ class ProgramContentSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'updated_at')
 
 class BannerSerializer(serializers.ModelSerializer):
-    image = Base64FileSerializerField(required=False, allow_null=True)
+    image = HybridImageField(required=False, allow_null=True)
     
     class Meta:
         model = Banner
@@ -44,7 +77,7 @@ class BannerSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'updated_at')
 
 class SpeakerSerializer(serializers.ModelSerializer):
-    photo = Base64FileSerializerField(required=False, allow_null=True)
+    photo = HybridImageField(required=False, allow_null=True)
     
     class Meta:
         model = Speaker
@@ -52,7 +85,7 @@ class SpeakerSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'updated_at')
 
 class SponsorSerializer(serializers.ModelSerializer):
-    logo = Base64FileSerializerField(required=False, allow_null=True)
+    logo = HybridImageField(required=False, allow_null=True)
     
     class Meta:
         model = Sponsor
@@ -60,7 +93,7 @@ class SponsorSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'updated_at')
 
 class GalleryImageSerializer(serializers.ModelSerializer):
-    image = Base64FileSerializerField(required=False, allow_null=True)
+    image = HybridImageField(required=False, allow_null=True)
     
     class Meta:
         model = GalleryImage
@@ -68,7 +101,7 @@ class GalleryImageSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created_at')
 
 class BrochureSerializer(serializers.ModelSerializer):
-    pdf = Base64FileSerializerField(required=False, allow_null=True)
+    pdf = HybridFileField(required=False, allow_null=True)
     
     class Meta:
         model = Brochure
@@ -76,8 +109,8 @@ class BrochureSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'created_at')
 
 class SiteSettingsSerializer(serializers.ModelSerializer):
-    logo = Base64FileSerializerField(required=False, allow_null=True)
-    registration_banner = Base64FileSerializerField(required=False, allow_null=True)
+    logo = HybridImageField(required=False, allow_null=True)
+    registration_banner = HybridImageField(required=False, allow_null=True)
     
     class Meta:
         model = SiteSettings

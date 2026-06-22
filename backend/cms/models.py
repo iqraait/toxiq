@@ -15,7 +15,7 @@ class ProgramContent(models.Model):
 class Banner(models.Model):
     title = models.CharField(max_length=200, blank=True, default='')
     subtitle = models.CharField(max_length=500, blank=True, default='')
-    image = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='banners/', blank=True, null=True)
     cta_text = models.CharField(max_length=50, blank=True, default='')
     cta_link = models.CharField(max_length=200, blank=True, default='')
     is_active = models.BooleanField(default=True)
@@ -28,7 +28,7 @@ class Speaker(models.Model):
     name = models.CharField(max_length=150)
     designation = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    photo = models.TextField(blank=True, null=True)
+    photo = models.ImageField(upload_to='speakers/', blank=True, null=True)
     order = models.IntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -40,7 +40,7 @@ class Speaker(models.Model):
 
 class Sponsor(models.Model):
     name = models.CharField(max_length=150)
-    logo = models.TextField(blank=True, null=True)
+    logo = models.ImageField(upload_to='sponsors/', blank=True, null=True)
     website_url = models.URLField(blank=True, null=True)
     order = models.IntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
@@ -52,7 +52,7 @@ class Sponsor(models.Model):
         return self.name
 
 class GalleryImage(models.Model):
-    image = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='gallery/', blank=True, null=True)
     caption = models.CharField(max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -66,7 +66,7 @@ class GalleryImage(models.Model):
 class Brochure(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    pdf = models.TextField(blank=True, null=True)
+    pdf = models.FileField(upload_to='brochures/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -78,8 +78,8 @@ class Brochure(models.Model):
 
 class SiteSettings(models.Model):
     site_name = models.CharField(max_length=100, default='TOXIQ')
-    logo = models.TextField(blank=True, null=True)
-    registration_banner = models.TextField(blank=True, null=True)
+    logo = models.ImageField(upload_to='settings/', blank=True, null=True)
+    registration_banner = models.ImageField(upload_to='settings/', blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

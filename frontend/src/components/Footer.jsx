@@ -96,11 +96,7 @@ const Footer = ({ contact = {} }) => {
     { label: 'Important Dates', scrollToId: 'dates-section' }
   ];
 
-  const programItems = [
-    { label: 'Conference Venue', value: 'Iqraa Auditorium, Calicut', icon: <RoomIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
-    { label: 'CME Credit Hours', value: 'Applied for KSMC credit hours', icon: <WorkspacePremiumIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
-    { label: 'Guidelines', value: 'Author Guidelines & Forms', icon: <MenuBookIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> }
-  ];
+
 
   return (
     <Box 
@@ -144,11 +140,11 @@ const Footer = ({ contact = {} }) => {
 
       <Container maxWidth={false} sx={{ maxWidth: '1400px', mx: 'auto', px: { xs: '20px', md: '40px' }, zIndex: 2, position: 'relative' }}>
         
-        {/* Main 4-Column Layout */}
-        <Grid container spacing={{ xs: 4, md: 5 }} sx={{ mb: 6 }}>
+        {/* Main 3-Column Layout */}
+        <Grid container spacing={{ xs: 5, md: 7.5 }} sx={{ mb: 6 }}>
           
-          {/* Column 1 – Brand Area (3.5/12 columns) */}
-          <Grid item xs={12} sm={6} md={3.5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+          {/* Column 1 – Brand Area (5/12 columns) */}
+          <Grid item xs={12} sm={6} md={5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', sm: 'flex-start' }, gap: 1.5, mb: 3 }}>
               {settings?.logo ? (
                 <img 
@@ -211,7 +207,7 @@ const Footer = ({ contact = {} }) => {
               )}
             </Box>
             
-            <Typography variant="body2" sx={{ lineHeight: 1.8, mb: 4, color: '#94a3b8', fontSize: '0.92rem', pr: { md: 2 } }}>
+            <Typography variant="body2" sx={{ lineHeight: 1.8, mb: 4, color: '#94a3b8', fontSize: '0.92rem', pr: { md: 5 } }}>
               Advancing Toxicology Knowledge for Safer Healthcare through education, innovation and scientific excellence.
             </Typography>
 
@@ -247,8 +243,8 @@ const Footer = ({ contact = {} }) => {
             </Box>
           </Grid>
 
-          {/* Column 2 – Quick Links (2/12 columns) */}
-          <Grid item xs={12} sm={6} md={2} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+          {/* Column 2 – Quick Links (3.5/12 columns) */}
+          <Grid item xs={12} sm={6} md={3.5} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
             <Typography 
               variant="subtitle1" 
               fontWeight="800" 
@@ -300,8 +296,8 @@ const Footer = ({ contact = {} }) => {
             </Box>
           </Grid>
 
-          {/* Column 3 – Important Dates (3.25/12 columns) */}
-          <Grid item xs={12} sm={6} md={3.25} id="dates-section" sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+          {/* Column 3 – Important Dates (3.5/12 columns) */}
+          <Grid item xs={12} sm={6} md={3.5} id="dates-section" sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
             <Typography 
               variant="subtitle1" 
               fontWeight="800" 
@@ -336,34 +332,6 @@ const Footer = ({ contact = {} }) => {
                   {dates.article_deadline || 'N/A'}
                 </Typography>
               </Box>
-            </Box>
-          </Grid>
-
-          {/* Column 4 – Program Details (3.25/12 columns) */}
-          <Grid item xs={12} sm={6} md={3.25} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
-            <Typography 
-              variant="subtitle1" 
-              fontWeight="800" 
-              color="#ffffff" 
-              mb={3.5}
-              sx={{ fontSize: '1rem', letterSpacing: '0.5px', textTransform: 'uppercase', color: '#1EC8C8', pb: 1, borderBottom: '2px solid rgba(30, 200, 200, 0.15)', width: { xs: '100%', sm: 'fit-content' } }}
-            >
-              Program Details
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.2, alignItems: { xs: 'center', sm: 'flex-start' } }}>
-              {programItems.map((item, idx) => (
-                <Box key={idx} sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', sm: 'flex-start' }, gap: 0.5 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {item.icon}
-                    <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '0.68rem', letterSpacing: '0.5px' }}>
-                      {item.label}
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: 500, pl: { xs: 0, sm: 3.2 } }}>
-                    {item.value}
-                  </Typography>
-                </Box>
-              ))}
             </Box>
           </Grid>
         </Grid>
