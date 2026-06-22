@@ -47,13 +47,27 @@ def seed_db():
         
         # Add Fields
         fields = [
-            ('Full Name', 'text', True, 'Enter your full name', None, None, 1),
-            ('Email Address', 'email', True, 'Enter your email address', None, None, 2),
-            ('Phone Number', 'phone', True, 'e.g. +91 9876543210', None, None, 3),
-            ('Institution/Hospital', 'text', True, 'Enter your workplace/college name', None, None, 4),
-            ('Designation', 'dropdown', True, None, ['Doctor', 'Nurse', 'Medical Student', 'Researcher', 'Other'], None, 5),
-            ('Registration Category', 'radio', True, None, [{'value': 'Regular Delegate', 'price': 500.00}, {'value': 'Presenter', 'price': 400.00}, {'value': 'International Delegate', 'price': 1000.00}], None, 6),
-            ('Upload Medical Registration Certificate (Optional)', 'file', False, None, None, {'allowed_types': ['.pdf', '.jpg', '.jpeg'], 'max_size_mb': 5}, 7),
+            ('Prefix', 'dropdown', True, 'Select title', ['Mr.', 'Ms.', 'Mrs.', 'Dr.'], None, 1),
+            ('Full Name', 'text', True, 'Enter your full name', None, None, 2),
+            ('Email Address', 'email', True, 'Enter your email address', None, None, 3),
+            ('Phone Number (WhatsApp)', 'phone', True, 'e.g. +91 9876543210', None, None, 4),
+            ('Designation', 'text', True, 'Enter your designation', None, None, 5),
+            ('Institute / Hospital', 'text', True, 'Enter your workplace/college name', None, None, 6),
+            ('Department', 'text', True, 'Enter department name', None, None, 7),
+            ('Specialty / Department of Practice', 'checkbox', True, None, [
+                'Emergency Medicine', 'Clinical Pharmacy', 'Critical Care', 
+                'General Medicine', 'Pediatrics', 'Forensic Medicine', 
+                'Family Medicine', 'General practitioner', 'Others'
+            ], None, 8),
+            ('Medical Council Name', 'text', True, 'Enter Medical Council Name', None, None, 9),
+            ('Registration Number', 'text', True, 'Enter Registration Number', None, None, 10),
+            ('Registration Category', 'radio', True, None, [
+                {'value': 'Invited speakers (FREE)', 'price': 0.00, 'link': 'https://ease.buzz/26064ARm0a'},
+                {'value': 'Specialist/Consultant (INR 3000)', 'price': 3000.00, 'link': 'https://ease.buzz/2606sGmUAe'},
+                {'value': 'Residents/General Practitioners (INR 2000)', 'price': 2000.00, 'link': 'https://ease.buzz/2606srntA0'},
+                {'value': 'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics (INR 1000)', 'price': 1000.00, 'link': 'https://ease.buzz/26069HKtYU'}
+            ], None, 11),
+            ('Food Preference', 'radio', True, None, ['Veg', 'Non-Veg'], None, 12),
         ]
         
         for label, ftype, req, placeholder, options, rules, order in fields:

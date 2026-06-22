@@ -96,7 +96,13 @@ class PublicHomeContentView(APIView):
         brochures = Brochure.objects.all()
 
         # Fetch site settings
-        settings_obj, created = SiteSettings.objects.get_or_create(id=1)
+        settings_obj, created = SiteSettings.objects.get_or_create(
+            id=1,
+            defaults={
+                'logo': 'settings/toxic_logo-01.jpg-removebg-preview.png',
+                'registration_banner': 'settings/TOXIQ_Digital_Banner_1.png'
+            }
+        )
         
         for key, def_val in default_contents.items():
             if key not in contents:
@@ -121,7 +127,13 @@ class SiteSettingsView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        obj, created = SiteSettings.objects.get_or_create(id=1)
+        obj, created = SiteSettings.objects.get_or_create(
+            id=1,
+            defaults={
+                'logo': 'settings/toxic_logo-01.jpg-removebg-preview.png',
+                'registration_banner': 'settings/TOXIQ_Digital_Banner_1.png'
+            }
+        )
         serializer = SiteSettingsSerializer(obj, context={'request': request})
         return Response(serializer.data)
 
@@ -130,7 +142,13 @@ class SiteSettingsView(APIView):
         if not request.user or not request.user.is_authenticated or request.user.role not in ['ADMIN', 'SUPER_ADMIN']:
             return Response({"detail": "Not authorized"}, status=status.HTTP_403_FORBIDDEN)
             
-        obj, created = SiteSettings.objects.get_or_create(id=1)
+        obj, created = SiteSettings.objects.get_or_create(
+            id=1,
+            defaults={
+                'logo': 'settings/toxic_logo-01.jpg-removebg-preview.png',
+                'registration_banner': 'settings/TOXIQ_Digital_Banner_1.png'
+            }
+        )
         serializer = SiteSettingsSerializer(obj, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
