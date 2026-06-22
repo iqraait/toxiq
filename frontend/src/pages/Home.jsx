@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Container, Typography, Box, Grid, Button, 
   Card, CardContent, Avatar, Chip, Stack, useTheme, Alert,
-  Link
+  Link, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -30,17 +30,25 @@ const Home = () => {
   const theme = useTheme();
   
   const getImageUrl = (path) => {
-    if (!path) return null;
+    if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
       return path;
     }
     const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
-    return `${host}${path}`;
+    let cleanPath = path;
+    if (!cleanPath.startsWith('/')) {
+      cleanPath = '/' + cleanPath;
+    }
+    if (!cleanPath.startsWith('/media/')) {
+      cleanPath = '/media' + cleanPath;
+    }
+    return `${host}${cleanPath}`;
   };
   
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [creditOpen, setCreditOpen] = useState(false);
 
   useEffect(() => {
     const fetchHomeContent = async () => {
@@ -105,11 +113,11 @@ const Home = () => {
       link: '/abstract-guidelines'
     },
     { 
-      title: 'Credit Points', 
+      title: 'Credit Hours', 
       desc: 'Earn CME credit hours recognized by medical councils.', 
       icon: <GroupsIcon sx={{ fontSize: 24, color: '#ffffff' }} />,
       color: '#7c3aed',
-      link: '#dates-section'
+      link: 'popup:credit-hours'
     }
   ];
 
@@ -136,10 +144,13 @@ const Home = () => {
       <Box 
         sx={{ 
           background: activeBanner.image 
-            ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url(${getImageUrl(activeBanner.image)}) no-repeat center center / cover`
+            ? (activeBanner.title || activeBanner.subtitle 
+                ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url(${getImageUrl(activeBanner.image)}) no-repeat center center / cover`
+                : `url(${getImageUrl(activeBanner.image)}) no-repeat center center / cover`)
             : 'linear-gradient(135deg, #091b29 0%, #062425 100%)', // Fallback premium dark gradient
           color: '#ffffff',
-          py: { xs: 10, md: 15 },
+          py: activeBanner.title || activeBanner.subtitle ? { xs: 10, md: 15 } : 0,
+          minHeight: activeBanner.title || activeBanner.subtitle ? 'auto' : { xs: '250px', sm: '400px', md: '500px' },
           position: 'relative',
           overflow: 'hidden',
           boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.15)',
@@ -162,89 +173,95 @@ const Home = () => {
           }}
         />
         
-        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 5 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <Typography 
-              variant="h2" 
-              sx={{ 
-                fontWeight: 900, 
-                mb: 2, 
-                fontSize: { xs: '2.4rem', sm: '3.2rem', md: '4rem' },
-                letterSpacing: '-1.5px',
-                lineHeight: 1.15,
-                textShadow: '0 4px 15px rgba(0,0,0,0.5)'
-              }}
-            >
-              {activeBanner.title}
-            </Typography>
-            
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                mb: 3, 
-                color: '#2dd4bf', 
-                fontWeight: 700,
-                fontSize: { xs: '1.15rem', sm: '1.4rem', md: '1.75rem' },
-                lineHeight: 1.3,
-                textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-                maxWidth: '800px'
-              }}
-            >
-              {activeBanner.subtitle}
-            </Typography>
-            
-            <Typography 
-              variant="body1" 
-              sx={{ 
-                mb: 5, 
-                color: '#cbd5e1', 
-                fontWeight: 400,
-                maxWidth: '650px',
-                lineHeight: 1.8,
-                fontSize: { xs: '0.95rem', md: '1.08rem' },
-                textShadow: '0 2px 6px rgba(0,0,0,0.5)'
-              }}
-            >
-              Join experts, researchers, and healthcare professionals for a comprehensive toxicology program with hands-on learning and scientific exchange.
-            </Typography>
-            
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} justifyContent="center" sx={{ width: { xs: '100%', sm: 'auto' } }}>
-              <Button 
-                variant="contained" 
-                color="secondary" 
-                size="large"
-                sx={{ px: 5, py: 1.8, borderRadius: '30px', fontSize: '1rem', fontWeight: 800, minWidth: '180px' }}
-                onClick={handleBannerCta}
-              >
-                {activeBanner.cta_text || 'Register Now'}
-              </Button>
-              <Button 
-                variant="outlined" 
+        {(activeBanner.title || activeBanner.subtitle) && (
+          <Container maxWidth="md" sx={{ position: 'relative', zIndex: 5 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              {activeBanner.title && (
+                <Typography 
+                  variant="h2" 
+                  sx={{ 
+                    fontWeight: 900, 
+                    mb: 2, 
+                    fontSize: { xs: '2.4rem', sm: '3.2rem', md: '4rem' },
+                    letterSpacing: '-1.5px',
+                    lineHeight: 1.15,
+                    textShadow: '0 4px 15px rgba(0,0,0,0.5)'
+                  }}
+                >
+                  {activeBanner.title}
+                </Typography>
+              )}
+              
+              {activeBanner.subtitle && (
+                <Typography 
+                  variant="h5" 
+                  sx={{ 
+                    mb: 3, 
+                    color: '#2dd4bf', 
+                    fontWeight: 700,
+                    fontSize: { xs: '1.15rem', sm: '1.4rem', md: '1.75rem' },
+                    lineHeight: 1.3,
+                    textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                    maxWidth: '800px'
+                  }}
+                >
+                  {activeBanner.subtitle}
+                </Typography>
+              )}
+              
+              <Typography 
+                variant="body1" 
                 sx={{ 
-                  px: 5, 
-                  py: 1.8, 
-                  borderRadius: '30px', 
-                  fontSize: '1rem', 
-                  color: '#ffffff', 
-                  borderColor: 'rgba(255,255,255,0.4)',
-                  fontWeight: 800,
-                  minWidth: '180px',
-                  '&:hover': {
-                    borderColor: '#2dd4bf',
-                    color: '#2dd4bf',
-                    bgcolor: 'rgba(45, 212, 191, 0.05)'
-                  }
-                }}
-                onClick={() => {
-                  const docSection = document.getElementById('about-section');
-                  if (docSection) docSection.scrollIntoView({ behavior: 'smooth' });
+                  mb: 5, 
+                  color: '#cbd5e1', 
+                  fontWeight: 400,
+                  maxWidth: '650px',
+                  lineHeight: 1.8,
+                  fontSize: { xs: '0.95rem', md: '1.08rem' },
+                  textShadow: '0 2px 6px rgba(0,0,0,0.5)'
                 }}
               >
-                View Program
-              </Button>
-            </Stack>
-          </Box>
-        </Container>
+                Join experts, researchers, and healthcare professionals for a comprehensive toxicology program with hands-on learning and scientific exchange.
+              </Typography>
+              
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} justifyContent="center" sx={{ width: { xs: '100%', sm: 'auto' } }}>
+                <Button 
+                  variant="contained" 
+                  color="secondary" 
+                  size="large"
+                  sx={{ px: 5, py: 1.8, borderRadius: '30px', fontSize: '1rem', fontWeight: 800, minWidth: '180px' }}
+                  onClick={handleBannerCta}
+                >
+                  {activeBanner.cta_text || 'Register Now'}
+                </Button>
+                <Button 
+                  variant="outlined" 
+                  sx={{ 
+                    px: 5, 
+                    py: 1.8, 
+                    borderRadius: '30px', 
+                    fontSize: '1rem', 
+                    color: '#ffffff', 
+                    borderColor: 'rgba(255,255,255,0.4)',
+                    fontWeight: 800,
+                    minWidth: '180px',
+                    '&:hover': {
+                      borderColor: '#2dd4bf',
+                      color: '#2dd4bf',
+                      bgcolor: 'rgba(45, 212, 191, 0.05)'
+                    }
+                  }}
+                  onClick={() => {
+                    const docSection = document.getElementById('about-section');
+                    if (docSection) docSection.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  View Program
+                </Button>
+              </Stack>
+            </Box>
+          </Container>
+        )}
       </Box>
 
       {/* Statistics / Highlights Section */}
@@ -274,6 +291,17 @@ const Home = () => {
           {highlights.map((hl, idx) => (
             <Card 
               key={idx}
+              onClick={() => {
+                if (hl.link === 'popup:credit-hours') {
+                  setCreditOpen(true);
+                } else if (hl.link.startsWith('#')) {
+                  const element = document.getElementById(hl.link.substring(1));
+                  if (element) element.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  navigate(hl.link);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
               sx={{ 
                 height: '100%', 
                 bgcolor: '#ffffff',
@@ -283,6 +311,7 @@ const Home = () => {
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 display: 'flex',
                 flexDirection: 'column',
+                cursor: 'pointer',
                 '&:hover': {
                   transform: 'translateY(-10px)',
                   boxShadow: '0 20px 50px rgba(0, 0, 0, 0.08)',
@@ -303,22 +332,10 @@ const Home = () => {
                       {hl.desc}
                     </Typography>
                   </Box>
-                  <Link 
-                    href={hl.link} 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (hl.link.startsWith('#')) {
-                        const element = document.getElementById(hl.link.substring(1));
-                        if (element) element.scrollIntoView({ behavior: 'smooth' });
-                      } else {
-                        navigate(hl.link);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }
-                    }}
+                  <Typography 
                     sx={{ 
                       color: hl.color, 
                       fontWeight: '700', 
-                      textDecoration: 'none', 
                       fontSize: '0.9rem',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -332,7 +349,7 @@ const Home = () => {
                     }}
                   >
                     Learn More &rarr;
-                  </Link>
+                  </Typography>
                 </Box>
               </CardContent>
             </Card>
@@ -504,112 +521,197 @@ const Home = () => {
 
       {/* What to Expect, Topics Covered, Who Will Benefit */}
       <Container maxWidth="lg" sx={{ mb: 10 }}>
-        <Grid container spacing={4}>
+        <Box 
+          sx={{ 
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: 'repeat(3, 1fr)'
+            },
+            gap: '30px',
+            alignItems: 'stretch'
+          }}
+        >
           {/* Card 1: What to Expect */}
-          <Grid item xs={12} md={4}>
-            <Card sx={{ 
-              height: '100%', 
-              bgcolor: '#ffffff',
-              borderRadius: '20px',
-              border: '1px solid rgba(226, 232, 240, 0.8)',
-              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
-              transition: 'transform 0.3s ease',
-              '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 40px rgba(0,0,0,0.06)' }
-            }}>
-              <CardContent sx={{ p: 4 }}>
-                <Typography variant="h5" fontWeight="800" color="primary.main" mb={2.5} sx={{ fontFamily: "'Raleway', sans-serif", fontSize: '1.25rem' }}>
+          <Card sx={{ 
+            height: '100%', 
+            bgcolor: '#ffffff',
+            borderRadius: '24px',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            overflow: 'hidden',
+            position: 'relative',
+            '&:hover': { 
+              transform: 'translateY(-8px)', 
+              boxShadow: '0 15px 45px rgba(13, 148, 136, 0.08)',
+              borderColor: '#0d9488'
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0, left: 0, right: 0,
+              height: '4px',
+              bgcolor: '#0d9488'
+            }
+          }}>
+            <CardContent sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Box display="flex" alignItems="center" gap={1.5} mb={3.5}>
+                <Avatar sx={{ bgcolor: 'rgba(13, 148, 136, 0.1)', color: '#0d9488', width: 44, height: 44 }}>
+                  <ScienceIcon sx={{ fontSize: 22 }} />
+                </Avatar>
+                <Typography variant="h5" fontWeight="900" color="primary.main" sx={{ fontFamily: "'Raleway', sans-serif", fontSize: '1.25rem' }}>
                   What to Expect?
                 </Typography>
-                <ul style={{ paddingLeft: '18px', color: '#475569', lineHeight: '1.6', margin: 0, fontSize: '0.88rem' }}>
-                  <li style={{ marginBottom: '8px' }}>Expert Sessions by Renowned National Faculty</li>
-                  <li style={{ marginBottom: '8px' }}>Interactive Panel Discussions</li>
-                  <li style={{ marginBottom: '8px' }}>Engaging Debates on Key Toxicology Topics</li>
-                  <li style={{ marginBottom: '8px' }}>Clinical Case-Based Learning</li>
-                  <li style={{ marginBottom: '8px' }}>Toxicology Quiz Competition</li>
-                  <li style={{ marginBottom: '8px' }}>Oral Scientific Presentations</li>
-                  <li style={{ marginBottom: '8px' }}>Poster Presentations</li>
-                  <li style={{ marginBottom: '8px' }}>Networking and Collaboration Opportunities</li>
-                  <li style={{ marginBottom: '8px' }}>Evidence-Based Updates in Clinical Toxicology and Poison Management</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </Grid>
+              </Box>
+              <Box sx={{ flexGrow: 1 }}>
+                {[
+                  'Expert Sessions by Renowned National Faculty',
+                  'Interactive Panel Discussions',
+                  'Engaging Debates on Key Toxicology Topics',
+                  'Clinical Case-Based Learning',
+                  'Toxicology Quiz Competition',
+                  'Oral Scientific Presentations',
+                  'Poster Presentations',
+                  'Networking and Collaboration Opportunities',
+                  'Evidence-Based Updates in Clinical Toxicology and Poison Management'
+                ].map((item, i) => (
+                  <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start', mb: 1.8 }}>
+                    <Box sx={{ width: '6px', height: '6px', borderRadius: '50%', bgcolor: '#0d9488', mt: 1, flexShrink: 0 }} />
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.88rem', lineHeight: 1.5, fontWeight: 500 }}>
+                      {item}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
           
           {/* Card 2: Topics Covered */}
-          <Grid item xs={12} md={4}>
-            <Card sx={{ 
-              height: '100%', 
-              bgcolor: '#ffffff',
-              borderRadius: '20px',
-              border: '1px solid rgba(226, 232, 240, 0.8)',
-              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
-              transition: 'transform 0.3s ease',
-              '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 40px rgba(0,0,0,0.06)' }
-            }}>
-              <CardContent sx={{ p: 4 }}>
-                <Typography variant="h5" fontWeight="800" color="secondary.main" mb={2.5} sx={{ fontFamily: "'Raleway', sans-serif", fontSize: '1.25rem' }}>
+          <Card sx={{ 
+            height: '100%', 
+            bgcolor: '#ffffff',
+            borderRadius: '24px',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            overflow: 'hidden',
+            position: 'relative',
+            '&:hover': { 
+              transform: 'translateY(-8px)', 
+              boxShadow: '0 15px 45px rgba(30, 58, 138, 0.08)',
+              borderColor: '#1e3a8a'
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0, left: 0, right: 0,
+              height: '4px',
+              bgcolor: '#1e3a8a'
+            }
+          }}>
+            <CardContent sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Box display="flex" alignItems="center" gap={1.5} mb={3.5}>
+                <Avatar sx={{ bgcolor: 'rgba(30, 58, 138, 0.1)', color: '#1e3a8a', width: 44, height: 44 }}>
+                  <MedicationIcon sx={{ fontSize: 22 }} />
+                </Avatar>
+                <Typography variant="h5" fontWeight="900" color="secondary.main" sx={{ fontFamily: "'Raleway', sans-serif", fontSize: '1.25rem' }}>
                   Topics Covered
                 </Typography>
-                <ul style={{ paddingLeft: '18px', color: '#475569', lineHeight: '1.6', margin: 0, fontSize: '0.88rem' }}>
-                  <li style={{ marginBottom: '8px' }}>Decontamination in the Emergency Department</li>
-                  <li style={{ marginBottom: '8px' }}>Extracorporeal Methods in Poisoning</li>
-                  <li style={{ marginBottom: '8px' }}>Setting Up a Clinical Toxicology Centre and Poison Information Centre</li>
-                  <li style={{ marginBottom: '8px' }}>Snakebite Management</li>
-                  <li style={{ marginBottom: '8px' }}>Plant Poisoning</li>
-                  <li style={{ marginBottom: '8px' }}>Newer Insecticides</li>
-                  <li style={{ marginBottom: '8px' }}>Paraquat Poisoning</li>
-                  <li style={{ marginBottom: '8px' }}>Controversies in the Management of Organophosphate Poisoning</li>
-                  <li style={{ marginBottom: '8px' }}>Rodenticide Poisoning</li>
-                  <li style={{ marginBottom: '8px' }}>Common Drug Overdoses</li>
-                  <li style={{ marginBottom: '8px' }}>Psychiatric Drug Overdose</li>
-                  <li style={{ marginBottom: '8px' }}>Substance Abuse and Recreational Drug Toxicity</li>
-                  <li style={{ marginBottom: '8px' }}>Research in Clinical Toxicology</li>
-                  <li style={{ marginBottom: '8px' }}>Approach to Pediatric Poisoning</li>
-                  <li style={{ marginBottom: '8px' }}>Common Pediatric Poisonings</li>
-                  <li style={{ marginBottom: '8px' }}>Medicolegal Aspects of Clinical Toxicology</li>
-                </ul>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 2, fontStyle: 'italic', fontSize: '0.82rem' }}>
+              </Box>
+              <Box sx={{ flexGrow: 1 }}>
+                {[
+                  'Decontamination in the Emergency Department',
+                  'Extracorporeal Methods in Poisoning',
+                  'Setting Up a Clinical Toxicology Centre and Poison Information Centre',
+                  'Snakebite Management',
+                  'Plant Poisoning',
+                  'Newer Insecticides',
+                  'Paraquat Poisoning',
+                  'Controversies in the Management of Organophosphate Poisoning',
+                  'Rodenticide Poisoning',
+                  'Common Drug Overdoses',
+                  'Psychiatric Drug Overdose',
+                  'Substance Abuse and Recreational Drug Toxicity',
+                  'Research in Clinical Toxicology',
+                  'Approach to Pediatric Poisoning',
+                  'Common Pediatric Poisonings',
+                  'Medicolegal Aspects of Clinical Toxicology'
+                ].map((item, i) => (
+                  <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start', mb: 1.8 }}>
+                    <Box sx={{ width: '6px', height: '6px', borderRadius: '50%', bgcolor: '#1e3a8a', mt: 1, flexShrink: 0 }} />
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.88rem', lineHeight: 1.5, fontWeight: 500 }}>
+                      {item}
+                    </Typography>
+                  </Box>
+                ))}
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 2, fontStyle: 'italic', fontSize: '0.82rem', display: 'block', pl: 2.2 }}>
                   And many more topics in Clinical Toxicology...
                 </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+              </Box>
+            </CardContent>
+          </Card>
           
           {/* Card 3: Who Will Benefit */}
-          <Grid item xs={12} md={4}>
-            <Card sx={{ 
-              height: '100%', 
-              bgcolor: '#ffffff',
-              borderRadius: '20px',
-              border: '1px solid rgba(226, 232, 240, 0.8)',
-              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
-              transition: 'transform 0.3s ease',
-              '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 40px rgba(0,0,0,0.06)' }
-            }}>
-              <CardContent sx={{ p: 4 }}>
-                <Typography variant="h5" fontWeight="800" mb={2.5} sx={{ fontFamily: "'Raleway', sans-serif", color: '#7c3aed', fontSize: '1.25rem' }}>
+          <Card sx={{ 
+            height: '100%', 
+            bgcolor: '#ffffff',
+            borderRadius: '24px',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            overflow: 'hidden',
+            position: 'relative',
+            '&:hover': { 
+              transform: 'translateY(-8px)', 
+              boxShadow: '0 15px 45px rgba(124, 58, 237, 0.08)',
+              borderColor: '#7c3aed'
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0, left: 0, right: 0,
+              height: '4px',
+              bgcolor: '#7c3aed'
+            }
+          }}>
+            <CardContent sx={{ p: 4, height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Box display="flex" alignItems="center" gap={1.5} mb={3.5}>
+                <Avatar sx={{ bgcolor: 'rgba(124, 58, 237, 0.1)', color: '#7c3aed', width: 44, height: 44 }}>
+                  <HubIcon sx={{ fontSize: 22 }} />
+                </Avatar>
+                <Typography variant="h5" fontWeight="900" sx={{ fontFamily: "'Raleway', sans-serif", color: '#7c3aed', fontSize: '1.25rem' }}>
                   Who Will Benefit?
                 </Typography>
-                <ul style={{ paddingLeft: '18px', color: '#475569', lineHeight: '1.6', margin: 0, fontSize: '0.88rem' }}>
-                  <li style={{ marginBottom: '8px' }}>Clinical Toxicologists and Trainees</li>
-                  <li style={{ marginBottom: '8px' }}>Emergency Medicine Physicians and Residents</li>
-                  <li style={{ marginBottom: '8px' }}>Critical Care & Intensive Care Physicians and Residents</li>
-                  <li style={{ marginBottom: '8px' }}>Internal Medicine Physicians and Residents</li>
-                  <li style={{ marginBottom: '8px' }}>Pediatricians and Pediatric Residents</li>
-                  <li style={{ marginBottom: '8px' }}>Family Medicine Physicians and Residents</li>
-                  <li style={{ marginBottom: '8px' }}>Forensic Medicine Specialists and Residents</li>
-                  <li style={{ marginBottom: '8px' }}>General Practitioners (GPs)</li>
-                  <li style={{ marginBottom: '8px' }}>Pharmacologists, Clinical Pharmacists, and Trainees</li>
-                  <li style={{ marginBottom: '8px' }}>Nurses and Allied Health Professionals</li>
-                  <li style={{ marginBottom: '8px' }}>Researchers, Academicians, and Students in Toxicology</li>
-                  <li style={{ marginBottom: '8px' }}>Public Health Professionals and Poison Centre Personnel</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+              </Box>
+              <Box sx={{ flexGrow: 1 }}>
+                {[
+                  'Clinical Toxicologists and Trainees',
+                  'Emergency Medicine Physicians and Residents',
+                  'Critical Care & Intensive Care Physicians and Residents',
+                  'Internal Medicine Physicians and Residents',
+                  'Pediatricians and Pediatric Residents',
+                  'Family Medicine Physicians and Residents',
+                  'Forensic Medicine Specialists and Residents',
+                  'General Practitioners (GPs)',
+                  'Pharmacologists, Clinical Pharmacists, and Trainees',
+                  'Nurses and Allied Health Professionals',
+                  'Researchers, Academicians, and Students in Toxicology',
+                  'Public Health Professionals and Poison Centre Personnel'
+                ].map((item, i) => (
+                  <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start', mb: 1.8 }}>
+                    <Box sx={{ width: '6px', height: '6px', borderRadius: '50%', bgcolor: '#7c3aed', mt: 1, flexShrink: 0 }} />
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.88rem', lineHeight: 1.5, fontWeight: 500 }}>
+                      {item}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
         
-        <Box sx={{ mt: 4, p: 3, bgcolor: 'rgba(13, 148, 136, 0.05)', borderRadius: '16px', border: '1.5px solid rgba(13, 148, 136, 0.1)' }}>
+        <Box sx={{ mt: 5, p: 3, bgcolor: 'rgba(13, 148, 136, 0.05)', borderRadius: '16px', border: '1.5px solid rgba(13, 148, 136, 0.1)' }}>
           <Typography variant="body2" color="text.secondary" align="center" sx={{ fontWeight: '500', lineHeight: '1.7', fontSize: '0.92rem' }}>
             ToxIQ 2026 aims to enhance clinical knowledge, promote evidence-based poison management, foster collaborative learning, and strengthen the network of healthcare professionals dedicated to improving outcomes in poisoned patients.
           </Typography>
@@ -776,6 +878,43 @@ const Home = () => {
 
       {/* Footer Contact Wrapper */}
       <Footer contact={contact} />
+
+      {/* CME Credit Hours Dialog Popup */}
+      <Dialog 
+        open={creditOpen} 
+        onClose={() => setCreditOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '24px',
+            p: 1.5,
+            border: '1.5px solid rgba(13, 148, 136, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: '900', display: 'flex', alignItems: 'center', gap: 1.5, color: 'primary.main', fontFamily: "'Raleway', sans-serif" }}>
+          <WorkspacePremiumIcon color="secondary" sx={{ fontSize: '2.2rem' }} />
+          CME Credit Hours
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" sx={{ mt: 1, lineHeight: 1.8, color: 'text.secondary', fontWeight: 500, fontSize: '0.96rem' }}>
+            ToxIQ 2026 is accredited for official CME Credit Hours recognized by leading medical and healthcare councils. 
+            All registered delegates, presenters, and attendees who complete the conference sessions will be awarded certificates stating the exact credit hours. 
+            The certificate will be sent to your registered email address post-conference.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, justifyContent: 'flex-end' }}>
+          <Button 
+            onClick={() => setCreditOpen(false)} 
+            variant="contained" 
+            color="primary"
+            sx={{ px: 4, py: 1, borderRadius: '30px', fontWeight: 'bold' }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

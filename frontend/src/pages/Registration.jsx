@@ -19,12 +19,19 @@ const Registration = () => {
   const navigate = useNavigate();
 
   const getImageUrl = (path) => {
-    if (!path) return null;
+    if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
       return path;
     }
     const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
-    return `${host}${path}`;
+    let cleanPath = path;
+    if (!cleanPath.startsWith('/')) {
+      cleanPath = '/' + cleanPath;
+    }
+    if (!cleanPath.startsWith('/media/')) {
+      cleanPath = '/media' + cleanPath;
+    }
+    return `${host}${cleanPath}`;
   };
   
   const [formConfig, setFormConfig] = useState(null);

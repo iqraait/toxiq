@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
@@ -21,8 +21,71 @@ import AdminPayments from './pages/AdminPayments';
 import AdminReports from './pages/AdminReports';
 
 function App() {
+  const [showPreloader, setShowPreloader] = useState(true);
+  const [fadePreloader, setFadePreloader] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFadePreloader(true);
+      const hideTimer = setTimeout(() => {
+        setShowPreloader(false);
+      }, 600);
+      return () => clearTimeout(hideTimer);
+    }, 1200); // 1.2s of full glow is perfect
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <Routes>
+    <>
+      {showPreloader && (
+        <div className={`preloader-container ${fadePreloader ? 'preloader-hidden' : ''}`}>
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="preloader-spinner"></div>
+            <div 
+              className="preloader-logo-pulse"
+              style={{
+                position: 'absolute',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                zIndex: 10
+              }}
+            >
+              <span 
+                style={{ 
+                  fontFamily: "'Raleway', sans-serif", 
+                  fontWeight: 900, 
+                  fontSize: '1.8rem', 
+                  letterSpacing: '2px',
+                  color: '#ffffff',
+                  textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+                }}
+              >
+                TOXIQ
+              </span>
+              <span 
+                style={{ 
+                  fontFamily: "'Raleway', sans-serif", 
+                  fontWeight: 800, 
+                  fontSize: '0.68rem', 
+                  letterSpacing: '3px',
+                  color: '#2dd4bf',
+                  marginTop: '4px',
+                  textTransform: 'uppercase',
+                  textShadow: '0 1px 5px rgba(0,0,0,0.5)'
+                }}
+              >
+                2026
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Routes>
       {/* Public Pages */}
       <Route path="/" element={<Home />} />
       <Route path="/registration" element={<Registration />} />
@@ -49,6 +112,7 @@ function App() {
       {/* Fallback route */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+  </>
   );
 }
 

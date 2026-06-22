@@ -276,7 +276,7 @@ const AdminFormBuilder = () => {
               <Table size="small">
                 <TableHead sx={{ bgcolor: '#f8fafc' }}>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>Order</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold', width: '130px' }}>Listing Order</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Field Label</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Input Type</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Required</TableCell>
@@ -360,10 +360,10 @@ const AdminFormBuilder = () => {
                 </TextField>
               </Grid>
               <Grid item xs={6}>
-                <TextField
+                 <TextField
                   fullWidth
                   type="number"
-                  label="Display Order"
+                  label="Listing Order"
                   value={order}
                   onChange={(e) => setOrder(parseInt(e.target.value) || 0)}
                 />

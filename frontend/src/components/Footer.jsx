@@ -93,7 +93,7 @@ const Footer = ({ contact = {} }) => {
     { label: 'Registration Deadline', value: 'June 30, 2026', icon: <EventIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
     { label: 'Article Submission Deadline', value: 'July 15, 2026', icon: <AssignmentIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
     { label: 'Conference Venue', value: 'Iqraa Auditorium, Calicut', icon: <RoomIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
-    { label: 'CME Credit Points', value: 'Accredited with 4 CME Points', icon: <WorkspacePremiumIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
+    { label: 'CME Credit Hours', value: 'Accredited with 4 CME Hours', icon: <WorkspacePremiumIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> },
     { label: 'Guidelines', value: 'Author Guidelines & Forms', icon: <MenuBookIcon sx={{ color: '#1EC8C8', fontSize: '1.05rem' }} /> }
   ];
 

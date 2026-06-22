@@ -93,7 +93,14 @@ const AdminCMS = () => {
       return path;
     }
     const host = API.defaults.baseURL.replace(/\/api\/?$/, '');
-    return `${host}${path}`;
+    let cleanPath = path;
+    if (!cleanPath.startsWith('/')) {
+      cleanPath = '/' + cleanPath;
+    }
+    if (!cleanPath.startsWith('/media/')) {
+      cleanPath = '/media' + cleanPath;
+    }
+    return `${host}${cleanPath}`;
   };
 
   const fetchCMSData = async () => {
@@ -183,7 +190,7 @@ const AdminCMS = () => {
       }
 
       if (activeBanner) {
-        await API.put(`cms/banners/${activeBanner.id}/`, formData);
+        await API.patch(`cms/banners/${activeBanner.id}/`, formData);
       } else {
         // If no banner existed, POST a new one
         await API.post('cms/banners/', formData);

@@ -13,11 +13,11 @@ class ProgramContent(models.Model):
         return self.key
 
 class Banner(models.Model):
-    title = models.CharField(max_length=200)
-    subtitle = models.CharField(max_length=500, blank=True)
+    title = models.CharField(max_length=200, blank=True, default='')
+    subtitle = models.CharField(max_length=500, blank=True, default='')
     image = models.TextField(blank=True, null=True)
-    cta_text = models.CharField(max_length=50, default='Register Now')
-    cta_link = models.CharField(max_length=200, default='#registration')
+    cta_text = models.CharField(max_length=50, blank=True, default='')
+    cta_link = models.CharField(max_length=200, blank=True, default='')
     is_active = models.BooleanField(default=True)
     updated_at = models.DateTimeField(auto_now=True)
 

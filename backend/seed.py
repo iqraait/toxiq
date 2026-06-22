@@ -92,7 +92,11 @@ def seed_db():
     }
 
     for key, val in cms_contents.items():
-        ProgramContent.objects.update_or_create(key=key, defaults={'value': val})
+        if not ProgramContent.objects.filter(key=key).exists():
+            ProgramContent.objects.create(key=key, value=val)
+            print(f"Seeded default CMS text block for '{key}'.")
+        else:
+            print(f"CMS text block for '{key}' already exists, skipping.")
     print("Seeded default CMS text blocks.")
 
     # 4. Create Banners
