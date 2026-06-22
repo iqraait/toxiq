@@ -42,7 +42,11 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
       if (isChecked) {
         newValues.push(option);
       } else {
-        newValues = newValues.filter(v => v !== option);
+        if (option === 'Others') {
+          newValues = newValues.filter(v => !v.startsWith('Others'));
+        } else {
+          newValues = newValues.filter(v => v !== option);
+        }
       }
       onChange(fieldId, newValues);
     }
@@ -152,7 +156,9 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
                 <FormGroup row>
                   {(field.options || []).map((opt) => {
                     const { value: optValue, label: optLabel } = getOptionInfo(opt);
-                    const isChecked = Array.isArray(value) && value.includes(optValue);
+                    const isChecked = Array.isArray(value)
+                      ? value.some(v => v === optValue || (optValue === 'Others' && v.startsWith('Others:')))
+                      : value === optValue || (optValue === 'Others' && String(value).startsWith('Others:'));
                     return (
                       <FormControlLabel
                         key={optValue}
@@ -168,6 +174,37 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
                     );
                   })}
                 </FormGroup>
+                {field.label === 'Specialty / Department of Practice' && (
+                  (() => {
+                    const isOthersSelected = Array.isArray(value)
+                      ? value.some(v => v.startsWith('Others'))
+                      : String(value).startsWith('Others');
+                    if (!isOthersSelected) return null;
+                    
+                    const specText = Array.isArray(value)
+                      ? (value.find(v => v.startsWith('Others:')) || '').replace('Others: ', '')
+                      : String(value).replace('Others: ', '');
+                      
+                    return (
+                      <TextField
+                        size="small"
+                        sx={{ mt: 1, ml: 1, maxWidth: '350px' }}
+                        placeholder="Please specify other specialty"
+                        value={specText === 'Others' ? '' : specText}
+                        onChange={(e) => {
+                          const text = e.target.value;
+                          const newOthersValue = text ? `Others: ${text}` : 'Others';
+                          if (Array.isArray(value)) {
+                            const filtered = value.filter(v => !v.startsWith('Others'));
+                            onChange(fieldId, [...filtered, newOthersValue]);
+                          } else {
+                            onChange(fieldId, newOthersValue);
+                          }
+                        }}
+                      />
+                    );
+                  })()
+                )}
                 <FormHelperText>{error || field.help_text || ''}</FormHelperText>
               </FormControl>
             )}

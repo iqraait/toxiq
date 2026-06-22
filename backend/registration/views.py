@@ -88,31 +88,31 @@ class RegistrationFormViewSet(viewsets.ModelViewSet):
                 is_required=True, 
                 order=8
             )
-            # Medical Council Name
-            RegistrationField.objects.create(
-                form=form, label='Medical Council Name', field_type='text', is_required=True, order=10
-            )
-            # Registration Number
-            RegistrationField.objects.create(
-                form=form, label='Registration Number', field_type='text', is_required=True, order=11
-            )
             # Registration Category
             RegistrationField.objects.create(
                 form=form, 
                 label='Registration Category', 
-                field_type='radio', 
+                field_type='checkbox', 
                 options=[
-                    {'value': 'Invited speakers (FREE)', 'price': 0.00, 'link': 'https://ease.buzz/26064ARm0a'},
-                    {'value': 'Specialist/Consultant (INR 3000)', 'price': 3000.00, 'link': 'https://ease.buzz/2606sGmUAe'},
-                    {'value': 'Residents/General Practitioners (INR 2000)', 'price': 2000.00, 'link': 'https://ease.buzz/2606srntA0'},
-                    {'value': 'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics (INR 1000)', 'price': 1000.00, 'link': 'https://ease.buzz/26069HKtYU'}
+                    {'value': 'Invited speakers', 'price': 0.00, 'link': 'https://ease.buzz/26064ARm0a'},
+                    {'value': 'Specialist/Consultant', 'price': 3000.00, 'link': 'https://ease.buzz/2606sGmUAe'},
+                    {'value': 'Residents/General Practitioners', 'price': 2000.00, 'link': 'https://ease.buzz/2606srntA0'},
+                    {'value': 'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics', 'price': 1000.00, 'link': 'https://ease.buzz/26069HKtYU'}
                 ], 
                 is_required=True, 
-                order=12
+                order=9
+            )
+            # Medical Council Name
+            RegistrationField.objects.create(
+                form=form, label='Medical Council Name', field_type='text', is_required=True, order=10
+            )
+            # Registration No:
+            RegistrationField.objects.create(
+                form=form, label='Registration No:', field_type='number', is_required=True, order=11
             )
             # Food Preference
             RegistrationField.objects.create(
-                form=form, label='Food Preference', field_type='radio', options=['Veg', 'Non-Veg'], is_required=True, order=13
+                form=form, label='Food Preference', field_type='radio', options=['Veg', 'Non-Veg'], is_required=True, order=12
             )
             
         serializer = self.get_serializer(form)
