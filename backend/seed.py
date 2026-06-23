@@ -102,7 +102,7 @@ def seed_db():
             'phone': '+91 11 4455 6677'
         },
         'registration_instructions': 'Ensure that you input valid registration licensing credentials if registering under the Practitioner category. Registration fee covers conference kit, lunches, and certificate of credit hours.',
-        'article_instructions': 'Abstract and article submissions must follow the official TOXIQ structure template. Files must be under 10MB and in PDF or DOCX formats only. Selected articles will be published in the Special Toxicology Journal edition.'
+        'article_instructions': 'Files must be under 10MB and in PDF or DOCX formats only.'
     }
 
     for key, val in cms_contents.items():

@@ -25,16 +25,17 @@ import Navbar from '../components/Navbar';
 import { purpleGradientText } from '../theme';
 import anverPhoto from '../assets/anver.jpg';
 import shamsudeenPhoto from '../assets/shamsudeen.jpg';
-import nirmalPhoto from '../assets/nirmal.jpg';
-import sanalPhoto from '../assets/sanal.jpg';
+import nirmalPhoto from '../assets/nirmal_fixed.jpg';
+import sanalPhoto from '../assets/sanal_fixed.jpg';
 import renjithPhoto from '../assets/renjith.jpg';
 import josnaPhoto from '../assets/josna.jpg';
-import anasPhoto from '../assets/anas.jpg';
+import anasPhoto from '../assets/anas_fixed.jpg';
 import jazeelPhoto from '../assets/jazeel_fixed.jpg';
 import vajidPhoto from '../assets/vajid.jpg';
-import shahalPhoto from '../assets/shahal.jpg';
+import shahalPhoto from '../assets/shahal_fixed.jpg';
 import noufalPhoto from '../assets/noufal_fixed.jpg';
 import shinadPhoto from '../assets/shinad.jpg';
+import noorjahanPhoto from '../assets/noorjahan_fixed.jpg';
 
 const MemberCard = ({ name, role, desc, photo, initials }) => (
   <Card sx={{ 
@@ -541,7 +542,7 @@ const Home = () => {
           <Grid container spacing={3} justifyContent="center" sx={{ mb: 8 }}>
             {[
               { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: jazeelPhoto, initials: 'JN' },
-              { role: 'Vice Chairman', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
+              { role: 'Vice Chairperson', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
               { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine', photo: renjithPhoto, initials: 'RT' },
               { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC', photo: josnaPhoto, initials: 'JJ' },
               { role: 'Organizing Secretary', name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine', photo: nirmalPhoto, initials: 'NP' },
@@ -574,7 +575,7 @@ const Home = () => {
 
           <Grid container spacing={3} justifyContent="center">
             {[
-              { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: null, initials: 'NV' },
+              { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: noorjahanPhoto, initials: 'NV' },
               { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: null, initials: 'AR' },
               { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine', photo: shahalPhoto, initials: 'MS' },
               { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development', photo: vajidPhoto, initials: 'VN' },
