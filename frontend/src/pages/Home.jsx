@@ -144,11 +144,11 @@ const Home = () => {
 
       {/* Hero Banner Section */}
       {!(activeBanner.title || activeBanner.subtitle) && activeBanner.image ? (
-        <Box sx={{ width: '100%', overflow: 'hidden', display: 'flex', justifyContent: 'center', bgcolor: '#091b29' }}>
+        <Box sx={{ width: '100%', overflow: 'hidden' }}>
           <img 
             src={getImageUrl(activeBanner.image)} 
             alt="TOXIQ Conference Banner" 
-            style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '75vh', objectFit: 'contain' }} 
+            style={{ width: '100%', height: 'auto', display: 'block' }} 
           />
         </Box>
       ) : (
@@ -448,110 +448,182 @@ const Home = () => {
 
           <Divider sx={{ my: 5 }} />
 
-          {/* Committee Grid */}
-          <Grid container spacing={4}>
-            {/* Left Column: Key Leaders */}
-            <Grid item xs={12} md={6}>
-              <Stack spacing={3}>
-                <Box>
-                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
-                    Organising Chairperson
-                  </Typography>
-                  <Typography variant="h6" fontWeight="800" color="primary.main">
-                    Mr Jazeel Nalakath
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" fontWeight="500">
-                    Group General Manager
-                  </Typography>
-                </Box>
+          {/* Organising Committee Header */}
+          <Typography 
+            variant="h5" 
+            fontWeight="800" 
+            color="secondary.main" 
+            align="center" 
+            sx={{ fontFamily: "'Raleway', sans-serif", mb: 4 }}
+          >
+            Organising Committee
+          </Typography>
 
-                <Box>
-                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
-                    Vice Chairman
-                  </Typography>
-                  <Typography variant="h6" fontWeight="800" color="primary.main">
-                    Dr. Sanal Dev S S
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" fontWeight="500">
-                    Consultant, Emergency Medicine
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
-                    Convener
-                  </Typography>
-                  <Typography variant="h6" fontWeight="800" color="primary.main">
-                    Dr Renjith T P
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" fontWeight="500">
-                    Consultant, Emergency Medicine
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
-                    Joint Convener
-                  </Typography>
-                  <Typography variant="h6" fontWeight="800" color="primary.main">
-                    Dr Josna Jose
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" fontWeight="500">
-                    In charge, Toxicovigilance and PIC
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
-                    Organizing Secretaries
-                  </Typography>
-                  <Stack spacing={1.5} sx={{ mt: 1 }}>
-                    <Box>
-                      <Typography variant="body1" fontWeight="700" color="primary.main">
-                        Dr. Nirmal Peter Abraham
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary" fontWeight="500">
-                        Consultant, Emergency Medicine
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="body1" fontWeight="700" color="primary.main">
-                        Dr Muhammed Anas V K
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary" fontWeight="500">
-                        HOD, Dept. of Clinical Pharmacy
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </Box>
-              </Stack>
+          <Grid container spacing={3} justifyContent="center" sx={{ mb: 6 }}>
+            {/* Chairperson Card */}
+            <Grid item xs={12} md={10}>
+              <Card sx={{ 
+                bgcolor: 'rgba(255,255,255,0.75)', 
+                borderRadius: '16px', 
+                border: '1.5px solid rgba(13, 148, 136, 0.15)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                p: 3,
+                textAlign: 'center',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0, left: 0, right: 0,
+                  height: '4px',
+                  bgcolor: 'secondary.main'
+                }
+              }}>
+                <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1.5px', mb: 1 }}>
+                  Organising Chairperson
+                </Typography>
+                <Typography variant="h5" fontWeight="900" color="primary.main" gutterBottom>
+                  Mr Jazeel Nalakath
+                </Typography>
+                <Typography variant="body1" color="textSecondary" fontWeight="600">
+                  Group General Manager, IQRAA Group
+                </Typography>
+              </Card>
             </Grid>
+          </Grid>
 
-            {/* Right Column: Programme Coordinators */}
-            <Grid item xs={12} md={6}>
-              <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 2 }}>
-                Programme coordinators
-              </Typography>
-              <Grid container spacing={2.5}>
-                {[
-                  { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine' },
-                  { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine' },
-                  { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine' },
-                  { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development' },
-                  { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services' },
-                  { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy' }
-                ].map((coord, i) => (
-                  <Grid item xs={12} sm={6} key={i}>
-                    <Typography variant="body1" fontWeight="700" color="primary.main">
-                      {coord.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
-                      {coord.role}
-                    </Typography>
-                  </Grid>
-                ))}
+          <Grid container spacing={3} justifyContent="center" sx={{ mb: 6 }}>
+            {/* Vice Chairman & Convener & Joint Convener */}
+            {[
+              { role: 'Vice Chairman', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine' },
+              { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine' },
+              { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC' }
+            ].map((leader, i) => (
+              <Grid item xs={12} sm={6} md={4} key={i}>
+                <Card sx={{ 
+                  bgcolor: 'rgba(255,255,255,0.7)', 
+                  borderRadius: '16px', 
+                  border: '1px solid rgba(226,232,240,0.8)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                  p: 3,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0, left: 0, right: 0,
+                    height: '4px',
+                    bgcolor: 'primary.main'
+                  }
+                }}>
+                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 1, fontSize: '0.75rem' }}>
+                    {leader.role}
+                  </Typography>
+                  <Typography variant="h6" fontWeight="800" color="primary.main" gutterBottom>
+                    {leader.name}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" fontWeight="500">
+                    {leader.desc}
+                  </Typography>
+                </Card>
               </Grid>
-            </Grid>
+            ))}
+          </Grid>
+
+          <Typography 
+            variant="h6" 
+            fontWeight="800" 
+            color="primary.main" 
+            align="center" 
+            sx={{ fontFamily: "'Raleway', sans-serif", mb: 3 }}
+          >
+            Organizing Secretaries
+          </Typography>
+
+          <Grid container spacing={3} justifyContent="center" sx={{ mb: 6 }}>
+            {[
+              { name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine' },
+              { name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy' }
+            ].map((secretary, i) => (
+              <Grid item xs={12} sm={6} md={5} key={i}>
+                <Card sx={{ 
+                  bgcolor: 'rgba(255,255,255,0.7)', 
+                  borderRadius: '16px', 
+                  border: '1px solid rgba(226,232,240,0.8)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                  p: 3,
+                  textAlign: 'center',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+                }}>
+                  <Typography variant="h6" fontWeight="800" color="primary.main" gutterBottom>
+                    {secretary.name}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" fontWeight="500">
+                    {secretary.desc}
+                  </Typography>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+
+          <Divider sx={{ my: 5 }} />
+
+          {/* Programme Coordinators Section */}
+          <Typography 
+            variant="h6" 
+            fontWeight="800" 
+            color="secondary.main" 
+            align="center" 
+            sx={{ fontFamily: "'Raleway', sans-serif", mb: 4, textTransform: 'uppercase', letterSpacing: '1px' }}
+          >
+            Programme Coordinators
+          </Typography>
+
+          <Grid container spacing={2.5} justifyContent="center">
+            {[
+              { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine' },
+              { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine' },
+              { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine' },
+              { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development' },
+              { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services' },
+              { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy' }
+            ].map((coord, i) => (
+              <Grid item xs={12} sm={6} md={4} key={i}>
+                <Card sx={{ 
+                  bgcolor: 'rgba(255,255,255,0.5)', 
+                  borderRadius: '12px', 
+                  border: '1px solid rgba(226,232,240,0.6)',
+                  p: 2.5,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    transform: 'translateY(-3px)',
+                    boxShadow: '0 6px 15px rgba(0,0,0,0.03)',
+                    borderColor: 'rgba(13, 148, 136, 0.3)'
+                  }
+                }}>
+                  <Typography variant="body1" fontWeight="700" color="primary.main" gutterBottom>
+                    {coord.name}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
+                    {coord.role}
+                  </Typography>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
         </GlassCard>
       </Container>
