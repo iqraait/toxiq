@@ -30,6 +30,11 @@ import sanalPhoto from '../assets/sanal.jpg';
 import renjithPhoto from '../assets/renjith.jpg';
 import josnaPhoto from '../assets/josna.jpg';
 import anasPhoto from '../assets/anas.jpg';
+import jazeelPhoto from '../assets/jazeel.jpg';
+import vajidPhoto from '../assets/vajid.jpg';
+import shahalPhoto from '../assets/shahal.jpg';
+import noufalPhoto from '../assets/noufal.jpg';
+import shinadPhoto from '../assets/shinad.jpg';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -489,7 +494,7 @@ const Home = () => {
 
           <Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
             {[
-              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: null, initials: 'JN' },
+              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: jazeelPhoto, initials: 'JN' },
               { role: 'Vice Chairman', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
               { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine', photo: renjithPhoto, initials: 'RT' },
               { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC', photo: josnaPhoto, initials: 'JJ' },
@@ -566,12 +571,12 @@ const Home = () => {
 
           <Grid container spacing={2.5} justifyContent="center">
             {[
-              { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine' },
-              { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine' },
-              { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine' },
-              { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development' },
-              { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services' },
-              { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy' }
+              { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: null, initials: 'NV' },
+              { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: null, initials: 'AR' },
+              { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine', photo: shahalPhoto, initials: 'MS' },
+              { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development', photo: vajidPhoto, initials: 'VN' },
+              { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK' },
+              { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy', photo: shinadPhoto, initials: 'SN' }
             ].map((coord, i) => (
               <Grid item xs={12} sm={6} md={4} key={i}>
                 <Card sx={{ 
@@ -593,6 +598,23 @@ const Home = () => {
                     borderColor: 'secondary.main'
                   }
                 }}>
+                  <Avatar 
+                    src={coord.photo} 
+                    alt={coord.name} 
+                    sx={{ 
+                      width: 75, 
+                      height: 75, 
+                      mb: 2, 
+                      border: '2px solid rgba(13, 148, 136, 0.15)', 
+                      boxShadow: '0 4px 10px rgba(13, 148, 136, 0.05)',
+                      bgcolor: 'primary.main',
+                      color: '#ffffff',
+                      fontWeight: 'bold',
+                      fontSize: '1.2rem'
+                    }}
+                  >
+                    {coord.initials}
+                  </Avatar>
                   <Typography variant="body1" fontWeight="700" color="primary.main" gutterBottom>
                     {coord.name}
                   </Typography>
