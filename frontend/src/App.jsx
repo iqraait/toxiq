@@ -9,6 +9,8 @@ import RegistrationSuccess from './pages/RegistrationSuccess';
 import BrochureGallery from './pages/BrochureGallery';
 import ToxIQUEST from './pages/ToxIQUEST';
 import AbstractGuidelines from './pages/AbstractGuidelines';
+import OurSpeakers from './pages/OurSpeakers';
+import ScientificSchedule from './pages/ScientificSchedule';
 
 // Admin imports
 import AdminLayout from './pages/AdminLayout';
@@ -96,6 +98,8 @@ function App() {
       <Route path="/brochure-gallery" element={<BrochureGallery />} />
       <Route path="/toxiquest" element={<ToxIQUEST />} />
       <Route path="/abstract-guidelines" element={<AbstractGuidelines />} />
+      <Route path="/our-speakers" element={<OurSpeakers />} />
+      <Route path="/scientific-schedule" element={<ScientificSchedule />} />
 
       {/* Admin Panel Nested Routes */}
       <Route path="/admin" element={<AdminLayout />}>

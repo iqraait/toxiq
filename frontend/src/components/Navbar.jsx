@@ -61,6 +61,8 @@ const Navbar = () => {
 
   const navLinks = [
     { label: 'Home', action: () => isHome ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate('/') },
+    { label: 'Our Speakers', action: () => navigate('/our-speakers') },
+    { label: 'Scientific Schedule', action: () => navigate('/scientific-schedule') },
     { label: 'Brochure & Gallery', action: () => navigate('/brochure-gallery') },
     { label: 'Registration', action: () => navigate('/registration') },
     { label: 'Article Submission', action: () => navigate('/article-submission') }

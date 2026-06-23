@@ -49,27 +49,29 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
       boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
       borderColor: 'secondary.main'
     },
-    p: 2.5,
+    p: 2,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 2.5,
+    gap: 2,
     height: '100%',
-    width: '100%'
+    width: '100%',
+    minWidth: 0,
+    boxSizing: 'border-box'
   }}>
     <Avatar 
       src={photo} 
       alt={name} 
       sx={{ 
-        width: 80, 
-        height: 80, 
+        width: 65, 
+        height: 65, 
         flexShrink: 0, 
-        border: '3px solid rgba(13, 148, 136, 0.15)', 
-        boxShadow: '0 6px 16px rgba(13, 148, 136, 0.1)',
+        border: '2.5px solid rgba(13, 148, 136, 0.15)', 
+        boxShadow: '0 4px 12px rgba(13, 148, 136, 0.1)',
         bgcolor: 'primary.main',
         color: '#ffffff',
         fontWeight: 'bold',
-        fontSize: '1.25rem'
+        fontSize: '1.15rem'
       }}
     >
       {initials}
@@ -84,10 +86,8 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
           letterSpacing: '0.8px', 
           display: 'block', 
           mb: 0.5, 
-          fontSize: '0.75rem',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          fontSize: '0.72rem',
+          lineHeight: 1.2
         }}
       >
         {role}
@@ -96,7 +96,7 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
         variant="subtitle2" 
         fontWeight="900" 
         color="primary.main" 
-        sx={{ mb: 0.5, lineHeight: 1.2, fontSize: '0.98rem' }}
+        sx={{ mb: 0.5, lineHeight: 1.2, fontSize: '0.92rem' }}
       >
         {name}
       </Typography>
@@ -105,8 +105,8 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
         color="textSecondary" 
         fontWeight="600" 
         sx={{ 
-          fontSize: '0.8rem', 
-          lineHeight: 1.35,
+          fontSize: '0.78rem', 
+          lineHeight: 1.3,
           display: '-webkit-box',
           WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
@@ -795,89 +795,6 @@ const Home = () => {
           </Card>
         </Box>
       </Container>
-
-
-      {/* Speakers Section */}
-      {speakers.length > 0 && (
-        <Box id="speakers-section" sx={{ bgcolor: 'rgba(30, 58, 138, 0.02)', py: 10, borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9' }}>
-          <Container maxWidth="lg">
-            <Typography variant="h4" align="center" color="primary.main" sx={{ fontWeight: 800, mb: 2 }}>
-              Distinguished Guest Speakers
-            </Typography>
-            <Typography variant="body2" color="textSecondary" align="center" sx={{ mb: 6 }}>
-              Interact with international medical toxicologists and emergency medicine heads.
-            </Typography>
-            
-            <Box 
-              sx={{ 
-                display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(3, 1fr)'
-                },
-                gap: '30px',
-                alignItems: 'stretch'
-              }}
-            >
-              {speakers.map((sp) => (
-                <GlassCard 
-                  key={sp.id}
-                  sx={{ 
-                    height: '100%', 
-                    bgcolor: '#ffffff',
-                    borderRadius: '20px',
-                    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.04)',
-                    border: '1.5px solid rgba(226, 232, 240, 0.8)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    '&:hover': {
-                      transform: 'translateY(-10px)',
-                      boxShadow: '0 20px 50px rgba(0, 0, 0, 0.08)',
-                      borderColor: 'secondary.main'
-                    }
-                  }}
-                >
-                  <CardContent sx={{ p: 4, display: 'flex', gap: 3, alignItems: 'flex-start', flexGrow: 1, flexDirection: 'row' }}>
-                    <Avatar 
-                      src={getImageUrl(sp.photo)} 
-                      alt={sp.name} 
-                      sx={{ 
-                        width: 70, 
-                        height: 70, 
-                        flexShrink: 0, 
-                        border: '3px solid rgba(13, 148, 136, 0.15)', 
-                        boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
-                        bgcolor: 'secondary.main',
-                        color: '#ffffff',
-                        fontWeight: 'bold',
-                        fontSize: '1.3rem'
-                      }}
-                    >
-                      {sp.name.split(' ').map(n => n[0]).join('')}
-                    </Avatar>
-                    
-                    <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%" flexGrow={1}>
-                      <Box>
-                        <Typography variant="h6" fontWeight="800" mb={0.5} color="text.primary" sx={{ fontSize: '1.2rem', fontFamily: "'Raleway', sans-serif" }}>
-                          {sp.name}
-                        </Typography>
-                        <Typography variant="caption" fontWeight="bold" color="secondary.main" mb={1.5} sx={{ display: 'block' }}>
-                          {sp.designation}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" sx={{ lineHeight: 1.6, fontSize: '0.9rem' }}>
-                          {sp.description}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </GlassCard>
-              ))}
-            </Box>
-          </Container>
-        </Box>
-      )}
 
       {/* Gallery Section */}
       {gallery.length > 0 && (

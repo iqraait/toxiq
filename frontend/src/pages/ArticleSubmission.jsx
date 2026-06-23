@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Container, Typography, Box, TextField, Button, Alert, 
-  CircularProgress, Divider, Stack, FormHelperText 
+  CircularProgress, Divider, Stack, FormHelperText,
+  Radio, RadioGroup, FormControlLabel, FormControl, FormLabel
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
@@ -19,7 +20,9 @@ const ArticleSubmission = () => {
   const [loading, setLoading] = useState(true);
   
   // Form State
+  const [authorName, setAuthorName] = useState('');
   const [registrationId, setRegistrationId] = useState('');
+  const [presentationPreference, setPresentationPreference] = useState('ORAL');
   const [remarks, setRemarks] = useState('');
   const [file, setFile] = useState(null);
 
@@ -32,9 +35,10 @@ const ArticleSubmission = () => {
     const fetchInstructions = async () => {
       try {
         const res = await API.get('cms/home/');
-        setInstructions(res.data.content?.article_instructions || 'Upload files in PDF format, maximum 10MB. Verify Registration ID before submitting.');
+        setInstructions(res.data.content?.article_instructions || 'Files must be under 10MB and in PDF or DOCX formats only.');
       } catch (err) {
         console.error('Error fetching instructions:', err);
+        setInstructions('Files must be under 10MB and in PDF or DOCX formats only.');
       } finally {
         setLoading(false);
       }
@@ -62,8 +66,8 @@ const ArticleSubmission = () => {
     setValidationErrors({});
     setSuccess(false);
 
-    if (!registrationId || !file) {
-      setError('Please enter your Registration ID and upload your file.');
+    if (!authorName.trim() || !registrationId.trim() || !file) {
+      setError('Please enter your Name, Registration ID, and upload your file.');
       return;
     }
 
@@ -71,7 +75,14 @@ const ArticleSubmission = () => {
 
     const formData = new FormData();
     formData.append('registration_id', registrationId.trim());
-    formData.append('remarks', remarks.trim());
+    formData.append('author_name', authorName.trim());
+    formData.append('article_title', `Manuscript - ${registrationId.trim()}`);
+    
+    const prefLabel = presentationPreference === 'ORAL' 
+      ? 'Oral Presentation (Preferred)' 
+      : 'E-Poster Presentation (Preferred)';
+    const combinedRemarks = `[Presentation Preference: ${prefLabel}]\n\n${remarks.trim()}`;
+    formData.append('remarks', combinedRemarks);
     formData.append('file', file);
 
     try {
@@ -83,13 +94,14 @@ const ArticleSubmission = () => {
         origin: { y: 0.6 }
       });
       // Clear form
+      setAuthorName('');
       setRegistrationId('');
+      setPresentationPreference('ORAL');
       setRemarks('');
       setFile(null);
     } catch (err) {
       console.error('Article submit error:', err);
       if (err.response?.status === 400) {
-        // DRF Serializer errors
         setValidationErrors(err.response.data);
         const firstErr = Object.values(err.response.data)[0];
         setError(Array.isArray(firstErr) ? firstErr[0] : 'Validation failed.');
@@ -175,6 +187,17 @@ const ArticleSubmission = () => {
               <TextField
                 required
                 fullWidth
+                label="Name"
+                placeholder="Enter your full name"
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                error={!!validationErrors.author_name}
+                helperText={validationErrors.author_name?.[0] || 'Provide the name of the main author.'}
+              />
+
+              <TextField
+                required
+                fullWidth
                 label="Registration ID"
                 placeholder="e.g. TOXIQ0001"
                 value={registrationId}
@@ -182,6 +205,27 @@ const ArticleSubmission = () => {
                 error={!!validationErrors.registration_id}
                 helperText={validationErrors.registration_id?.[0] || 'Must match your official TOXIQ ID received after successful payment.'}
               />
+
+              <FormControl component="fieldset" required>
+                <FormLabel component="legend" sx={{ fontWeight: 'bold', color: '#334155', mb: 1, fontSize: '0.9rem' }}>
+                  Presentation Preference
+                </FormLabel>
+                <RadioGroup
+                  value={presentationPreference}
+                  onChange={(e) => setPresentationPreference(e.target.value)}
+                >
+                  <FormControlLabel 
+                    value="ORAL" 
+                    control={<Radio color="secondary" />} 
+                    label="Oral Presentation (Preferred)" 
+                  />
+                  <FormControlLabel 
+                    value="POSTER" 
+                    control={<Radio color="secondary" />} 
+                    label="E-Poster Presentation (Preferred)" 
+                  />
+                </RadioGroup>
+              </FormControl>
 
               <TextField
                 fullWidth

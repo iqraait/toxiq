@@ -252,6 +252,24 @@ const AdminArticles = () => {
                 <Typography variant="caption" color="textSecondary">Lead Author & Registration</Typography>
                 <Typography variant="body2">{selectedArt.author_name} ({selectedArt.registration?.registration_id})</Typography>
               </Box>
+              <Box>
+                <Typography variant="caption" color="textSecondary">Author Remarks / Comments</Typography>
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    whiteSpace: 'pre-wrap', 
+                    bgcolor: '#f8fafc', 
+                    p: 1.5, 
+                    borderRadius: '8px', 
+                    border: '1px solid #e2e8f0',
+                    maxHeight: '150px',
+                    overflowY: 'auto',
+                    mt: 0.5
+                  }}
+                >
+                  {selectedArt.remarks || 'None'}
+                </Typography>
+              </Box>
               
               <TextField
                 select
