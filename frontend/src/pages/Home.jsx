@@ -25,6 +25,11 @@ import Navbar from '../components/Navbar';
 import { purpleGradientText } from '../theme';
 import anverPhoto from '../assets/anver.jpg';
 import shamsudeenPhoto from '../assets/shamsudeen.jpg';
+import nirmalPhoto from '../assets/nirmal.jpg';
+import sanalPhoto from '../assets/sanal.jpg';
+import renjithPhoto from '../assets/renjith.jpg';
+import josnaPhoto from '../assets/josna.jpg';
+import anasPhoto from '../assets/anas.jpg';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -482,133 +487,65 @@ const Home = () => {
             Organising Committee
           </Typography>
 
-          <Grid container spacing={3} justifyContent="center" sx={{ mb: 4 }}>
-            {/* Chairperson Card */}
-            <Grid item xs={12} md={10}>
-              <Card sx={{ 
-                bgcolor: '#ffffff', 
-                borderRadius: '20px', 
-                border: '1.5px solid rgba(13, 148, 136, 0.15)',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  transform: 'translateY(-3px)',
-                  boxShadow: '0 15px 35px rgba(13, 148, 136, 0.06)'
-                },
-                p: 3.5,
-                textAlign: 'center',
-                position: 'relative',
-                overflow: 'hidden',
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0, left: 0, right: 0,
-                  height: '5px',
-                  background: 'linear-gradient(90deg, #0d9488 0%, #1e3a8a 100%)'
-                }
-              }}>
-                <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1.5px', mb: 1 }}>
-                  Organising Chairperson
-                </Typography>
-                <Typography variant="h5" fontWeight="900" color="primary.main" gutterBottom>
-                  Mr Jazeel Nalakath
-                </Typography>
-                <Typography variant="body1" color="textSecondary" fontWeight="600">
-                  Group General Manager, IQRAA Group
-                </Typography>
-              </Card>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} justifyContent="center" sx={{ mb: 6 }}>
-            {/* Vice Chairman & Convener & Joint Convener */}
+          <Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
             {[
-              { role: 'Vice Chairman', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine' },
-              { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine' },
-              { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC' }
-            ].map((leader, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i}>
+              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: null, initials: 'JN' },
+              { role: 'Vice Chairman', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
+              { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine', photo: renjithPhoto, initials: 'RT' },
+              { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC', photo: josnaPhoto, initials: 'JJ' },
+              { role: 'Organizing Secretary', name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine', photo: nirmalPhoto, initials: 'NP' },
+              { role: 'Organizing Secretary', name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy', photo: anasPhoto, initials: 'MA' }
+            ].map((member, i) => (
+              <Grid item xs={12} md={6} key={i}>
                 <Card sx={{ 
                   bgcolor: '#ffffff', 
-                  borderRadius: '20px', 
+                  borderRadius: '24px', 
                   border: '1.5px solid rgba(226, 232, 240, 0.8)',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.02)',
+                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    transform: 'translateY(-3px)',
-                    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.04)',
-                    borderColor: 'primary.main'
+                    transform: 'translateY(-5px)',
+                    boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
+                    borderColor: 'secondary.main'
                   },
                   p: 3,
-                  height: '100%',
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  textAlign: 'center',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0, left: 0, right: 0,
-                    height: '4px',
-                    bgcolor: 'primary.main'
-                  }
+                  alignItems: 'center',
+                  gap: 3,
+                  height: '100%'
                 }}>
-                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 1, fontSize: '0.75rem' }}>
-                    {leader.role}
-                  </Typography>
-                  <Typography variant="h6" fontWeight="800" color="primary.main" gutterBottom>
-                    {leader.name}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" fontWeight="500">
-                    {leader.desc}
-                  </Typography>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-
-          <Typography 
-            variant="subtitle2" 
-            fontWeight="800" 
-            color="primary.main" 
-            align="center" 
-            sx={{ textTransform: 'uppercase', letterSpacing: '1.5px', mb: 3 }}
-          >
-            Organizing Secretaries
-          </Typography>
-
-          <Grid container spacing={3} justifyContent="center" sx={{ mb: 8 }}>
-            {[
-              { name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine' },
-              { name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy' }
-            ].map((secretary, i) => (
-              <Grid item xs={12} sm={6} md={5} key={i}>
-                <Card sx={{ 
-                  bgcolor: '#ffffff', 
-                  borderRadius: '20px', 
-                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.02)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-3px)',
-                    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.04)',
-                    borderColor: 'primary.main'
-                  },
-                  p: 3,
-                  textAlign: 'center',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center'
-                }}>
-                  <Typography variant="h6" fontWeight="800" color="primary.main" gutterBottom>
-                    {secretary.name}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" fontWeight="500">
-                    {secretary.desc}
-                  </Typography>
+                  <Avatar 
+                    src={member.photo} 
+                    alt={member.name} 
+                    sx={{ 
+                      width: 100, 
+                      height: 100, 
+                      border: '3px solid rgba(13, 148, 136, 0.15)', 
+                      boxShadow: '0 8px 24px rgba(13, 148, 136, 0.1)',
+                      bgcolor: 'primary.main',
+                      color: '#ffffff',
+                      fontWeight: 'bold',
+                      fontSize: '1.4rem'
+                    }}
+                  >
+                    {member.initials}
+                  </Avatar>
+                  <Box>
+                    <Typography 
+                      variant="caption" 
+                      color="secondary.main" 
+                      fontWeight="800" 
+                      sx={{ textTransform: 'uppercase', letterSpacing: '1px', display: 'block', mb: 0.5 }}
+                    >
+                      {member.role}
+                    </Typography>
+                    <Typography variant="h6" fontWeight="900" color="primary.main" sx={{ mb: 0.5, lineHeight: 1.2 }}>
+                      {member.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" fontWeight="600">
+                      {member.desc}
+                    </Typography>
+                  </Box>
                 </Card>
               </Grid>
             ))}
