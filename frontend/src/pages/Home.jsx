@@ -367,107 +367,135 @@ const Home = () => {
         </Box>
       </Container>
 
+
+
+      {/* About Section */}
+      <Container maxWidth="lg" sx={{ mb: 10 }} id="about-section">
+        <Grid container spacing={5} alignItems="flex-start">
+          <Grid item xs={12}>
+            <Typography variant="h4" fontWeight="800" color="primary.main" gutterBottom>
+              {about.title}
+            </Typography>
+            <Box 
+              sx={{ 
+                color: 'text.secondary', 
+                lineHeight: 1.7,
+                '& h3': { color: 'secondary.main', mt: 3, mb: 1, fontWeight: '700' },
+                '& p': { mb: 2 }
+              }}
+              dangerouslySetInnerHTML={{ __html: about.text }}
+            />
+          </Grid>
+        </Grid>
+      </Container>
+
       {/* Patrons & Organising Committee Section */}
-      <Container maxWidth="lg" sx={{ mb: 10 }}>
-        <GlassCard sx={{ p: { xs: 4, md: 6 }, border: '1px solid rgba(30, 58, 138, 0.08)' }}>
+      <Box sx={{ bgcolor: 'rgba(13, 148, 136, 0.02)', py: 10, borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', mb: 10 }}>
+        <Container maxWidth="lg">
           <Typography 
             variant="h4" 
             fontWeight="900" 
             color="primary.main" 
             align="center" 
-            gutterBottom
-            sx={{ fontFamily: "'Raleway', sans-serif", mb: 5 }}
+            sx={{ fontFamily: "'Raleway', sans-serif", mb: 2 }}
           >
             Patrons & Organising Committee
+          </Typography>
+          <Typography variant="body2" color="textSecondary" align="center" sx={{ mb: 6, maxWidth: '600px', mx: 'auto' }}>
+            Meet the visionary leadership and dedicated committee members guiding TOXIQ 2026.
           </Typography>
 
           {/* Patrons Row */}
           <Typography 
-            variant="h5" 
-            fontWeight="800" 
+            variant="subtitle2" 
             color="secondary.main" 
+            fontWeight="900" 
             align="center" 
-            sx={{ fontFamily: "'Raleway', sans-serif", mb: 4 }}
+            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: 4 }}
           >
             Patrons
           </Typography>
 
-          <Grid container spacing={4} justifyContent="center" sx={{ mb: 6 }}>
-            <Grid item xs={12} sm={6} md={5}>
-              <Card sx={{ 
-                bgcolor: 'rgba(255,255,255,0.7)', 
-                borderRadius: '16px', 
-                border: '1px solid rgba(226,232,240,0.8)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                p: 3,
-                height: '100%'
-              }}>
-                <Avatar 
-                  src={anverPhoto} 
-                  alt="Dr P C Anver" 
-                  sx={{ width: 140, height: 140, mb: 2, border: '3px solid #1e3a8a', boxShadow: '0 8px 24px rgba(30, 58, 138, 0.15)' }} 
-                />
-                <Typography variant="h6" fontWeight="800" color="primary.main" align="center">
-                  Dr P C Anver
-                </Typography>
-                <Typography variant="body2" color="textSecondary" align="center" fontWeight="600" sx={{ mt: 0.5 }}>
-                  Executive Director
-                </Typography>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={5}>
-              <Card sx={{ 
-                bgcolor: 'rgba(255,255,255,0.7)', 
-                borderRadius: '16px', 
-                border: '1px solid rgba(226,232,240,0.8)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                p: 3,
-                height: '100%'
-              }}>
-                <Avatar 
-                  src={shamsudeenPhoto} 
-                  alt="Dr Shamsudeen M" 
-                  sx={{ width: 140, height: 140, mb: 2, border: '3px solid #1e3a8a', boxShadow: '0 8px 24px rgba(30, 58, 138, 0.15)' }} 
-                />
-                <Typography variant="h6" fontWeight="800" color="primary.main" align="center">
-                  Dr Shamsudeen M
-                </Typography>
-                <Typography variant="body2" color="textSecondary" align="center" fontWeight="600" sx={{ mt: 0.5 }}>
-                  Chief of Medical Services
-                </Typography>
-              </Card>
-            </Grid>
+          <Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
+            {[
+              { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto },
+              { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto }
+            ].map((patron, i) => (
+              <Grid item xs={12} sm={6} md={5} key={i}>
+                <Card sx={{ 
+                  bgcolor: '#ffffff', 
+                  borderRadius: '24px', 
+                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
+                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                    boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
+                    borderColor: 'secondary.main'
+                  },
+                  p: 4,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 3
+                }}>
+                  <Avatar 
+                    src={patron.photo} 
+                    alt={patron.name} 
+                    sx={{ 
+                      width: 110, 
+                      height: 110, 
+                      border: '3px solid rgba(13, 148, 136, 0.15)', 
+                      boxShadow: '0 8px 24px rgba(13, 148, 136, 0.1)' 
+                    }} 
+                  />
+                  <Box>
+                    <Typography 
+                      variant="caption" 
+                      color="secondary.main" 
+                      fontWeight="800" 
+                      sx={{ textTransform: 'uppercase', letterSpacing: '1px', display: 'block', mb: 0.5 }}
+                    >
+                      Conference Patron
+                    </Typography>
+                    <Typography variant="h5" fontWeight="900" color="primary.main" sx={{ mb: 0.5 }}>
+                      {patron.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" fontWeight="600">
+                      {patron.role}
+                    </Typography>
+                  </Box>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
 
-          <Divider sx={{ my: 5 }} />
+          <Divider sx={{ my: 6, borderColor: 'rgba(226, 232, 240, 0.8)' }} />
 
           {/* Organising Committee Header */}
           <Typography 
-            variant="h5" 
-            fontWeight="800" 
+            variant="subtitle2" 
             color="secondary.main" 
+            fontWeight="900" 
             align="center" 
-            sx={{ fontFamily: "'Raleway', sans-serif", mb: 4 }}
+            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: 4 }}
           >
             Organising Committee
           </Typography>
 
-          <Grid container spacing={3} justifyContent="center" sx={{ mb: 6 }}>
+          <Grid container spacing={3} justifyContent="center" sx={{ mb: 4 }}>
             {/* Chairperson Card */}
             <Grid item xs={12} md={10}>
               <Card sx={{ 
-                bgcolor: 'rgba(255,255,255,0.75)', 
-                borderRadius: '16px', 
+                bgcolor: '#ffffff', 
+                borderRadius: '20px', 
                 border: '1.5px solid rgba(13, 148, 136, 0.15)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
-                p: 3,
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-3px)',
+                  boxShadow: '0 15px 35px rgba(13, 148, 136, 0.06)'
+                },
+                p: 3.5,
                 textAlign: 'center',
                 position: 'relative',
                 overflow: 'hidden',
@@ -475,8 +503,8 @@ const Home = () => {
                   content: '""',
                   position: 'absolute',
                   top: 0, left: 0, right: 0,
-                  height: '4px',
-                  bgcolor: 'secondary.main'
+                  height: '5px',
+                  background: 'linear-gradient(90deg, #0d9488 0%, #1e3a8a 100%)'
                 }
               }}>
                 <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1.5px', mb: 1 }}>
@@ -501,10 +529,16 @@ const Home = () => {
             ].map((leader, i) => (
               <Grid item xs={12} sm={6} md={4} key={i}>
                 <Card sx={{ 
-                  bgcolor: 'rgba(255,255,255,0.7)', 
-                  borderRadius: '16px', 
-                  border: '1px solid rgba(226,232,240,0.8)',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                  bgcolor: '#ffffff', 
+                  borderRadius: '20px', 
+                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.02)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-3px)',
+                    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.04)',
+                    borderColor: 'primary.main'
+                  },
                   p: 3,
                   height: '100%',
                   display: 'flex',
@@ -536,26 +570,32 @@ const Home = () => {
           </Grid>
 
           <Typography 
-            variant="h6" 
+            variant="subtitle2" 
             fontWeight="800" 
             color="primary.main" 
             align="center" 
-            sx={{ fontFamily: "'Raleway', sans-serif", mb: 3 }}
+            sx={{ textTransform: 'uppercase', letterSpacing: '1.5px', mb: 3 }}
           >
             Organizing Secretaries
           </Typography>
 
-          <Grid container spacing={3} justifyContent="center" sx={{ mb: 6 }}>
+          <Grid container spacing={3} justifyContent="center" sx={{ mb: 8 }}>
             {[
               { name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine' },
               { name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy' }
             ].map((secretary, i) => (
               <Grid item xs={12} sm={6} md={5} key={i}>
                 <Card sx={{ 
-                  bgcolor: 'rgba(255,255,255,0.7)', 
-                  borderRadius: '16px', 
-                  border: '1px solid rgba(226,232,240,0.8)',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                  bgcolor: '#ffffff', 
+                  borderRadius: '20px', 
+                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.02)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-3px)',
+                    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.04)',
+                    borderColor: 'primary.main'
+                  },
                   p: 3,
                   textAlign: 'center',
                   height: '100%',
@@ -574,15 +614,15 @@ const Home = () => {
             ))}
           </Grid>
 
-          <Divider sx={{ my: 5 }} />
+          <Divider sx={{ my: 6, borderColor: 'rgba(226, 232, 240, 0.8)' }} />
 
           {/* Programme Coordinators Section */}
           <Typography 
-            variant="h6" 
-            fontWeight="800" 
+            variant="subtitle2" 
+            fontWeight="900" 
             color="secondary.main" 
             align="center" 
-            sx={{ fontFamily: "'Raleway', sans-serif", mb: 4, textTransform: 'uppercase', letterSpacing: '1px' }}
+            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: 4 }}
           >
             Programme Coordinators
           </Typography>
@@ -598,21 +638,22 @@ const Home = () => {
             ].map((coord, i) => (
               <Grid item xs={12} sm={6} md={4} key={i}>
                 <Card sx={{ 
-                  bgcolor: 'rgba(255,255,255,0.5)', 
-                  borderRadius: '12px', 
-                  border: '1px solid rgba(226,232,240,0.6)',
-                  p: 2.5,
+                  bgcolor: '#ffffff', 
+                  borderRadius: '16px', 
+                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.01)',
+                  p: 3,
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
                   textAlign: 'center',
-                  transition: 'all 0.2s ease',
+                  transition: 'all 0.25s ease',
                   '&:hover': {
-                    transform: 'translateY(-3px)',
-                    boxShadow: '0 6px 15px rgba(0,0,0,0.03)',
-                    borderColor: 'rgba(13, 148, 136, 0.3)'
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 8px 24px rgba(13, 148, 136, 0.08)',
+                    borderColor: 'secondary.main'
                   }
                 }}>
                   <Typography variant="body1" fontWeight="700" color="primary.main" gutterBottom>
@@ -625,28 +666,8 @@ const Home = () => {
               </Grid>
             ))}
           </Grid>
-        </GlassCard>
-      </Container>
-
-      {/* About Section */}
-      <Container maxWidth="lg" sx={{ mb: 10 }} id="about-section">
-        <Grid container spacing={5} alignItems="flex-start">
-          <Grid item xs={12}>
-            <Typography variant="h4" fontWeight="800" color="primary.main" gutterBottom>
-              {about.title}
-            </Typography>
-            <Box 
-              sx={{ 
-                color: 'text.secondary', 
-                lineHeight: 1.7,
-                '& h3': { color: 'secondary.main', mt: 3, mb: 1, fontWeight: '700' },
-                '& p': { mb: 2 }
-              }}
-              dangerouslySetInnerHTML={{ __html: about.text }}
-            />
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </Box>
 
       {/* What to Expect, Topics Covered, Who Will Benefit */}
       <Container maxWidth="lg" sx={{ mb: 10 }}>
