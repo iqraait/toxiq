@@ -30,11 +30,93 @@ import sanalPhoto from '../assets/sanal.jpg';
 import renjithPhoto from '../assets/renjith.jpg';
 import josnaPhoto from '../assets/josna.jpg';
 import anasPhoto from '../assets/anas.jpg';
-import jazeelPhoto from '../assets/jazeel.jpg';
+import jazeelPhoto from '../assets/jazeel_fixed.jpg';
 import vajidPhoto from '../assets/vajid.jpg';
 import shahalPhoto from '../assets/shahal.jpg';
-import noufalPhoto from '../assets/noufal.jpg';
+import noufalPhoto from '../assets/noufal_fixed.jpg';
 import shinadPhoto from '../assets/shinad.jpg';
+
+const MemberCard = ({ name, role, desc, photo, initials }) => (
+  <Card sx={{ 
+    bgcolor: '#ffffff', 
+    borderRadius: '24px', 
+    border: '1.5px solid rgba(226, 232, 240, 0.8)',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      transform: 'translateY(-5px)',
+      boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
+      borderColor: 'secondary.main'
+    },
+    p: 2.5,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2.5,
+    height: '100%',
+    width: '100%'
+  }}>
+    <Avatar 
+      src={photo} 
+      alt={name} 
+      sx={{ 
+        width: 80, 
+        height: 80, 
+        flexShrink: 0, 
+        border: '3px solid rgba(13, 148, 136, 0.15)', 
+        boxShadow: '0 6px 16px rgba(13, 148, 136, 0.1)',
+        bgcolor: 'primary.main',
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: '1.25rem'
+      }}
+    >
+      {initials}
+    </Avatar>
+    <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, minWidth: 0, textAlign: 'left' }}>
+      <Typography 
+        variant="caption" 
+        color="secondary.main" 
+        fontWeight="800" 
+        sx={{ 
+          textTransform: 'uppercase', 
+          letterSpacing: '0.8px', 
+          display: 'block', 
+          mb: 0.5, 
+          fontSize: '0.75rem',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}
+      >
+        {role}
+      </Typography>
+      <Typography 
+        variant="subtitle2" 
+        fontWeight="900" 
+        color="primary.main" 
+        sx={{ mb: 0.5, lineHeight: 1.2, fontSize: '0.98rem' }}
+      >
+        {name}
+      </Typography>
+      <Typography 
+        variant="caption" 
+        color="textSecondary" 
+        fontWeight="600" 
+        sx={{ 
+          fontSize: '0.8rem', 
+          lineHeight: 1.35,
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden'
+        }}
+      >
+        {desc}
+      </Typography>
+    </Box>
+  </Card>
+);
 
 const Home = () => {
   const navigate = useNavigate();
@@ -426,55 +508,19 @@ const Home = () => {
             Patrons
           </Typography>
 
-          <Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
+          <Grid container spacing={3} justifyContent="center" sx={{ mb: 8 }}>
             {[
-              { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto },
-              { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto }
+              { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto, initials: 'PA' },
+              { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto, initials: 'SM' }
             ].map((patron, i) => (
-              <Grid item xs={12} sm={6} md={5} key={i}>
-                <Card sx={{ 
-                  bgcolor: '#ffffff', 
-                  borderRadius: '24px', 
-                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
-                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
-                    borderColor: 'secondary.main'
-                  },
-                  p: 4,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 3
-                }}>
-                  <Avatar 
-                    src={patron.photo} 
-                    alt={patron.name} 
-                    sx={{ 
-                      width: 110, 
-                      height: 110, 
-                      border: '3px solid rgba(13, 148, 136, 0.15)', 
-                      boxShadow: '0 8px 24px rgba(13, 148, 136, 0.1)' 
-                    }} 
-                  />
-                  <Box>
-                    <Typography 
-                      variant="caption" 
-                      color="secondary.main" 
-                      fontWeight="800" 
-                      sx={{ textTransform: 'uppercase', letterSpacing: '1px', display: 'block', mb: 0.5 }}
-                    >
-                      Conference Patron
-                    </Typography>
-                    <Typography variant="h5" fontWeight="900" color="primary.main" sx={{ mb: 0.5 }}>
-                      {patron.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" fontWeight="600">
-                      {patron.role}
-                    </Typography>
-                  </Box>
-                </Card>
+              <Grid item xs={12} sm={6} md={3} key={i} sx={{ display: 'flex' }}>
+                <MemberCard 
+                  name={patron.name}
+                  role="Conference Patron"
+                  desc={patron.role}
+                  photo={patron.photo}
+                  initials={patron.initials}
+                />
               </Grid>
             ))}
           </Grid>
@@ -492,7 +538,7 @@ const Home = () => {
             Organising Committee
           </Typography>
 
-          <Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
+          <Grid container spacing={3} justifyContent="center" sx={{ mb: 8 }}>
             {[
               { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: jazeelPhoto, initials: 'JN' },
               { role: 'Vice Chairman', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
@@ -501,57 +547,14 @@ const Home = () => {
               { role: 'Organizing Secretary', name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine', photo: nirmalPhoto, initials: 'NP' },
               { role: 'Organizing Secretary', name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy', photo: anasPhoto, initials: 'MA' }
             ].map((member, i) => (
-              <Grid item xs={12} md={6} key={i}>
-                <Card sx={{ 
-                  bgcolor: '#ffffff', 
-                  borderRadius: '24px', 
-                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
-                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
-                    borderColor: 'secondary.main'
-                  },
-                  p: 3,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 3,
-                  height: '100%'
-                }}>
-                  <Avatar 
-                    src={member.photo} 
-                    alt={member.name} 
-                    sx={{ 
-                      width: 100, 
-                      height: 100, 
-                      border: '3px solid rgba(13, 148, 136, 0.15)', 
-                      boxShadow: '0 8px 24px rgba(13, 148, 136, 0.1)',
-                      bgcolor: 'primary.main',
-                      color: '#ffffff',
-                      fontWeight: 'bold',
-                      fontSize: '1.4rem'
-                    }}
-                  >
-                    {member.initials}
-                  </Avatar>
-                  <Box>
-                    <Typography 
-                      variant="caption" 
-                      color="secondary.main" 
-                      fontWeight="800" 
-                      sx={{ textTransform: 'uppercase', letterSpacing: '1px', display: 'block', mb: 0.5 }}
-                    >
-                      {member.role}
-                    </Typography>
-                    <Typography variant="h6" fontWeight="900" color="primary.main" sx={{ mb: 0.5, lineHeight: 1.2 }}>
-                      {member.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" fontWeight="600">
-                      {member.desc}
-                    </Typography>
-                  </Box>
-                </Card>
+              <Grid item xs={12} sm={6} md={3} key={i} sx={{ display: 'flex' }}>
+                <MemberCard 
+                  name={member.name}
+                  role={member.role}
+                  desc={member.desc}
+                  photo={member.photo}
+                  initials={member.initials}
+                />
               </Grid>
             ))}
           </Grid>
@@ -569,7 +572,7 @@ const Home = () => {
             Programme Coordinators
           </Typography>
 
-          <Grid container spacing={2.5} justifyContent="center">
+          <Grid container spacing={3} justifyContent="center">
             {[
               { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: null, initials: 'NV' },
               { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: null, initials: 'AR' },
@@ -578,50 +581,14 @@ const Home = () => {
               { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK' },
               { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy', photo: shinadPhoto, initials: 'SN' }
             ].map((coord, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i}>
-                <Card sx={{ 
-                  bgcolor: '#ffffff', 
-                  borderRadius: '16px', 
-                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
-                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.01)',
-                  p: 3,
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  transition: 'all 0.25s ease',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 8px 24px rgba(13, 148, 136, 0.08)',
-                    borderColor: 'secondary.main'
-                  }
-                }}>
-                  <Avatar 
-                    src={coord.photo} 
-                    alt={coord.name} 
-                    sx={{ 
-                      width: 75, 
-                      height: 75, 
-                      mb: 2, 
-                      border: '2px solid rgba(13, 148, 136, 0.15)', 
-                      boxShadow: '0 4px 10px rgba(13, 148, 136, 0.05)',
-                      bgcolor: 'primary.main',
-                      color: '#ffffff',
-                      fontWeight: 'bold',
-                      fontSize: '1.2rem'
-                    }}
-                  >
-                    {coord.initials}
-                  </Avatar>
-                  <Typography variant="body1" fontWeight="700" color="primary.main" gutterBottom>
-                    {coord.name}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
-                    {coord.role}
-                  </Typography>
-                </Card>
+              <Grid item xs={12} sm={6} md={3} key={i} sx={{ display: 'flex' }}>
+                <MemberCard 
+                  name={coord.name}
+                  role="Programme Coordinator"
+                  desc={coord.role}
+                  photo={coord.photo}
+                  initials={coord.initials}
+                />
               </Grid>
             ))}
           </Grid>
