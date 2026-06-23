@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Container, Typography, Box, Grid, Button, 
   Card, CardContent, Avatar, Chip, Stack, useTheme, Alert,
-  Link, Dialog, DialogTitle, DialogContent, DialogActions
+  Link, Dialog, DialogTitle, DialogContent, DialogActions, Divider
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
