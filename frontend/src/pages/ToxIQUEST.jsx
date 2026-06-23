@@ -16,23 +16,21 @@ const ToxIQUEST = () => {
   const navigate = useNavigate();
 
   const rules = [
-    'Team Size: 2 Residents per Team',
-    'Institution Limit: Maximum 3 Teams per Institution',
-    'Quiz Registration: FREE',
-    'Conference Registration is Mandatory for Participation'
+    'Team Size: 2 members per team',
+    'Eligibility: Open to all postgraduate trainees from any specialty and Clinical Pharmacists',
+    'Quiz Registration: Free of Cost',
+    'Conference Registration: Mandatory for participation in the quiz',
+    'Quiz Topics: Any topic related to Clinical Toxicology'
   ];
 
-  const topics = [
-    'Clinical Toxicology Cases',
-    'Toxidromes & Mechanisms of Toxicity',
-    'Antidotes & Emergency Management',
-    'Poison Information & Toxicovigilance',
-    'Recent Advances in Medical Toxicology'
+  const formatSteps = [
+    { title: 'Preliminary Round', desc: 'Written screening test to select the top competing teams.' },
+    { title: 'Grand Finale', desc: 'On-stage live buzzer rounds covering advanced toxicology cases.' }
   ];
 
   const contacts = [
-    { name: 'Dr. Shahal', phone: '9895583555' },
-    { name: 'Dr. Jabir', phone: '7356520068' }
+    { name: 'Dr. Shahal', phone: '98955 83555' },
+    { name: 'Dr. Jabir', phone: '73565 20068' }
   ];
 
   return (
@@ -79,10 +77,10 @@ const ToxIQUEST = () => {
                   sx={purpleGradientText}
                   gutterBottom
                 >
-                  ToxIQUEST
+                  ToxIQUEST 2026
                 </Typography>
                 <Typography variant="h5" fontWeight="700" color="text.secondary" fontFamily="'Raleway', sans-serif">
-                  National Toxicology Quiz Competition
+                  Clinical Toxicology Quiz Competition
                 </Typography>
               </Box>
 
@@ -93,7 +91,7 @@ const ToxIQUEST = () => {
                 <Grid item xs={12} md={6}>
                   <Box mb={4}>
                     <Typography variant="h6" color="primary.main" fontWeight="800" mb={2} display="flex" alignItems="center" gap={1}>
-                      <CheckCircleOutlineIcon color="secondary" /> Rules & Eligibility
+                      <CheckCircleOutlineIcon color="secondary" /> Rules & Regulations
                     </Typography>
                     <List>
                       {rules.map((rule, idx) => (
@@ -128,28 +126,29 @@ const ToxIQUEST = () => {
                   </Box>
                 </Grid>
 
-                {/* Right Side: Quiz Topics */}
+                {/* Right Side: Competition Format */}
                 <Grid item xs={12} md={6}>
                   <Box sx={{ height: '100%', p: 3.5, bgcolor: 'rgba(13, 148, 136, 0.02)', border: '1.5px dashed rgba(13, 148, 136, 0.2)', borderRadius: '20px' }}>
                     <Typography variant="h6" color="primary.main" fontWeight="800" mb={3} display="flex" alignItems="center" gap={1}>
-                      <HelpOutlineIcon color="primary" /> Quiz Coverage & Topics
+                      <EmojiEventsIcon color="primary" /> Competition Format
                     </Typography>
-                    <Stack spacing={2}>
-                      {topics.map((topic, idx) => (
+                    <Stack spacing={2.5}>
+                      {formatSteps.map((step, idx) => (
                         <Box 
                           key={idx} 
                           sx={{ 
-                            p: 2, 
+                            p: 2.5, 
                             bgcolor: '#ffffff', 
                             borderRadius: '12px', 
                             boxShadow: '0 4px 15px rgba(0,0,0,0.01)', 
-                            border: '1px solid rgba(226, 232, 240, 0.8)',
-                            transition: 'transform 0.2s',
-                            '&:hover': { transform: 'scale(1.02)' }
+                            border: '1px solid rgba(226, 232, 240, 0.8)'
                           }}
                         >
-                          <Typography variant="body2" fontWeight="700" color="text.primary">
-                            {idx + 1}. {topic}
+                          <Typography variant="subtitle2" fontWeight="800" color="secondary.main" mb={0.5}>
+                            {step.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5, fontWeight: 500 }}>
+                            {step.desc}
                           </Typography>
                         </Box>
                       ))}
@@ -157,6 +156,12 @@ const ToxIQUEST = () => {
                   </Box>
                 </Grid>
               </Grid>
+
+              <Box sx={{ my: 5, p: 3, bgcolor: 'rgba(13, 148, 136, 0.03)', borderRadius: '16px', border: '1px solid rgba(13, 148, 136, 0.08)' }}>
+                <Typography variant="body1" align="center" color="text.secondary" sx={{ fontStyle: 'italic', fontWeight: 600, lineHeight: 1.7, maxWidth: '800px', mx: 'auto' }}>
+                  "Test your toxicology knowledge and compete with the best minds in emergency medicine, critical care, internal medicine, paediatrics, pharmacology, and allied specialties at ToxIQUEST 2026!"
+                </Typography>
+              </Box>
 
               <Divider sx={{ my: 4 }} />
 

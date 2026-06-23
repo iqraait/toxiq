@@ -23,6 +23,8 @@ import GlassCard from '../components/GlassCard';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { purpleGradientText } from '../theme';
+import anverPhoto from '../assets/anver.jpg';
+import shamsudeenPhoto from '../assets/shamsudeen.jpg';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -141,128 +143,136 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Banner Section */}
-      <Box 
-        sx={{ 
-          background: activeBanner.image 
-            ? (activeBanner.title || activeBanner.subtitle 
-                ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url('${getImageUrl(activeBanner.image)}') no-repeat center center / cover`
-                : `url('${getImageUrl(activeBanner.image)}') no-repeat center center / cover`)
-            : 'linear-gradient(135deg, #091b29 0%, #062425 100%)', // Fallback premium dark gradient
-          color: '#ffffff',
-          py: activeBanner.title || activeBanner.subtitle ? { xs: 10, md: 15 } : 0,
-          minHeight: activeBanner.title || activeBanner.subtitle ? 'auto' : { xs: '250px', sm: '400px', md: '500px' },
-          position: 'relative',
-          overflow: 'hidden',
-          boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.15)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center'
-        }}
-      >
-        {/* Subtle grid background pattern */}
+      {!(activeBanner.title || activeBanner.subtitle) && activeBanner.image ? (
+        <Box sx={{ width: '100%', overflow: 'hidden', display: 'flex', justifyContent: 'center', bgcolor: '#091b29' }}>
+          <img 
+            src={getImageUrl(activeBanner.image)} 
+            alt="TOXIQ Conference Banner" 
+            style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '75vh', objectFit: 'contain' }} 
+          />
+        </Box>
+      ) : (
         <Box 
-          sx={{
-            position: 'absolute',
-            top: 0, left: 0, right: 0, bottom: 0,
-            opacity: 0.05,
-            backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1px, transparent 0), radial-gradient(rgba(255,255,255,0.15) 1px, transparent 0)',
-            backgroundSize: '24px 24px',
-            backgroundPosition: '0 0, 12px 12px',
-            pointerEvents: 'none'
+          sx={{ 
+            background: activeBanner.image 
+              ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url('${getImageUrl(activeBanner.image)}') no-repeat center center / cover`
+              : 'linear-gradient(135deg, #091b29 0%, #062425 100%)', // Fallback premium dark gradient
+            color: '#ffffff',
+            py: activeBanner.title || activeBanner.subtitle ? { xs: 10, md: 15 } : 0,
+            minHeight: activeBanner.title || activeBanner.subtitle ? 'auto' : { xs: '250px', sm: '400px', md: '500px' },
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center'
           }}
-        />
-        
-        {(activeBanner.title || activeBanner.subtitle) && (
-          <Container maxWidth="md" sx={{ position: 'relative', zIndex: 5 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              {activeBanner.title && (
+        >
+          {/* Subtle grid background pattern */}
+          <Box 
+            sx={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              opacity: 0.05,
+              backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1px, transparent 0), radial-gradient(rgba(255,255,255,0.15) 1px, transparent 0)',
+              backgroundSize: '24px 24px',
+              backgroundPosition: '0 0, 12px 12px',
+              pointerEvents: 'none'
+            }}
+          />
+          
+          {(activeBanner.title || activeBanner.subtitle) && (
+            <Container maxWidth="md" sx={{ position: 'relative', zIndex: 5 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                {activeBanner.title && (
+                  <Typography 
+                    variant="h2" 
+                    sx={{ 
+                      fontWeight: 900, 
+                      mb: 2, 
+                      fontSize: { xs: '2.4rem', sm: '3.2rem', md: '4rem' },
+                      letterSpacing: '-1.5px',
+                      lineHeight: 1.15,
+                      textShadow: '0 4px 15px rgba(0,0,0,0.5)'
+                    }}
+                  >
+                    {activeBanner.title}
+                  </Typography>
+                )}
+                
+                {activeBanner.subtitle && (
+                  <Typography 
+                    variant="h5" 
+                    sx={{ 
+                      mb: 3, 
+                      color: '#2dd4bf', 
+                      fontWeight: 700,
+                      fontSize: { xs: '1.15rem', sm: '1.4rem', md: '1.75rem' },
+                      lineHeight: 1.3,
+                      textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                      maxWidth: '800px'
+                    }}
+                  >
+                    {activeBanner.subtitle}
+                  </Typography>
+                )}
+                
                 <Typography 
-                  variant="h2" 
+                  variant="body1" 
                   sx={{ 
-                    fontWeight: 900, 
-                    mb: 2, 
-                    fontSize: { xs: '2.4rem', sm: '3.2rem', md: '4rem' },
-                    letterSpacing: '-1.5px',
-                    lineHeight: 1.15,
-                    textShadow: '0 4px 15px rgba(0,0,0,0.5)'
+                    mb: 5, 
+                    color: '#cbd5e1', 
+                    fontWeight: 400,
+                    maxWidth: '650px',
+                    lineHeight: 1.8,
+                    fontSize: { xs: '0.95rem', md: '1.08rem' },
+                    textShadow: '0 2px 6px rgba(0,0,0,0.5)'
                   }}
                 >
-                  {activeBanner.title}
+                  Join experts, researchers, and healthcare professionals for a comprehensive toxicology program with hands-on learning and scientific exchange.
                 </Typography>
-              )}
-              
-              {activeBanner.subtitle && (
-                <Typography 
-                  variant="h5" 
-                  sx={{ 
-                    mb: 3, 
-                    color: '#2dd4bf', 
-                    fontWeight: 700,
-                    fontSize: { xs: '1.15rem', sm: '1.4rem', md: '1.75rem' },
-                    lineHeight: 1.3,
-                    textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-                    maxWidth: '800px'
-                  }}
-                >
-                  {activeBanner.subtitle}
-                </Typography>
-              )}
-              
-              <Typography 
-                variant="body1" 
-                sx={{ 
-                  mb: 5, 
-                  color: '#cbd5e1', 
-                  fontWeight: 400,
-                  maxWidth: '650px',
-                  lineHeight: 1.8,
-                  fontSize: { xs: '0.95rem', md: '1.08rem' },
-                  textShadow: '0 2px 6px rgba(0,0,0,0.5)'
-                }}
-              >
-                Join experts, researchers, and healthcare professionals for a comprehensive toxicology program with hands-on learning and scientific exchange.
-              </Typography>
-              
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} justifyContent="center" sx={{ width: { xs: '100%', sm: 'auto' } }}>
-                <Button 
-                  variant="contained" 
-                  color="secondary" 
-                  size="large"
-                  sx={{ px: 5, py: 1.8, borderRadius: '30px', fontSize: '1rem', fontWeight: 800, minWidth: '180px' }}
-                  onClick={handleBannerCta}
-                >
-                  {activeBanner.cta_text || 'Register Now'}
-                </Button>
-                <Button 
-                  variant="outlined" 
-                  sx={{ 
-                    px: 5, 
-                    py: 1.8, 
-                    borderRadius: '30px', 
-                    fontSize: '1rem', 
-                    color: '#ffffff', 
-                    borderColor: 'rgba(255,255,255,0.4)',
-                    fontWeight: 800,
-                    minWidth: '180px',
-                    '&:hover': {
-                      borderColor: '#2dd4bf',
-                      color: '#2dd4bf',
-                      bgcolor: 'rgba(45, 212, 191, 0.05)'
-                    }
-                  }}
-                  onClick={() => {
-                    const docSection = document.getElementById('about-section');
-                    if (docSection) docSection.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                >
-                  View Program
-                </Button>
-              </Stack>
-            </Box>
-          </Container>
-        )}
-      </Box>
+                
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} justifyContent="center" sx={{ width: { xs: '100%', sm: 'auto' } }}>
+                  <Button 
+                    variant="contained" 
+                    color="secondary" 
+                    size="large"
+                    sx={{ px: 5, py: 1.8, borderRadius: '30px', fontSize: '1rem', fontWeight: 800, minWidth: '180px' }}
+                    onClick={handleBannerCta}
+                  >
+                    {activeBanner.cta_text || 'Register Now'}
+                  </Button>
+                  <Button 
+                    variant="outlined" 
+                    sx={{ 
+                      px: 5, 
+                      py: 1.8, 
+                      borderRadius: '30px', 
+                      fontSize: '1rem', 
+                      color: '#ffffff', 
+                      borderColor: 'rgba(255,255,255,0.4)',
+                      fontWeight: 800,
+                      minWidth: '180px',
+                      '&:hover': {
+                        borderColor: '#2dd4bf',
+                        color: '#2dd4bf',
+                        bgcolor: 'rgba(45, 212, 191, 0.05)'
+                      }
+                    }}
+                    onClick={() => {
+                      const docSection = document.getElementById('about-section');
+                      if (docSection) docSection.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    View Program
+                  </Button>
+                </Stack>
+              </Box>
+            </Container>
+          )}
+        </Box>
+      )}
 
       {/* Statistics / Highlights Section */}
       <Container 
@@ -270,7 +280,7 @@ const Home = () => {
         sx={{ 
           maxWidth: '1400px', 
           mx: 'auto', 
-          mt: -6, 
+          mt: (activeBanner.title || activeBanner.subtitle) ? -6 : { xs: 2, sm: 4, md: 6 }, 
           mb: 8, 
           zIndex: 10,
           px: { xs: 2, sm: 3, md: 4 }
@@ -355,6 +365,195 @@ const Home = () => {
             </Card>
           ))}
         </Box>
+      </Container>
+
+      {/* Patrons & Organising Committee Section */}
+      <Container maxWidth="lg" sx={{ mb: 10 }}>
+        <GlassCard sx={{ p: { xs: 4, md: 6 }, border: '1px solid rgba(30, 58, 138, 0.08)' }}>
+          <Typography 
+            variant="h4" 
+            fontWeight="900" 
+            color="primary.main" 
+            align="center" 
+            gutterBottom
+            sx={{ fontFamily: "'Raleway', sans-serif", mb: 5 }}
+          >
+            Patrons & Organising Committee
+          </Typography>
+
+          {/* Patrons Row */}
+          <Typography 
+            variant="h5" 
+            fontWeight="800" 
+            color="secondary.main" 
+            align="center" 
+            sx={{ fontFamily: "'Raleway', sans-serif", mb: 4 }}
+          >
+            Patrons
+          </Typography>
+
+          <Grid container spacing={4} justifyContent="center" sx={{ mb: 6 }}>
+            <Grid item xs={12} sm={6} md={5}>
+              <Card sx={{ 
+                bgcolor: 'rgba(255,255,255,0.7)', 
+                borderRadius: '16px', 
+                border: '1px solid rgba(226,232,240,0.8)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                p: 3,
+                height: '100%'
+              }}>
+                <Avatar 
+                  src={anverPhoto} 
+                  alt="Dr P C Anver" 
+                  sx={{ width: 140, height: 140, mb: 2, border: '3px solid #1e3a8a', boxShadow: '0 8px 24px rgba(30, 58, 138, 0.15)' }} 
+                />
+                <Typography variant="h6" fontWeight="800" color="primary.main" align="center">
+                  Dr P C Anver
+                </Typography>
+                <Typography variant="body2" color="textSecondary" align="center" fontWeight="600" sx={{ mt: 0.5 }}>
+                  Executive Director
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={5}>
+              <Card sx={{ 
+                bgcolor: 'rgba(255,255,255,0.7)', 
+                borderRadius: '16px', 
+                border: '1px solid rgba(226,232,240,0.8)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                p: 3,
+                height: '100%'
+              }}>
+                <Avatar 
+                  src={shamsudeenPhoto} 
+                  alt="Dr Shamsudeen M" 
+                  sx={{ width: 140, height: 140, mb: 2, border: '3px solid #1e3a8a', boxShadow: '0 8px 24px rgba(30, 58, 138, 0.15)' }} 
+                />
+                <Typography variant="h6" fontWeight="800" color="primary.main" align="center">
+                  Dr Shamsudeen M
+                </Typography>
+                <Typography variant="body2" color="textSecondary" align="center" fontWeight="600" sx={{ mt: 0.5 }}>
+                  Chief of Medical Services
+                </Typography>
+              </Card>
+            </Grid>
+          </Grid>
+
+          <Divider sx={{ my: 5 }} />
+
+          {/* Committee Grid */}
+          <Grid container spacing={4}>
+            {/* Left Column: Key Leaders */}
+            <Grid item xs={12} md={6}>
+              <Stack spacing={3}>
+                <Box>
+                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
+                    Organising Chairperson
+                  </Typography>
+                  <Typography variant="h6" fontWeight="800" color="primary.main">
+                    Mr Jazeel Nalakath
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" fontWeight="500">
+                    Group General Manager
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
+                    Vice Chairman
+                  </Typography>
+                  <Typography variant="h6" fontWeight="800" color="primary.main">
+                    Dr. Sanal Dev S S
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" fontWeight="500">
+                    Consultant, Emergency Medicine
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
+                    Convener
+                  </Typography>
+                  <Typography variant="h6" fontWeight="800" color="primary.main">
+                    Dr Renjith T P
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" fontWeight="500">
+                    Consultant, Emergency Medicine
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
+                    Joint Convener
+                  </Typography>
+                  <Typography variant="h6" fontWeight="800" color="primary.main">
+                    Dr Josna Jose
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" fontWeight="500">
+                    In charge, Toxicovigilance and PIC
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 0.5 }}>
+                    Organizing Secretaries
+                  </Typography>
+                  <Stack spacing={1.5} sx={{ mt: 1 }}>
+                    <Box>
+                      <Typography variant="body1" fontWeight="700" color="primary.main">
+                        Dr. Nirmal Peter Abraham
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" fontWeight="500">
+                        Consultant, Emergency Medicine
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="body1" fontWeight="700" color="primary.main">
+                        Dr Muhammed Anas V K
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary" fontWeight="500">
+                        HOD, Dept. of Clinical Pharmacy
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Box>
+              </Stack>
+            </Grid>
+
+            {/* Right Column: Programme Coordinators */}
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle2" color="secondary.main" fontWeight="800" sx={{ textTransform: 'uppercase', letterSpacing: '1px', mb: 2 }}>
+                Programme coordinators
+              </Typography>
+              <Grid container spacing={2.5}>
+                {[
+                  { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine' },
+                  { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine' },
+                  { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine' },
+                  { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development' },
+                  { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services' },
+                  { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy' }
+                ].map((coord, i) => (
+                  <Grid item xs={12} sm={6} key={i}>
+                    <Typography variant="body1" fontWeight="700" color="primary.main">
+                      {coord.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" fontWeight="500" sx={{ fontSize: '0.85rem' }}>
+                      {coord.role}
+                    </Typography>
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+          </Grid>
+        </GlassCard>
       </Container>
 
       {/* About Section */}
@@ -559,7 +758,10 @@ const Home = () => {
                   'Pharmacologists, Clinical Pharmacists, and Trainees',
                   'Nurses and Allied Health Professionals',
                   'Researchers, Academicians, and Students in Toxicology',
-                  'Public Health Professionals and Poison Centre Personnel'
+                  'Public Health Professionals and Poison Centre Personnel',
+                  'Psychiatrists and Psychiatry residents',
+                  'Medical students and interns',
+                  'Drug safety, pharmacovigilance and Toxicovigilance professionals'
                 ].map((item, i) => (
                   <Box key={i} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start', mb: 1.8 }}>
                     <Box sx={{ width: '6px', height: '6px', borderRadius: '50%', bgcolor: '#7c3aed', mt: 1, flexShrink: 0 }} />
