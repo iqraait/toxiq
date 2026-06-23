@@ -71,14 +71,7 @@ const ScientificSchedule = () => {
             COMING SOON
           </Typography>
 
-          <Typography 
-            variant="body1" 
-            color="text.secondary" 
-            sx={{ mb: 5, maxWidth: '550px', mx: 'auto', lineHeight: 1.8, fontSize: '1.05rem' }}
-          >
-            The detailed schedule of scientific keynotes, panel discussions, toxicology quiz rounds, and abstract paper presentations is currently being finalized by our academic committee. 
-            Register today to receive the program schedule updates directly in your email.
-          </Typography>
+
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} justifyContent="center">
             <Button 

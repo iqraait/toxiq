@@ -54,29 +54,42 @@ const OurSpeakers = () => {
       <Navbar />
 
       <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>
-        <Stack direction="row" alignItems="center" spacing={2} mb={5}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'flex-start', sm: 'center' }} justifyContent="space-between" spacing={2} mb={6}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Button 
+              variant="outlined" 
+              color="secondary"
+              startIcon={<ArrowBackIcon />}
+              onClick={() => navigate(-1)}
+              sx={{ borderRadius: '20px' }}
+            >
+              Back
+            </Button>
+            <Typography 
+              variant="h4" 
+              fontWeight="950" 
+              fontFamily="'Raleway', sans-serif" 
+              sx={purpleGradientText}
+            >
+              Distinguished Guest Speakers
+            </Typography>
+          </Stack>
+          
           <Button 
-            variant="outlined" 
-            color="secondary"
-            startIcon={<ArrowBackIcon />}
-            onClick={() => navigate(-1)}
-            sx={{ borderRadius: '20px' }}
+            variant="contained" 
+            color="primary"
+            onClick={() => navigate('/article-submission')}
+            sx={{ 
+              borderRadius: '20px', 
+              px: 3.5, 
+              py: 1.2, 
+              fontWeight: 850,
+              boxShadow: '0 6px 20px rgba(13, 148, 136, 0.2)'
+            }}
           >
-            Back
+            Submit Article
           </Button>
-          <Typography 
-            variant="h4" 
-            fontWeight="950" 
-            fontFamily="'Raleway', sans-serif" 
-            sx={purpleGradientText}
-          >
-            Distinguished Guest Speakers
-          </Typography>
         </Stack>
-
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 6, maxWidth: '650px', lineHeight: 1.7 }}>
-          Meet the internationally recognized medical toxicologists, emergency medicine heads, and clinical experts delivering keynote sessions and interactive panels at TOXIQ 2026.
-        </Typography>
 
         {loading ? (
           <Box display="flex" justifyContent="center" alignItems="center" py={12}>
