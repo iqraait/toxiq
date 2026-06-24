@@ -54,6 +54,7 @@ const AdminCMS = () => {
   const [spDesc, setSpDesc] = useState('');
   const [spFile, setSpFile] = useState(null);
   const [spSubmitting, setSpSubmitting] = useState(false);
+  const [spSubmitted, setSpSubmitted] = useState(false);
 
   // Modals for Sponsor
   const [sponOpen, setSponOpen] = useState(false);
@@ -212,6 +213,7 @@ const AdminCMS = () => {
     setSpDesc('');
     setSpFile(null);
     setSpOrder(0);
+    setSpSubmitted(false);
     setSpOpen(true);
   };
 
@@ -222,11 +224,16 @@ const AdminCMS = () => {
     setSpDesc(sp.description || '');
     setSpFile(null);
     setSpOrder(sp.order || 0);
+    setSpSubmitted(false);
     setSpOpen(true);
   };
 
   const handleSaveSpeaker = async () => {
-    if (!spName || !spDes) return;
+    setSpSubmitted(true);
+    if (!spName || !spDes) {
+      alert('Full Name and Designation / Affiliation are required fields.');
+      return;
+    }
     setSpSubmitting(true);
     const formData = new FormData();
     formData.append('name', spName);
@@ -250,6 +257,7 @@ const AdminCMS = () => {
       setSpDesc('');
       setSpFile(null);
       setEditingSpeakerId(null);
+      setSpSubmitted(false);
       fetchCMSData();
     } catch (err) {
       console.error(err);
@@ -786,8 +794,22 @@ const AdminCMS = () => {
         <DialogTitle sx={{ fontWeight: 'bold' }}>{editingSpeakerId ? 'Edit Guest Speaker' : 'Add Guest Speaker'}</DialogTitle>
         <DialogContent>
           <Stack spacing={2.5} mt={1.5}>
-            <TextField fullWidth label="Full Name" value={spName} onChange={(e) => setSpName(e.target.value)} />
-            <TextField fullWidth label="Designation / Affiliation" value={spDes} onChange={(e) => setSpDes(e.target.value)} />
+            <TextField 
+              fullWidth 
+              label="Full Name" 
+              value={spName} 
+              onChange={(e) => setSpName(e.target.value)} 
+              error={spSubmitted && !spName}
+              helperText={spSubmitted && !spName ? "Full Name is required" : ""}
+            />
+            <TextField 
+              fullWidth 
+              label="Designation / Affiliation" 
+              value={spDes} 
+              onChange={(e) => setSpDes(e.target.value)} 
+              error={spSubmitted && !spDes}
+              helperText={spSubmitted && !spDes ? "Designation / Affiliation is required" : ""}
+            />
             <TextField fullWidth multiline rows={3} label="Brief Description / Profile" value={spDesc} onChange={(e) => setSpDesc(e.target.value)} />
             <TextField fullWidth type="number" label="Listing Order (e.g. 0, 1, 2...)" value={spOrder} onChange={(e) => setSpOrder(parseInt(e.target.value) || 0)} />
             
