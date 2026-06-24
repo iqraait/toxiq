@@ -89,7 +89,7 @@ class PublicHomeContentView(APIView):
                 'phone': '+91 98765 43210'
             },
             'registration_instructions': 'Please read all guidelines and make payment of ₹500 via PayU.',
-            'article_instructions': 'Upload files in PDF format, maximum 10MB.'
+            'article_instructions': 'Files must be under 10MB and in PDF formats only.'
         }
         
         # Fetch brochures

@@ -103,7 +103,7 @@ const BrochureGallery = () => {
               fontSize: '1.1rem'
             }}
           >
-            Download official conference brochures, programs, schedules, and view highlights from previous symposiums.
+            Download official conference brochures, programs, schedules, and view highlights from Toxiq 2026
           </Typography>
         </Container>
       </Box>
