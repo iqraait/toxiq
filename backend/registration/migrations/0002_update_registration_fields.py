@@ -47,7 +47,7 @@ def update_fields(apps, schema_editor):
             {'value': 'Students/Interns/Nurses/Clinical Pharmacists/Paramedics', 'price': 1000.00, 'link': 'https://ease.buzz/26069HKtYU'}
         ], 8),
         ('Medical Council Name', 'text', True, 'Enter Medical Council Name', None, 9),
-        ('Registration No:', 'number', True, 'Enter Registration Number', None, 10),
+        ('Registration No:', 'number', False, 'Enter Registration Number', None, 10),
         ('Food Preference', 'radio', True, None, ['Veg', 'Non-Veg'], 11),
     ]
     

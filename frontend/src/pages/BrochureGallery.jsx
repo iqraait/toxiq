@@ -229,14 +229,11 @@ const BrochureGallery = () => {
             sx={{ 
               fontWeight: 800, 
               color: 'primary.main', 
-              mb: 1, 
+              mb: 4, 
               fontFamily: "'Raleway', sans-serif" 
             }}
           >
             Symposium Gallery
-          </Typography>
-          <Typography variant="body1" color="textSecondary" mb={5}>
-            Highlights from the previous TOXIQ events and clinical emergency workshops.
           </Typography>
 
           {gallery.length === 0 ? (

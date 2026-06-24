@@ -102,9 +102,8 @@ class RegistrationFormViewSet(viewsets.ModelViewSet):
             RegistrationField.objects.create(
                 form=form, label='Medical Council Name', field_type='text', is_required=True, order=9
             )
-            # Registration No:
             RegistrationField.objects.create(
-                form=form, label='Registration No:', field_type='number', is_required=True, order=10
+                form=form, label='Registration No:', field_type='number', is_required=False, order=10
             )
             # Food Preference
             RegistrationField.objects.create(
