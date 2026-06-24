@@ -31,7 +31,7 @@ import renjithPhoto from '../assets/renjith_fixed.jpg';
 import josnaPhoto from '../assets/josna_fixed.jpg';
 import anasPhoto from '../assets/anas_fixed.jpg';
 import jazeelPhoto from '../assets/jazeel_fixed.jpg';
-import vajidPhoto from '../assets/vajid_fixed.jpg';
+import vajidPhoto from '../assets/vajid_fixed2.jpg';
 import aswathPhoto from '../assets/aswath_fixed.jpg';
 import shahalPhoto from '../assets/shahal_fixed.jpg';
 import noufalPhoto from '../assets/noufal_fixed.jpg';
