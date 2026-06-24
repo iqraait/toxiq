@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 'is_required': True, 
                 'order': 8
             },
-            {'label': 'Medical Council Name', 'field_type': 'text', 'is_required': True, 'order': 9},
+            {'label': 'Medical Council Name', 'field_type': 'text', 'is_required': False, 'order': 9},
             {'label': 'Registration No:', 'field_type': 'number', 'is_required': False, 'order': 10},
             {'label': 'Food Preference', 'field_type': 'radio', 'options': ['Veg', 'Non-Veg'], 'is_required': True, 'order': 11}
         ]

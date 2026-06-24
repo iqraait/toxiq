@@ -64,7 +64,7 @@ def seed_db():
                 {'value': 'Residents/General Practitioners', 'price': 2000.00, 'link': 'https://ease.buzz/2606srntA0'},
                 {'value': 'Students/Interns/Nurses/Clinical Pharmacists/Paramedics', 'price': 1000.00, 'link': 'https://ease.buzz/26069HKtYU'}
             ], None, 8),
-            ('Medical Council Name', 'text', True, 'Enter Medical Council Name', None, None, 9),
+            ('Medical Council Name', 'text', False, 'Enter Medical Council Name', None, None, 9),
             ('Registration No:', 'number', False, 'Enter Registration Number', None, None, 10),
             ('Food Preference', 'radio', True, None, ['Veg', 'Non-Veg'], None, 11),
         ]
