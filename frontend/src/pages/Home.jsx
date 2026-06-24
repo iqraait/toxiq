@@ -657,7 +657,7 @@ const Home = () => {
 
           <Grid container spacing={4} justifyContent="center" alignItems="stretch" sx={{ mb: 10 }}>
             {[
-              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: jazeelPhoto, initials: 'JN', sideIcon: FlagIcon },
+              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager,IQRAA', photo: jazeelPhoto, initials: 'JN', sideIcon: FlagIcon },
               { role: 'Vice Chairperson', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD', sideIcon: AccountTreeIcon },
               { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine', photo: renjithPhoto, initials: 'RT', sideIcon: TrackChangesIcon },
               { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC', photo: josnaPhoto, initials: 'JJ', sideIcon: HandshakeIcon },
@@ -683,12 +683,12 @@ const Home = () => {
 
           <Grid container spacing={4} justifyContent="center" alignItems="stretch">
             {[
-              { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: noorjahanPhoto, initials: 'NV', sideIcon: MedicationIcon },
-              { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: aswathPhoto, initials: 'AR', sideIcon: MedicationIcon },
-              { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine', photo: shahalPhoto, initials: 'MS', sideIcon: MedicationIcon },
-              { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development', photo: vajidPhoto, initials: 'VN', sideIcon: ScienceIcon },
-              { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK', sideIcon: HubIcon },
-              { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy', photo: shinadPhoto, initials: 'SN', sideIcon: MedicationIcon }
+              { name: 'Dr Noorjahan V A', role: 'Consultant,Emergency Medicine', photo: noorjahanPhoto, initials: 'NV', sideIcon: MedicationIcon },
+              { name: 'Dr Aswath Raj P R', role: 'Specialist,Emergency Medicine', photo: aswathPhoto, initials: 'AR', sideIcon: MedicationIcon },
+              { name: 'Dr Muhammed Shahal', role: 'Specialist,Emergency Medicine', photo: shahalPhoto, initials: 'MS', sideIcon: MedicationIcon },
+              { name: 'Dr Vajid N V', role: 'Head,Iqraa Centre,Research & Development', photo: vajidPhoto, initials: 'VN', sideIcon: ScienceIcon },
+              { name: 'Mr Noufal K K', role: 'Head,Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK', sideIcon: HubIcon },
+              { name: 'Dr Shinad N V', role: 'In charge,Clinical Pharmacy', photo: shinadPhoto, initials: 'SN', sideIcon: MedicationIcon }
             ].map((coord, i) => (
               <Grid item xs={12} sm={4} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
