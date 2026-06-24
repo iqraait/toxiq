@@ -31,7 +31,8 @@ import renjithPhoto from '../assets/renjith_fixed.jpg';
 import josnaPhoto from '../assets/josna_fixed.jpg';
 import anasPhoto from '../assets/anas_fixed.jpg';
 import jazeelPhoto from '../assets/jazeel_fixed.jpg';
-import vajidPhoto from '../assets/vajid.jpg';
+import vajidPhoto from '../assets/vajid_fixed.jpg';
+import aswathPhoto from '../assets/aswath_fixed.jpg';
 import shahalPhoto from '../assets/shahal_fixed.jpg';
 import noufalPhoto from '../assets/noufal_fixed.jpg';
 import shinadPhoto from '../assets/shinad_fixed.jpg';
@@ -616,7 +617,7 @@ const Home = () => {
           <Grid container spacing={3.75} justifyContent="center">
             {[
               { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: noorjahanPhoto, initials: 'NV' },
-              { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: null, initials: 'AR' },
+              { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: aswathPhoto, initials: 'AR' },
               { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine', photo: shahalPhoto, initials: 'MS' },
               { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development', photo: vajidPhoto, initials: 'VN' },
               { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK' },
