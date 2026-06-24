@@ -47,41 +47,47 @@ import noorjahanPhoto from '../assets/noorjahan_fixed.jpg';
 const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: SideIcon }) => (
   <Card sx={{ 
     bgcolor: '#ffffff', 
-    borderRadius: '24px', 
+    borderRadius: '20px', 
     border: '1.5px solid rgba(226, 232, 240, 0.8)',
-    borderLeft: isPatron ? '6px solid #2563eb' : '1.5px solid rgba(226, 232, 240, 0.8)',
-    boxShadow: '0 10px 30px rgba(30, 58, 138, 0.04)',
+    boxShadow: '0 8px 30px rgba(30, 58, 138, 0.03)',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     '&:hover': {
       transform: 'translateY(-6px)',
-      boxShadow: '0 20px 40px rgba(30, 58, 138, 0.08)',
+      boxShadow: '0 15px 35px rgba(30, 58, 138, 0.07)',
       borderColor: '#2563eb'
     },
-    p: 3,
+    p: 2.5,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
-    height: 175,
+    gap: 2.5,
+    height: 160,
     width: '100%',
     minWidth: 0,
     boxSizing: 'border-box',
     position: 'relative',
     overflow: 'hidden'
   }}>
-    <Box sx={{ position: 'relative', display: 'inline-flex', flexShrink: 0 }}>
+    <Box sx={{ 
+      position: 'relative', 
+      display: 'inline-flex', 
+      flexShrink: 0,
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
+      p: '2.5px',
+      boxShadow: '0 4px 12px rgba(37, 99, 235, 0.15)'
+    }}>
       <Avatar 
         src={photo} 
         alt={name} 
         sx={{ 
-          width: 80, 
-          height: 80, 
-          border: '2.5px solid #ffffff', 
-          boxShadow: '0 0 0 2px #2563eb, 0 4px 15px rgba(37, 99, 235, 0.2)',
+          width: 70, 
+          height: 70, 
+          border: '2px solid #ffffff', 
           bgcolor: '#2563eb',
           color: '#ffffff',
           fontWeight: 'bold',
-          fontSize: '1.35rem'
+          fontSize: '1.2rem'
         }}
       >
         {initials}
@@ -89,34 +95,34 @@ const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: Sid
       {isPatron && (
         <Box sx={{ 
           position: 'absolute', 
-          bottom: -4, 
-          right: -4, 
-          width: 26, 
-          height: 26, 
+          bottom: -2, 
+          right: -2, 
+          width: 22, 
+          height: 22, 
           borderRadius: '50%', 
           background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)', 
-          border: '2.5px solid #ffffff',
+          border: '2px solid #ffffff',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)',
           zIndex: 2
         }}>
-          <WorkspacePremiumIcon sx={{ color: '#ffffff', fontSize: '0.9rem' }} />
+          <WorkspacePremiumIcon sx={{ color: '#ffffff', fontSize: '0.75rem' }} />
         </Box>
       )}
     </Box>
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left', pr: SideIcon ? 5 : 0 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left', pr: SideIcon ? 5.5 : 0 }}>
       <Typography 
         variant="caption" 
         color="#2563eb" 
         fontWeight="800" 
         sx={{ 
           textTransform: 'uppercase', 
-          letterSpacing: '0.8px', 
+          letterSpacing: '1px', 
           display: 'block', 
-          mb: 0.8, 
-          fontSize: '0.75rem',
+          mb: 0.4, 
+          fontSize: '0.7rem',
           lineHeight: 1.2,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
@@ -130,13 +136,16 @@ const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: Sid
         fontWeight="900" 
         color="#0f172a" 
         sx={{ 
-          mb: 0.8, 
-          lineHeight: 1.2, 
-          fontSize: '1.1rem',
-          whiteSpace: 'nowrap',
+          mb: 0.4, 
+          lineHeight: 1.15, 
+          fontSize: '0.95rem',
+          fontFamily: "'Raleway', sans-serif",
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          fontFamily: "'Raleway', sans-serif"
+          wordBreak: 'break-word'
         }}
       >
         {name}
@@ -146,67 +155,41 @@ const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: Sid
         color="text.secondary" 
         fontWeight="600" 
         sx={{ 
-          fontSize: '0.82rem', 
-          lineHeight: 1.4,
+          fontSize: '0.75rem', 
+          lineHeight: 1.3,
           display: '-webkit-box',
           WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          textOverflow: 'ellipsis',
+          wordBreak: 'break-word'
         }}
       >
         {desc}
       </Typography>
     </Box>
 
-    {/* Right-side faint watermark for Patrons */}
-    {isPatron && (
+    {/* Right-side badge for all cards */}
+    {SideIcon && (
       <Box sx={{ 
         position: 'absolute', 
-        right: -10, 
+        right: 16, 
         top: '50%', 
         transform: 'translateY(-50%)', 
-        opacity: 0.05, 
-        color: '#2563eb',
-        pointerEvents: 'none',
-        zIndex: 0
-      }}>
-        <WorkspacePremiumIcon sx={{ fontSize: '110px' }} />
-      </Box>
-    )}
-
-    {/* Right-side badge for Organising Committee */}
-    {!isPatron && SideIcon && (
-      <Box sx={{ 
-        position: 'absolute', 
-        right: 20, 
-        top: '50%', 
-        transform: 'translateY(-50%)', 
-        width: 44, 
-        height: 44, 
+        width: 36, 
+        height: 36, 
         borderRadius: '50%', 
         bgcolor: '#f5f3ff', 
         border: '1px solid #ddd6fe',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 2px 10px rgba(124, 58, 237, 0.04)'
+        boxShadow: '0 2px 10px rgba(124, 58, 237, 0.04)',
+        zIndex: 1
       }}>
-        <SideIcon sx={{ color: '#7c3aed', fontSize: '1.35rem' }} />
+        <SideIcon sx={{ color: '#7c3aed', fontSize: '1.15rem' }} />
       </Box>
     )}
-
-    {/* Bottom Accent Bar */}
-    <Box sx={{ 
-      position: 'absolute',
-      bottom: 0,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      width: '80px',
-      height: '4px',
-      bgcolor: '#2563eb',
-      borderRadius: '4px 4px 0 0'
-    }} />
   </Card>
 );
 
@@ -635,7 +618,7 @@ const Home = () => {
               { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto, initials: 'PA' },
               { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto, initials: 'SM' }
             ].map((patron, i) => (
-              <Grid item xs={12} sm={6} md={5} key={i} sx={{ display: 'flex' }}>
+              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex' }}>
                 <MemberCard 
                   name={patron.name}
                   role="Conference Patron"
@@ -643,6 +626,7 @@ const Home = () => {
                   photo={patron.photo}
                   initials={patron.initials}
                   isPatron={true}
+                  sideIcon={WorkspacePremiumIcon}
                 />
               </Grid>
             ))}

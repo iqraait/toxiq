@@ -59,7 +59,7 @@ const SpeakerCard = ({ name, designation, description, photo }) => {
           fontWeight="900" 
           color="primary.main" 
           sx={{ 
-            mb: 0.4, 
+            mb: 1.2, 
             lineHeight: 1.2, 
             fontSize: '1.05rem',
             fontFamily: "'Raleway', sans-serif",
@@ -77,7 +77,7 @@ const SpeakerCard = ({ name, designation, description, photo }) => {
               textTransform: 'uppercase', 
               letterSpacing: '0.8px', 
               display: 'block', 
-              mb: 0.6, 
+              mb: 1.2, 
               fontSize: '0.75rem',
               lineHeight: 1.2,
               wordBreak: 'break-word'
