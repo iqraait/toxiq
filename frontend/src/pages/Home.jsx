@@ -34,7 +34,7 @@ import jazeelPhoto from '../assets/jazeel_fixed.jpg';
 import vajidPhoto from '../assets/vajid.jpg';
 import shahalPhoto from '../assets/shahal_fixed.jpg';
 import noufalPhoto from '../assets/noufal_fixed.jpg';
-import shinadPhoto from '../assets/shinad.jpg';
+import shinadPhoto from '../assets/shinad_fixed.jpg';
 import noorjahanPhoto from '../assets/noorjahan_fixed.jpg';
 
 const MemberCard = ({ name, role, desc, photo, initials }) => (
