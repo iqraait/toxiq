@@ -26,32 +26,21 @@ class Command(BaseCommand):
             {'label': 'Phone Number (WhatsApp)', 'field_type': 'phone', 'is_required': True, 'order': 4},
             {'label': 'Designation', 'field_type': 'text', 'is_required': True, 'order': 5},
             {'label': 'Institute / Hospital', 'field_type': 'text', 'is_required': True, 'order': 6},
-            {'label': 'Department', 'field_type': 'text', 'is_required': True, 'order': 7},
-            {
-                'label': 'Specialty / Department of Practice', 
-                'field_type': 'checkbox', 
-                'options': [
-                    'Emergency Medicine', 'Clinical Pharmacy', 'Critical Care', 
-                    'General Medicine', 'Pediatrics', 'Forensic Medicine', 
-                    'Family Medicine', 'General practitioner', 'Others'
-                ], 
-                'is_required': True, 
-                'order': 8
-            },
             {
                 'label': 'Registration Category', 
                 'field_type': 'checkbox', 
                 'options': [
-                    {'value': 'Invited speakers', 'price': 0.00},
-                    {'value': 'Specialist/Consultant', 'price': 500.00},
-                    {'value': 'Residents/General Practitioners', 'price': 400.00},
-                    {'value': 'Students/Interns/Nurses/Clinical Pharmacist/ Paramedics', 'price': 300.00}
+                    {'value': 'Invited Speakers', 'price': 0.00, 'link': 'https://ease.buzz/26064ARm0a'},
+                    {'value': 'Specialist/Consultant', 'price': 3000.00, 'link': 'https://ease.buzz/2606sGmUAe'},
+                    {'value': 'Residents/General Practitioners', 'price': 2000.00, 'link': 'https://ease.buzz/2606srntA0'},
+                    {'value': 'Students/Interns/Nurses/Clinical Pharmacists/Paramedics', 'price': 1000.00, 'link': 'https://ease.buzz/26069HKtYU'}
                 ], 
                 'is_required': True, 
-                'order': 9
+                'order': 7
             },
-            {'label': 'Medical Council Name', 'field_type': 'text', 'is_required': True, 'order': 10},
-            {'label': 'Food Preference', 'field_type': 'radio', 'options': ['Veg', 'Non-Veg'], 'is_required': True, 'order': 11}
+            {'label': 'Medical Council Name', 'field_type': 'text', 'is_required': True, 'order': 8},
+            {'label': 'Registration No:', 'field_type': 'number', 'is_required': True, 'order': 9},
+            {'label': 'Food Preference', 'field_type': 'radio', 'options': ['Veg', 'Non-Veg'], 'is_required': True, 'order': 10}
         ]
 
         for config in fields_config:

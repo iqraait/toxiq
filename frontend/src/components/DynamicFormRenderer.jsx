@@ -13,7 +13,12 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
     if (typeof opt === 'object' && opt !== null) {
       let label = opt.value;
       if (opt.price !== undefined && opt.price !== null) {
-        label = `${opt.value} (${currency} ${parseFloat(opt.price).toFixed(2)})`;
+        const priceNum = parseFloat(opt.price);
+        if (priceNum === 0) {
+          label = `${opt.value} (FREE)`;
+        } else {
+          label = `${opt.value} (${currency} ${priceNum})`;
+        }
       }
       return {
         value: opt.value,
@@ -29,10 +34,7 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
 
   const handleCheckboxChange = (fieldId, option, isChecked) => {
     const field = fields.find(f => String(f.id) === String(fieldId));
-    const isSingleSelectField = field && [
-      'Specialty / Department of Practice',
-      'Registration Category'
-    ].includes(field.label);
+    const isSingleSelectField = field && field.label === 'Registration Category';
 
     if (isSingleSelectField) {
       onChange(fieldId, isChecked ? [option] : []);
@@ -67,7 +69,7 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
           gridSize = { xs: 12, sm: 9, md: 10 };
         } else if ([
           'Email Address', 'Phone Number (WhatsApp)', 
-          'Designation', 'Department', 'Institute / Hospital', 
+          'Designation', 'Institute / Hospital', 
           'Medical Council Name', 'Food Preference'
         ].includes(field.label)) {
           gridSize = { xs: 12, sm: 6, md: 6 };
@@ -174,37 +176,6 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
                     );
                   })}
                 </FormGroup>
-                {field.label === 'Specialty / Department of Practice' && (
-                  (() => {
-                    const isOthersSelected = Array.isArray(value)
-                      ? value.some(v => v.startsWith('Others'))
-                      : String(value).startsWith('Others');
-                    if (!isOthersSelected) return null;
-                    
-                    const specText = Array.isArray(value)
-                      ? (value.find(v => v.startsWith('Others:')) || '').replace('Others: ', '')
-                      : String(value).replace('Others: ', '');
-                      
-                    return (
-                      <TextField
-                        size="small"
-                        sx={{ mt: 1, ml: 1, maxWidth: '350px' }}
-                        placeholder="Please specify other specialty"
-                        value={specText === 'Others' ? '' : specText}
-                        onChange={(e) => {
-                          const text = e.target.value;
-                          const newOthersValue = text ? `Others: ${text}` : 'Others';
-                          if (Array.isArray(value)) {
-                            const filtered = value.filter(v => !v.startsWith('Others'));
-                            onChange(fieldId, [...filtered, newOthersValue]);
-                          } else {
-                            onChange(fieldId, newOthersValue);
-                          }
-                        }}
-                      />
-                    );
-                  })()
-                )}
                 <FormHelperText>{error || field.help_text || ''}</FormHelperText>
               </FormControl>
             )}

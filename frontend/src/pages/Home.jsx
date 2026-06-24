@@ -40,21 +40,21 @@ import noorjahanPhoto from '../assets/noorjahan_fixed.jpg';
 const MemberCard = ({ name, role, desc, photo, initials }) => (
   <Card sx={{ 
     bgcolor: '#ffffff', 
-    borderRadius: '24px', 
+    borderRadius: '20px', 
     border: '1.5px solid rgba(226, 232, 240, 0.8)',
-    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)',
+    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
     transition: 'all 0.3s ease',
     '&:hover': {
       transform: 'translateY(-5px)',
       boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
       borderColor: 'secondary.main'
     },
-    p: 2,
+    p: 3,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 2,
-    height: 140,
+    gap: 2.5,
+    height: 170,
     width: '100%',
     minWidth: 0,
     boxSizing: 'border-box'
@@ -63,15 +63,15 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
       src={photo} 
       alt={name} 
       sx={{ 
-        width: 60, 
-        height: 60, 
+        width: 70, 
+        height: 70, 
         flexShrink: 0, 
         border: '2.5px solid rgba(13, 148, 136, 0.15)', 
         boxShadow: '0 4px 12px rgba(13, 148, 136, 0.1)',
         bgcolor: 'primary.main',
         color: '#ffffff',
         fontWeight: 'bold',
-        fontSize: '1.1rem'
+        fontSize: '1.25rem'
       }}
     >
       {initials}
@@ -85,8 +85,8 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
           textTransform: 'uppercase', 
           letterSpacing: '0.8px', 
           display: 'block', 
-          mb: 0.2, 
-          fontSize: '0.7rem',
+          mb: 0.5, 
+          fontSize: '0.75rem',
           lineHeight: 1.2,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
@@ -100,9 +100,9 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
         fontWeight="900" 
         color="primary.main" 
         sx={{ 
-          mb: 0.2, 
+          mb: 0.5, 
           lineHeight: 1.2, 
-          fontSize: '0.9rem',
+          fontSize: '0.95rem',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis'
@@ -115,8 +115,8 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
         color="textSecondary" 
         fontWeight="600" 
         sx={{ 
-          fontSize: '0.75rem', 
-          lineHeight: 1.3,
+          fontSize: '0.78rem', 
+          lineHeight: 1.35,
           display: '-webkit-box',
           WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
@@ -494,7 +494,7 @@ const Home = () => {
       </Container>
 
       {/* Patrons & Organising Committee Section */}
-      <Box sx={{ bgcolor: 'rgba(13, 148, 136, 0.02)', py: 10, borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', mb: 10 }}>
+      <Box sx={{ bgcolor: 'rgba(13, 148, 136, 0.02)', pt: 12, pb: 12, borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', mb: 10 }}>
         <Container maxWidth="lg">
           <Typography 
             variant="h4" 
@@ -505,7 +505,7 @@ const Home = () => {
           >
             Patrons & Organising Committee
           </Typography>
-          <Typography variant="body2" color="textSecondary" align="center" sx={{ mb: 6, maxWidth: '600px', mx: 'auto' }}>
+          <Typography variant="body2" color="textSecondary" align="center" sx={{ mb: '60px', maxWidth: '600px', mx: 'auto' }}>
             Meet the visionary leadership and dedicated committee members guiding TOXIQ 2026.
           </Typography>
 
@@ -515,12 +515,12 @@ const Home = () => {
             color="secondary.main" 
             fontWeight="900" 
             align="center" 
-            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: 4 }}
+            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: '60px' }}
           >
             Patrons
           </Typography>
 
-          <Grid container spacing={3} justifyContent="center" sx={{ mb: 8 }}>
+          <Grid container spacing={3.75} justifyContent="center" sx={{ mb: 8 }}>
             {[
               { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto, initials: 'PA' },
               { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto, initials: 'SM' }
@@ -537,7 +537,7 @@ const Home = () => {
             ))}
           </Grid>
 
-          <Divider sx={{ my: 6, borderColor: 'rgba(226, 232, 240, 0.8)' }} />
+          <Divider sx={{ my: 10, borderColor: 'rgba(226, 232, 240, 0.8)' }} />
 
           {/* Organising Committee Header */}
           <Typography 
@@ -545,12 +545,12 @@ const Home = () => {
             color="secondary.main" 
             fontWeight="900" 
             align="center" 
-            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: 4 }}
+            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: '60px' }}
           >
             Organising Committee
           </Typography>
 
-          <Grid container spacing={3} justifyContent="center" sx={{ mb: 8 }}>
+          <Grid container spacing={3.75} justifyContent="center" sx={{ mb: 8 }}>
             {[
               { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: jazeelPhoto, initials: 'JN' },
               { role: 'Vice Chairperson', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
@@ -571,7 +571,7 @@ const Home = () => {
             ))}
           </Grid>
 
-          <Divider sx={{ my: 6, borderColor: 'rgba(226, 232, 240, 0.8)' }} />
+          <Divider sx={{ my: 10, borderColor: 'rgba(226, 232, 240, 0.8)' }} />
 
           {/* Programme Coordinators Section */}
           <Typography 
@@ -579,12 +579,12 @@ const Home = () => {
             fontWeight="900" 
             color="secondary.main" 
             align="center" 
-            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: 4 }}
+            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: '60px' }}
           >
             Programme Coordinators
           </Typography>
 
-          <Grid container spacing={3} justifyContent="center">
+          <Grid container spacing={3.75} justifyContent="center">
             {[
               { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: noorjahanPhoto, initials: 'NV' },
               { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: null, initials: 'AR' },

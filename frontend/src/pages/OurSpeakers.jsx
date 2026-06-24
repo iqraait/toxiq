@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Container, Typography, Box, CircularProgress, 
-  Avatar, CardContent, Alert, Stack, Button
+  Avatar, Card, Alert, Button
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
@@ -9,8 +9,103 @@ import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import GlassCard from '../components/GlassCard';
 import { purpleGradientText } from '../theme';
+
+const SpeakerCard = ({ name, designation, description, photo }) => {
+  const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '';
+  return (
+    <Card sx={{ 
+      bgcolor: '#ffffff', 
+      borderRadius: '20px', 
+      border: '1.5px solid rgba(226, 232, 240, 0.8)',
+      boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        transform: 'translateY(-5px)',
+        boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
+        borderColor: 'secondary.main'
+      },
+      p: 3,
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 2.5,
+      height: 170,
+      width: '100%',
+      minWidth: 0,
+      boxSizing: 'border-box'
+    }}>
+      <Avatar 
+        src={photo} 
+        alt={name} 
+        sx={{ 
+          width: 70, 
+          height: 70, 
+          flexShrink: 0, 
+          border: '2.5px solid rgba(13, 148, 136, 0.15)', 
+          boxShadow: '0 4px 12px rgba(13, 148, 136, 0.1)',
+          bgcolor: 'primary.main',
+          color: '#ffffff',
+          fontWeight: 'bold',
+          fontSize: '1.25rem'
+        }}
+      >
+        {initials}
+      </Avatar>
+      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left' }}>
+        <Typography 
+          variant="caption" 
+          color="secondary.main" 
+          fontWeight="800" 
+          sx={{ 
+            textTransform: 'uppercase', 
+            letterSpacing: '0.8px', 
+            display: 'block', 
+            mb: 0.5, 
+            fontSize: '0.75rem',
+            lineHeight: 1.2,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}
+        >
+          {designation}
+        </Typography>
+        <Typography 
+          variant="subtitle2" 
+          fontWeight="900" 
+          color="primary.main" 
+          sx={{ 
+            mb: 0.5, 
+            lineHeight: 1.2, 
+            fontSize: '0.95rem',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}
+        >
+          {name}
+        </Typography>
+        <Typography 
+          variant="caption" 
+          color="textSecondary" 
+          fontWeight="600" 
+          sx={{ 
+            fontSize: '0.78rem', 
+            lineHeight: 1.35,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}
+        >
+          {description}
+        </Typography>
+      </Box>
+    </Card>
+  );
+};
 
 const OurSpeakers = () => {
   const navigate = useNavigate();
@@ -54,14 +149,21 @@ const OurSpeakers = () => {
       <Navbar />
 
       <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'flex-start', sm: 'center' }} justifyContent="space-between" spacing={2} mb={6}>
-          <Stack direction="row" alignItems="center" spacing={2}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', md: 'row' }, 
+          justifyContent: 'space-between', 
+          alignItems: { xs: 'flex-start', md: 'center' },
+          gap: 3, 
+          mb: '60px' 
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Button 
               variant="outlined" 
               color="secondary"
               startIcon={<ArrowBackIcon />}
               onClick={() => navigate(-1)}
-              sx={{ borderRadius: '20px' }}
+              sx={{ borderRadius: '20px', flexShrink: 0 }}
             >
               Back
             </Button>
@@ -73,7 +175,7 @@ const OurSpeakers = () => {
             >
               Distinguished Guest Speakers
             </Typography>
-          </Stack>
+          </Box>
           
           <Button 
             variant="contained" 
@@ -84,12 +186,13 @@ const OurSpeakers = () => {
               px: 3.5, 
               py: 1.2, 
               fontWeight: 850,
-              boxShadow: '0 6px 20px rgba(13, 148, 136, 0.2)'
+              boxShadow: '0 6px 20px rgba(13, 148, 136, 0.2)',
+              alignSelf: { xs: 'flex-start', md: 'auto' }
             }}
           >
             Submit Article
           </Button>
-        </Stack>
+        </Box>
 
         {loading ? (
           <Box display="flex" justifyContent="center" alignItems="center" py={12}>
@@ -113,58 +216,13 @@ const OurSpeakers = () => {
             }}
           >
             {speakers.map((sp) => (
-              <GlassCard 
+              <SpeakerCard 
                 key={sp.id}
-                sx={{ 
-                  height: '100%', 
-                  bgcolor: '#ffffff',
-                  borderRadius: '24px',
-                  boxShadow: '0 10px 40px rgba(0, 0, 0, 0.03)',
-                  border: '1.5px solid rgba(226, 232, 240, 0.8)',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  '&:hover': {
-                    transform: 'translateY(-10px)',
-                    boxShadow: '0 20px 50px rgba(13, 148, 136, 0.08)',
-                    borderColor: 'secondary.main'
-                  }
-                }}
-              >
-                <CardContent sx={{ p: 4, display: 'flex', gap: 3, alignItems: 'flex-start', flexGrow: 1, flexDirection: 'row' }}>
-                  <Avatar 
-                    src={getImageUrl(sp.photo)} 
-                    alt={sp.name} 
-                    sx={{ 
-                      width: 75, 
-                      height: 75, 
-                      flexShrink: 0, 
-                      border: '3px solid rgba(13, 148, 136, 0.15)', 
-                      boxShadow: '0 6px 16px rgba(13, 148, 136, 0.1)',
-                      bgcolor: 'secondary.main',
-                      color: '#ffffff',
-                      fontWeight: 'bold',
-                      fontSize: '1.4rem'
-                    }}
-                  >
-                    {sp.name.split(' ').map(n => n[0]).join('')}
-                  </Avatar>
-                  
-                  <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%" flexGrow={1}>
-                    <Box>
-                      <Typography variant="h6" fontWeight="900" mb={0.5} color="primary.main" sx={{ fontSize: '1.25rem', fontFamily: "'Raleway', sans-serif" }}>
-                        {sp.name}
-                      </Typography>
-                      <Typography variant="caption" fontWeight="800" color="secondary.main" mb={1.8} sx={{ display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        {sp.designation}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary" sx={{ lineHeight: 1.6, fontSize: '0.88rem' }}>
-                        {sp.description}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </GlassCard>
+                name={sp.name}
+                designation={sp.designation}
+                description={sp.description}
+                photo={getImageUrl(sp.photo)}
+              />
             ))}
           </Box>
         )}
