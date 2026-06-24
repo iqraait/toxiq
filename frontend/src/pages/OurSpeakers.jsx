@@ -30,7 +30,8 @@ const SpeakerCard = ({ name, designation, description, photo }) => {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 2.5,
-      height: 170,
+      height: '100%',
+      minHeight: 170,
       width: '100%',
       minWidth: 0,
       boxSizing: 'border-box'
@@ -54,54 +55,56 @@ const SpeakerCard = ({ name, designation, description, photo }) => {
       </Avatar>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left' }}>
         <Typography 
-          variant="caption" 
-          color="secondary.main" 
-          fontWeight="800" 
-          sx={{ 
-            textTransform: 'uppercase', 
-            letterSpacing: '0.8px', 
-            display: 'block', 
-            mb: 0.5, 
-            fontSize: '0.75rem',
-            lineHeight: 1.2,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }}
-        >
-          {designation}
-        </Typography>
-        <Typography 
-          variant="subtitle2" 
+          variant="subtitle1" 
           fontWeight="900" 
           color="primary.main" 
           sx={{ 
-            mb: 0.5, 
+            mb: 0.4, 
             lineHeight: 1.2, 
-            fontSize: '0.95rem',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
+            fontSize: '1.05rem',
+            fontFamily: "'Raleway', sans-serif",
+            wordBreak: 'break-word'
           }}
         >
           {name}
         </Typography>
-        <Typography 
-          variant="caption" 
-          color="textSecondary" 
-          fontWeight="600" 
-          sx={{ 
-            fontSize: '0.78rem', 
-            lineHeight: 1.35,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }}
-        >
-          {description}
-        </Typography>
+        {designation && (
+          <Typography 
+            variant="caption" 
+            color="secondary.main" 
+            fontWeight="800" 
+            sx={{ 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.8px', 
+              display: 'block', 
+              mb: 0.6, 
+              fontSize: '0.75rem',
+              lineHeight: 1.2,
+              wordBreak: 'break-word'
+            }}
+          >
+            {designation}
+          </Typography>
+        )}
+        {description && (
+          <Typography 
+            variant="caption" 
+            color="textSecondary" 
+            fontWeight="600" 
+            sx={{ 
+              fontSize: '0.8rem', 
+              lineHeight: 1.4,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              wordBreak: 'break-word'
+            }}
+          >
+            {description}
+          </Typography>
+        )}
       </Box>
     </Card>
   );

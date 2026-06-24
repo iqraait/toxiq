@@ -230,8 +230,8 @@ const AdminCMS = () => {
 
   const handleSaveSpeaker = async () => {
     setSpSubmitted(true);
-    if (!spName || !spDes) {
-      alert('Full Name and Designation / Affiliation are required fields.');
+    if (!spName) {
+      alert('Full Name is a required field.');
       return;
     }
     setSpSubmitting(true);
@@ -555,8 +555,12 @@ const AdminCMS = () => {
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3, textAlign: 'center' }}>
                     <Avatar src={getImageUrl(sp.photo)} sx={{ width: 80, height: 80, mb: 2 }} />
                     <Typography variant="h6" fontWeight="bold">{sp.name}</Typography>
-                    <Typography variant="caption" color="secondary.main" fontWeight="bold" mb={1}>{sp.designation}</Typography>
-                    <Typography variant="body2" color="textSecondary" sx={{ height: '60px', overflow: 'hidden' }}>{sp.description}</Typography>
+                    {sp.designation && (
+                      <Typography variant="caption" color="secondary.main" fontWeight="bold" mb={1}>{sp.designation}</Typography>
+                    )}
+                    {sp.description && (
+                      <Typography variant="body2" color="textSecondary" sx={{ height: '60px', overflow: 'hidden' }}>{sp.description}</Typography>
+                    )}
                   </CardContent>
                   <Box sx={{ position: 'absolute', top: 10, right: 10, display: 'flex', gap: 0.5 }}>
                     <IconButton 
@@ -804,13 +808,11 @@ const AdminCMS = () => {
             />
             <TextField 
               fullWidth 
-              label="Designation / Affiliation" 
+              label="Designation / Affiliation (Optional)" 
               value={spDes} 
               onChange={(e) => setSpDes(e.target.value)} 
-              error={spSubmitted && !spDes}
-              helperText={spSubmitted && !spDes ? "Designation / Affiliation is required" : ""}
             />
-            <TextField fullWidth multiline rows={3} label="Brief Description / Profile" value={spDesc} onChange={(e) => setSpDesc(e.target.value)} />
+            <TextField fullWidth multiline rows={3} label="Brief Description / Profile (Optional)" value={spDesc} onChange={(e) => setSpDesc(e.target.value)} />
             <TextField fullWidth type="number" label="Listing Order (e.g. 0, 1, 2...)" value={spOrder} onChange={(e) => setSpOrder(parseInt(e.target.value) || 0)} />
             
             <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />} color="secondary">

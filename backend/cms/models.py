@@ -26,7 +26,7 @@ class Banner(models.Model):
 
 class Speaker(models.Model):
     name = models.CharField(max_length=150)
-    designation = models.CharField(max_length=200)
+    designation = models.CharField(max_length=200, blank=True, default='')
     description = models.TextField(blank=True)
     photo = models.ImageField(upload_to='speakers/', blank=True, null=True)
     order = models.IntegerField(default=0)
