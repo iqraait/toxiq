@@ -604,7 +604,7 @@ const Home = () => {
 
       {/* Patrons & Organising Committee Section */}
       <Box sx={{ bgcolor: 'rgba(13, 148, 136, 0.02)', pt: 12, pb: 12, borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', mb: 10 }}>
-        <Container maxWidth="lg">
+        <Container maxWidth={false} sx={{ maxWidth: '1440px', mx: 'auto', px: { xs: 2, md: 4 } }}>
           <Typography 
             variant="h4" 
             fontWeight="900" 
@@ -639,7 +639,7 @@ const Home = () => {
               { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto, initials: 'PA' },
               { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto, initials: 'SM' }
             ].map((patron, i) => (
-              <Grid item xs={12} md={6} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
+              <Grid item xs={12} sm={6} md={6} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
                   name={patron.name}
                   role="Conference Patron"
@@ -664,7 +664,7 @@ const Home = () => {
               { role: 'Organizing Secretary', name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine', photo: nirmalPhoto, initials: 'NP', sideIcon: AssignmentIcon },
               { role: 'Organizing Secretary', name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy', photo: anasPhoto, initials: 'MA', sideIcon: LocalHospitalIcon }
             ].map((member, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
+              <Grid item xs={12} sm={4} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
                   name={member.name}
                   role={member.role}
@@ -690,7 +690,7 @@ const Home = () => {
               { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK', sideIcon: HubIcon },
               { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy', photo: shinadPhoto, initials: 'SN', sideIcon: MedicationIcon }
             ].map((coord, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
+              <Grid item xs={12} sm={4} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
                   name={coord.name}
                   role="Programme Coordinator"
