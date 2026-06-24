@@ -71,6 +71,19 @@ class RegistrationFormViewSet(viewsets.ModelViewSet):
             RegistrationField.objects.create(
                 form=form, label='Institute / Hospital', field_type='text', is_required=True, order=6
             )
+            # Specialty
+            RegistrationField.objects.create(
+                form=form, 
+                label='Specialty / Department of Practice', 
+                field_type='checkbox', 
+                options=[
+                    'Emergency Medicine', 'Clinical Pharmacy', 'Critical Care', 
+                    'General Medicine', 'Pediatrics', 'Forensic Medicine', 
+                    'Family Medicine', 'General practitioner', 'Others'
+                ], 
+                is_required=True, 
+                order=7
+            )
             # Registration Category
             RegistrationField.objects.create(
                 form=form, 
@@ -83,19 +96,19 @@ class RegistrationFormViewSet(viewsets.ModelViewSet):
                     {'value': 'Students/Interns/Nurses/Clinical Pharmacists/Paramedics', 'price': 1000.00, 'link': 'https://ease.buzz/26069HKtYU'}
                 ], 
                 is_required=True, 
-                order=7
+                order=8
             )
             # Medical Council Name
             RegistrationField.objects.create(
-                form=form, label='Medical Council Name', field_type='text', is_required=True, order=8
+                form=form, label='Medical Council Name', field_type='text', is_required=True, order=9
             )
             # Registration No:
             RegistrationField.objects.create(
-                form=form, label='Registration No:', field_type='number', is_required=True, order=9
+                form=form, label='Registration No:', field_type='number', is_required=True, order=10
             )
             # Food Preference
             RegistrationField.objects.create(
-                form=form, label='Food Preference', field_type='radio', options=['Veg', 'Non-Veg'], is_required=True, order=10
+                form=form, label='Food Preference', field_type='radio', options=['Veg', 'Non-Veg'], is_required=True, order=11
             )
             
         serializer = self.get_serializer(form)

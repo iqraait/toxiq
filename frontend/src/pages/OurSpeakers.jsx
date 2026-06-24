@@ -151,47 +151,27 @@ const OurSpeakers = () => {
       <Container maxWidth="lg" sx={{ py: 8, flexGrow: 1 }}>
         <Box sx={{ 
           display: 'flex', 
-          flexDirection: { xs: 'column', md: 'row' }, 
-          justifyContent: 'space-between', 
-          alignItems: { xs: 'flex-start', md: 'center' },
-          gap: 3, 
+          alignItems: 'center', 
+          gap: 2, 
           mb: '60px' 
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Button 
-              variant="outlined" 
-              color="secondary"
-              startIcon={<ArrowBackIcon />}
-              onClick={() => navigate(-1)}
-              sx={{ borderRadius: '20px', flexShrink: 0 }}
-            >
-              Back
-            </Button>
-            <Typography 
-              variant="h4" 
-              fontWeight="950" 
-              fontFamily="'Raleway', sans-serif" 
-              sx={purpleGradientText}
-            >
-              Distinguished Guest Speakers
-            </Typography>
-          </Box>
-          
           <Button 
-            variant="contained" 
-            color="primary"
-            onClick={() => navigate('/article-submission')}
-            sx={{ 
-              borderRadius: '20px', 
-              px: 3.5, 
-              py: 1.2, 
-              fontWeight: 850,
-              boxShadow: '0 6px 20px rgba(13, 148, 136, 0.2)',
-              alignSelf: { xs: 'flex-start', md: 'auto' }
-            }}
+            variant="outlined" 
+            color="secondary"
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate(-1)}
+            sx={{ borderRadius: '20px', flexShrink: 0 }}
           >
-            Submit Article
+            Back
           </Button>
+          <Typography 
+            variant="h4" 
+            fontWeight="950" 
+            fontFamily="'Raleway', sans-serif" 
+            sx={purpleGradientText}
+          >
+            Distinguished Guest Speakers
+          </Typography>
         </Box>
 
         {loading ? (

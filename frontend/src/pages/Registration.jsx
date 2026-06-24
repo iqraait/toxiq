@@ -15,6 +15,25 @@ import GlassCard from '../components/GlassCard';
 import DynamicFormRenderer from '../components/DynamicFormRenderer';
 import { purpleGradientText } from '../theme';
 
+const formatDate = (dateStr) => {
+  if (!dateStr || dateStr === 'N/A') return 'N/A';
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (match) {
+    return `${match[3]}/${match[2]}/${match[1]}`;
+  }
+  try {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    }
+  } catch (e) {}
+  return dateStr;
+};
+
 const Registration = () => {
   const navigate = useNavigate();
 
@@ -442,7 +461,7 @@ const Registration = () => {
                     </Typography>
                   </Box>
                   <Chip 
-                    label={dates.registration_open || 'N/A'} 
+                    label={formatDate(dates.registration_open)} 
                     sx={{ 
                       fontWeight: '800', 
                       fontSize: '0.9rem',
@@ -488,7 +507,7 @@ const Registration = () => {
                     </Typography>
                   </Box>
                   <Chip 
-                    label={dates.registration_close || 'N/A'} 
+                    label={formatDate(dates.registration_close)} 
                     sx={{ 
                       fontWeight: '800', 
                       fontSize: '0.9rem',
@@ -534,7 +553,7 @@ const Registration = () => {
                     </Typography>
                   </Box>
                   <Chip 
-                    label={dates.article_deadline || 'N/A'} 
+                    label={formatDate(dates.article_deadline)} 
                     sx={{ 
                       fontWeight: '800', 
                       fontSize: '0.9rem',

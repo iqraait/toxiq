@@ -6,6 +6,8 @@ html, body {
   width: 100%;
   height: 100%;
   font-family: 'Raleway', 'Inter', -apple-system, sans-serif;
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum";
   background-color: #f8fafc;
   color: #0f172a;
   scroll-behavior: smooth;

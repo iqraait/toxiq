@@ -53,15 +53,20 @@ def seed_db():
             ('Phone Number (WhatsApp)', 'phone', True, 'e.g. +91 9876543210', None, None, 4),
             ('Designation', 'text', True, 'Enter your designation', None, None, 5),
             ('Institute / Hospital', 'text', True, 'Enter your workplace/college name', None, None, 6),
+            ('Specialty / Department of Practice', 'checkbox', True, None, [
+                'Emergency Medicine', 'Clinical Pharmacy', 'Critical Care', 
+                'General Medicine', 'Pediatrics', 'Forensic Medicine', 
+                'Family Medicine', 'General practitioner', 'Others'
+            ], None, 7),
             ('Registration Category', 'checkbox', True, None, [
                 {'value': 'Invited Speakers', 'price': 0.00, 'link': 'https://ease.buzz/26064ARm0a'},
                 {'value': 'Specialist/Consultant', 'price': 3000.00, 'link': 'https://ease.buzz/2606sGmUAe'},
                 {'value': 'Residents/General Practitioners', 'price': 2000.00, 'link': 'https://ease.buzz/2606srntA0'},
                 {'value': 'Students/Interns/Nurses/Clinical Pharmacists/Paramedics', 'price': 1000.00, 'link': 'https://ease.buzz/26069HKtYU'}
-            ], None, 7),
-            ('Medical Council Name', 'text', True, 'Enter Medical Council Name', None, None, 8),
-            ('Registration No:', 'number', True, 'Enter Registration Number', None, None, 9),
-            ('Food Preference', 'radio', True, None, ['Veg', 'Non-Veg'], None, 10),
+            ], None, 8),
+            ('Medical Council Name', 'text', True, 'Enter Medical Council Name', None, None, 9),
+            ('Registration No:', 'number', True, 'Enter Registration Number', None, None, 10),
+            ('Food Preference', 'radio', True, None, ['Veg', 'Non-Veg'], None, 11),
         ]
         
         for label, ftype, req, placeholder, options, rules, order in fields:
@@ -96,7 +101,7 @@ def seed_db():
             'phone': '+91 11 4455 6677'
         },
         'registration_instructions': 'Ensure that you input valid registration licensing credentials if registering under the Practitioner category. Registration fee covers conference kit, lunches, and certificate of credit hours.',
-        'article_instructions': 'Files must be under 10MB and in PDF or DOCX formats only.'
+        'article_instructions': 'Files must be under 10MB and in PDF formats only.'
     }
 
     for key, val in cms_contents.items():

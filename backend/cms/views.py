@@ -100,7 +100,7 @@ class PublicHomeContentView(APIView):
             id=1,
             defaults={
                 'logo': 'settings/toxic_logo-01.jpg-removebg-preview.png',
-                'registration_banner': 'settings/TOXIQ_Digital_Banner_1.png'
+                'registration_banner': 'settings/registration_fee_structure.jpg'
             }
         )
         
@@ -131,7 +131,7 @@ class SiteSettingsView(APIView):
             id=1,
             defaults={
                 'logo': 'settings/toxic_logo-01.jpg-removebg-preview.png',
-                'registration_banner': 'settings/TOXIQ_Digital_Banner_1.png'
+                'registration_banner': 'settings/registration_fee_structure.jpg'
             }
         )
         serializer = SiteSettingsSerializer(obj, context={'request': request})
@@ -146,7 +146,7 @@ class SiteSettingsView(APIView):
             id=1,
             defaults={
                 'logo': 'settings/toxic_logo-01.jpg-removebg-preview.png',
-                'registration_banner': 'settings/TOXIQ_Digital_Banner_1.png'
+                'registration_banner': 'settings/registration_fee_structure.jpg'
             }
         )
         serializer = SiteSettingsSerializer(obj, data=request.data, partial=True, context={'request': request})

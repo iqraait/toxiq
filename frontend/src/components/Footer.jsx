@@ -16,6 +16,25 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import API from '../services/api';
 
+const formatDate = (dateStr) => {
+  if (!dateStr || dateStr === 'N/A') return 'N/A';
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (match) {
+    return `${match[3]}/${match[2]}/${match[1]}`;
+  }
+  try {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    }
+  } catch (e) {}
+  return dateStr;
+};
+
 const Footer = ({ contact = {} }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -313,7 +332,7 @@ const Footer = ({ contact = {} }) => {
                   Registration Opens
                 </Typography>
                 <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: 500 }}>
-                  {dates.registration_open || 'N/A'}
+                  {formatDate(dates.registration_open)}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', sm: 'flex-start' }, gap: 0.5 }}>
@@ -321,7 +340,7 @@ const Footer = ({ contact = {} }) => {
                   Registration Closes
                 </Typography>
                 <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: 500 }}>
-                  {dates.registration_close || 'N/A'}
+                  {formatDate(dates.registration_close)}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', sm: 'flex-start' }, gap: 0.5 }}>
@@ -329,7 +348,7 @@ const Footer = ({ contact = {} }) => {
                   Submission Deadline
                 </Typography>
                 <Typography variant="body2" sx={{ color: '#ffffff', fontSize: '0.85rem', fontWeight: 500 }}>
-                  {dates.article_deadline || 'N/A'}
+                  {formatDate(dates.article_deadline)}
                 </Typography>
               </Box>
             </Box>
