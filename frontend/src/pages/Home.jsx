@@ -17,6 +17,12 @@ import SchoolIcon from '@mui/icons-material/School';
 import ScienceIcon from '@mui/icons-material/Science';
 import MedicationIcon from '@mui/icons-material/Medication';
 import HubIcon from '@mui/icons-material/Hub';
+import FlagIcon from '@mui/icons-material/Flag';
+import HandshakeIcon from '@mui/icons-material/Handshake';
+import DescriptionIcon from '@mui/icons-material/Description';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 
 import API from '../services/api';
 import GlassCard from '../components/GlassCard';
@@ -38,11 +44,12 @@ import noufalPhoto from '../assets/noufal_fixed.jpg';
 import shinadPhoto from '../assets/shinad_fixed.jpg';
 import noorjahanPhoto from '../assets/noorjahan_fixed.jpg';
 
-const MemberCard = ({ name, role, desc, photo, initials }) => (
+const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: SideIcon }) => (
   <Card sx={{ 
     bgcolor: '#ffffff', 
     borderRadius: '24px', 
     border: '1.5px solid rgba(226, 232, 240, 0.8)',
+    borderLeft: isPatron ? '6px solid #2563eb' : '1.5px solid rgba(226, 232, 240, 0.8)',
     boxShadow: '0 10px 30px rgba(30, 58, 138, 0.04)',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     '&:hover': {
@@ -62,24 +69,44 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
     position: 'relative',
     overflow: 'hidden'
   }}>
-    <Avatar 
-      src={photo} 
-      alt={name} 
-      sx={{ 
-        width: 80, 
-        height: 80, 
-        flexShrink: 0, 
-        border: '2.5px solid #ffffff', 
-        boxShadow: '0 0 0 2px #2563eb, 0 4px 15px rgba(37, 99, 235, 0.2)',
-        bgcolor: '#2563eb',
-        color: '#ffffff',
-        fontWeight: 'bold',
-        fontSize: '1.35rem'
-      }}
-    >
-      {initials}
-    </Avatar>
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left' }}>
+    <Box sx={{ position: 'relative', display: 'inline-flex', flexShrink: 0 }}>
+      <Avatar 
+        src={photo} 
+        alt={name} 
+        sx={{ 
+          width: 80, 
+          height: 80, 
+          border: '2.5px solid #ffffff', 
+          boxShadow: '0 0 0 2px #2563eb, 0 4px 15px rgba(37, 99, 235, 0.2)',
+          bgcolor: '#2563eb',
+          color: '#ffffff',
+          fontWeight: 'bold',
+          fontSize: '1.35rem'
+        }}
+      >
+        {initials}
+      </Avatar>
+      {isPatron && (
+        <Box sx={{ 
+          position: 'absolute', 
+          bottom: -4, 
+          right: -4, 
+          width: 26, 
+          height: 26, 
+          borderRadius: '50%', 
+          background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)', 
+          border: '2.5px solid #ffffff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)',
+          zIndex: 2
+        }}>
+          <WorkspacePremiumIcon sx={{ color: '#ffffff', fontSize: '0.9rem' }} />
+        </Box>
+      )}
+    </Box>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left', pr: SideIcon ? 5 : 0 }}>
       <Typography 
         variant="caption" 
         color="#2563eb" 
@@ -131,6 +158,44 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
         {desc}
       </Typography>
     </Box>
+
+    {/* Right-side faint watermark for Patrons */}
+    {isPatron && (
+      <Box sx={{ 
+        position: 'absolute', 
+        right: -10, 
+        top: '50%', 
+        transform: 'translateY(-50%)', 
+        opacity: 0.05, 
+        color: '#2563eb',
+        pointerEvents: 'none',
+        zIndex: 0
+      }}>
+        <WorkspacePremiumIcon sx={{ fontSize: '110px' }} />
+      </Box>
+    )}
+
+    {/* Right-side badge for Organising Committee */}
+    {!isPatron && SideIcon && (
+      <Box sx={{ 
+        position: 'absolute', 
+        right: 20, 
+        top: '50%', 
+        transform: 'translateY(-50%)', 
+        width: 44, 
+        height: 44, 
+        borderRadius: '50%', 
+        bgcolor: '#f5f3ff', 
+        border: '1px solid #ddd6fe',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 2px 10px rgba(124, 58, 237, 0.04)'
+      }}>
+        <SideIcon sx={{ color: '#7c3aed', fontSize: '1.35rem' }} />
+      </Box>
+    )}
+
     {/* Bottom Accent Bar */}
     <Box sx={{ 
       position: 'absolute',
@@ -146,15 +211,15 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
 );
 
 const SectionHeader = ({ title, mt = 0 }) => (
-  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', mt: mt, mb: '50px' }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 1.5 }}>
-      <Box sx={{ flexGrow: 1, height: '1.5px', background: 'linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.8))' }} />
+  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mt: mt, mb: '50px' }}>
+    <Box sx={{ flexGrow: 1, height: '1.5px', background: 'linear-gradient(90deg, transparent, #2563eb)' }} />
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mx: 3 }}>
+      <Box sx={{ width: 6, height: 6, transform: 'rotate(45deg)', border: '1.5px solid #2563eb', bgcolor: 'transparent' }} />
       <Typography 
         variant="subtitle2" 
         sx={{ 
-          mx: 4, 
           fontWeight: '900', 
-          color: '#475569', 
+          color: '#1e3a8a', 
           textTransform: 'uppercase', 
           letterSpacing: '3px',
           fontSize: '0.85rem',
@@ -164,14 +229,9 @@ const SectionHeader = ({ title, mt = 0 }) => (
       >
         {title}
       </Typography>
-      <Box sx={{ flexGrow: 1, height: '1.5px', background: 'linear-gradient(90deg, rgba(203, 213, 225, 0.8), transparent)' }} />
+      <Box sx={{ width: 6, height: 6, transform: 'rotate(45deg)', border: '1.5px solid #2563eb', bgcolor: 'transparent' }} />
     </Box>
-    {/* 3x3 Dots Pattern */}
-    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 4px)', gap: '3px', mt: 0.5 }}>
-      {[...Array(9)].map((_, i) => (
-        <Box key={i} sx={{ width: 4, height: 4, borderRadius: '50%', bgcolor: '#2563eb', opacity: 0.8 }} />
-      ))}
-    </Box>
+    <Box sx={{ flexGrow: 1, height: '1.5px', background: 'linear-gradient(90deg, #2563eb, transparent)' }} />
   </Box>
 );
 
@@ -560,11 +620,11 @@ const Home = () => {
             Meet the visionary leadership and dedicated committee members guiding TOXIQ 2026.
           </Typography>
 
-          {/* Styled Accent Line with Diamond */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, mb: 8 }}>
-            <Box sx={{ width: 80, height: '2px', background: 'linear-gradient(to right, transparent, #2563eb)' }} />
-            <Box sx={{ width: 8, height: 8, transform: 'rotate(45deg)', bgcolor: '#7c3aed' }} />
-            <Box sx={{ width: 80, height: '2px', background: 'linear-gradient(to right, #2563eb, transparent)' }} />
+          {/* Styled Accent Line with Groups Icon */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 8 }}>
+            <Box sx={{ width: 100, height: '1.5px', background: 'linear-gradient(90deg, transparent, #2563eb)' }} />
+            <GroupsIcon sx={{ color: '#1e3a8a', fontSize: '1.8rem' }} />
+            <Box sx={{ width: 100, height: '1.5px', background: 'linear-gradient(90deg, #2563eb, transparent)' }} />
           </Box>
 
           {/* Patrons Subsection */}
@@ -582,6 +642,7 @@ const Home = () => {
                   desc={patron.role}
                   photo={patron.photo}
                   initials={patron.initials}
+                  isPatron={true}
                 />
               </Grid>
             ))}
@@ -592,12 +653,12 @@ const Home = () => {
 
           <Grid container spacing={3.75} justifyContent="center" sx={{ mb: 8 }}>
             {[
-              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: jazeelPhoto, initials: 'JN' },
-              { role: 'Vice Chairperson', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
-              { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine', photo: renjithPhoto, initials: 'RT' },
-              { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC', photo: josnaPhoto, initials: 'JJ' },
-              { role: 'Organizing Secretary', name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine', photo: nirmalPhoto, initials: 'NP' },
-              { role: 'Organizing Secretary', name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy', photo: anasPhoto, initials: 'MA' }
+              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: jazeelPhoto, initials: 'JN', sideIcon: FlagIcon },
+              { role: 'Vice Chairperson', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD', sideIcon: AccountTreeIcon },
+              { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine', photo: renjithPhoto, initials: 'RT', sideIcon: TrackChangesIcon },
+              { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC', photo: josnaPhoto, initials: 'JJ', sideIcon: HandshakeIcon },
+              { role: 'Organizing Secretary', name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine', photo: nirmalPhoto, initials: 'NP', sideIcon: AssignmentIcon },
+              { role: 'Organizing Secretary', name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy', photo: anasPhoto, initials: 'MA', sideIcon: LocalHospitalIcon }
             ].map((member, i) => (
               <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex' }}>
                 <MemberCard 
@@ -606,6 +667,8 @@ const Home = () => {
                   desc={member.desc}
                   photo={member.photo}
                   initials={member.initials}
+                  isPatron={false}
+                  sideIcon={member.sideIcon}
                 />
               </Grid>
             ))}
@@ -616,12 +679,12 @@ const Home = () => {
 
           <Grid container spacing={3.75} justifyContent="center">
             {[
-              { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: noorjahanPhoto, initials: 'NV' },
-              { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: aswathPhoto, initials: 'AR' },
-              { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine', photo: shahalPhoto, initials: 'MS' },
-              { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development', photo: vajidPhoto, initials: 'VN' },
-              { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK' },
-              { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy', photo: shinadPhoto, initials: 'SN' }
+              { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: noorjahanPhoto, initials: 'NV', sideIcon: MedicationIcon },
+              { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: aswathPhoto, initials: 'AR', sideIcon: MedicationIcon },
+              { name: 'Dr Muhammed Shahal', role: 'Specialist, Emergency Medicine', photo: shahalPhoto, initials: 'MS', sideIcon: MedicationIcon },
+              { name: 'Dr Vajid N V', role: 'Head, Iqraa Centre for Research & Development', photo: vajidPhoto, initials: 'VN', sideIcon: ScienceIcon },
+              { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK', sideIcon: HubIcon },
+              { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy', photo: shinadPhoto, initials: 'SN', sideIcon: MedicationIcon }
             ].map((coord, i) => (
               <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex' }}>
                 <MemberCard 
@@ -630,6 +693,8 @@ const Home = () => {
                   desc={coord.role}
                   photo={coord.photo}
                   initials={coord.initials}
+                  isPatron={false}
+                  sideIcon={coord.sideIcon}
                 />
               </Grid>
             ))}
