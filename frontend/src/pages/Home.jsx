@@ -40,38 +40,40 @@ import noorjahanPhoto from '../assets/noorjahan_fixed.jpg';
 const MemberCard = ({ name, role, desc, photo, initials }) => (
   <Card sx={{ 
     bgcolor: '#ffffff', 
-    borderRadius: '20px', 
+    borderRadius: '24px', 
     border: '1.5px solid rgba(226, 232, 240, 0.8)',
-    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
-    transition: 'all 0.3s ease',
+    boxShadow: '0 10px 30px rgba(30, 58, 138, 0.04)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     '&:hover': {
-      transform: 'translateY(-5px)',
-      boxShadow: '0 15px 35px rgba(13, 148, 136, 0.08)',
-      borderColor: 'secondary.main'
+      transform: 'translateY(-6px)',
+      boxShadow: '0 20px 40px rgba(30, 58, 138, 0.08)',
+      borderColor: '#2563eb'
     },
     p: 3,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 2.5,
-    height: 170,
+    gap: 3,
+    height: 175,
     width: '100%',
     minWidth: 0,
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    position: 'relative',
+    overflow: 'hidden'
   }}>
     <Avatar 
       src={photo} 
       alt={name} 
       sx={{ 
-        width: 70, 
-        height: 70, 
+        width: 80, 
+        height: 80, 
         flexShrink: 0, 
-        border: '2.5px solid rgba(13, 148, 136, 0.15)', 
-        boxShadow: '0 4px 12px rgba(13, 148, 136, 0.1)',
-        bgcolor: 'primary.main',
+        border: '2.5px solid #ffffff', 
+        boxShadow: '0 0 0 2px #2563eb, 0 4px 15px rgba(37, 99, 235, 0.2)',
+        bgcolor: '#2563eb',
         color: '#ffffff',
         fontWeight: 'bold',
-        fontSize: '1.25rem'
+        fontSize: '1.35rem'
       }}
     >
       {initials}
@@ -79,13 +81,13 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left' }}>
       <Typography 
         variant="caption" 
-        color="secondary.main" 
+        color="#2563eb" 
         fontWeight="800" 
         sx={{ 
           textTransform: 'uppercase', 
           letterSpacing: '0.8px', 
           display: 'block', 
-          mb: 0.5, 
+          mb: 0.8, 
           fontSize: '0.75rem',
           lineHeight: 1.2,
           whiteSpace: 'nowrap',
@@ -96,27 +98,28 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
         {role}
       </Typography>
       <Typography 
-        variant="subtitle2" 
+        variant="subtitle1" 
         fontWeight="900" 
-        color="primary.main" 
+        color="#0f172a" 
         sx={{ 
-          mb: 0.5, 
+          mb: 0.8, 
           lineHeight: 1.2, 
-          fontSize: '0.95rem',
+          fontSize: '1.1rem',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          textOverflow: 'ellipsis',
+          fontFamily: "'Raleway', sans-serif"
         }}
       >
         {name}
       </Typography>
       <Typography 
         variant="caption" 
-        color="textSecondary" 
+        color="text.secondary" 
         fontWeight="600" 
         sx={{ 
-          fontSize: '0.78rem', 
-          lineHeight: 1.35,
+          fontSize: '0.82rem', 
+          lineHeight: 1.4,
           display: '-webkit-box',
           WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
@@ -127,7 +130,48 @@ const MemberCard = ({ name, role, desc, photo, initials }) => (
         {desc}
       </Typography>
     </Box>
+    {/* Bottom Accent Bar */}
+    <Box sx={{ 
+      position: 'absolute',
+      bottom: 0,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: '80px',
+      height: '4px',
+      bgcolor: '#2563eb',
+      borderRadius: '4px 4px 0 0'
+    }} />
   </Card>
+);
+
+const SectionHeader = ({ title, mt = 0 }) => (
+  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', mt: mt, mb: '50px' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mb: 1.5 }}>
+      <Box sx={{ flexGrow: 1, height: '1.5px', background: 'linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.8))' }} />
+      <Typography 
+        variant="subtitle2" 
+        sx={{ 
+          mx: 4, 
+          fontWeight: '900', 
+          color: '#475569', 
+          textTransform: 'uppercase', 
+          letterSpacing: '3px',
+          fontSize: '0.85rem',
+          fontFamily: "'Raleway', sans-serif",
+          whiteSpace: 'nowrap'
+        }}
+      >
+        {title}
+      </Typography>
+      <Box sx={{ flexGrow: 1, height: '1.5px', background: 'linear-gradient(90deg, rgba(203, 213, 225, 0.8), transparent)' }} />
+    </Box>
+    {/* 3x3 Dots Pattern */}
+    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 4px)', gap: '3px', mt: 0.5 }}>
+      {[...Array(9)].map((_, i) => (
+        <Box key={i} sx={{ width: 4, height: 4, borderRadius: '50%', bgcolor: '#2563eb', opacity: 0.8 }} />
+      ))}
+    </Box>
+  </Box>
 );
 
 const Home = () => {
@@ -499,33 +543,38 @@ const Home = () => {
           <Typography 
             variant="h4" 
             fontWeight="900" 
-            color="primary.main" 
             align="center" 
-            sx={{ fontFamily: "'Raleway', sans-serif", mb: 2 }}
+            sx={{ 
+              fontFamily: "'Raleway', sans-serif", 
+              mb: 2,
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #7c3aed 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontSize: { xs: '2rem', md: '2.5rem' }
+            }}
           >
             Patrons & Organising Committee
           </Typography>
-          <Typography variant="body2" color="textSecondary" align="center" sx={{ mb: '60px', maxWidth: '600px', mx: 'auto' }}>
+          <Typography variant="body2" color="textSecondary" align="center" sx={{ mb: 3, maxWidth: '600px', mx: 'auto', fontSize: '1rem', fontWeight: '500' }}>
             Meet the visionary leadership and dedicated committee members guiding TOXIQ 2026.
           </Typography>
 
-          {/* Patrons Row */}
-          <Typography 
-            variant="subtitle2" 
-            color="secondary.main" 
-            fontWeight="900" 
-            align="center" 
-            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: '60px' }}
-          >
-            Patrons
-          </Typography>
+          {/* Styled Accent Line with Diamond */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5, mb: 8 }}>
+            <Box sx={{ width: 80, height: '2px', background: 'linear-gradient(to right, transparent, #2563eb)' }} />
+            <Box sx={{ width: 8, height: 8, transform: 'rotate(45deg)', bgcolor: '#7c3aed' }} />
+            <Box sx={{ width: 80, height: '2px', background: 'linear-gradient(to right, #2563eb, transparent)' }} />
+          </Box>
+
+          {/* Patrons Subsection */}
+          <SectionHeader title="Patrons" />
 
           <Grid container spacing={3.75} justifyContent="center" sx={{ mb: 8 }}>
             {[
               { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto, initials: 'PA' },
               { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto, initials: 'SM' }
             ].map((patron, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex' }}>
+              <Grid item xs={12} sm={6} md={5} key={i} sx={{ display: 'flex' }}>
                 <MemberCard 
                   name={patron.name}
                   role="Conference Patron"
@@ -537,18 +586,8 @@ const Home = () => {
             ))}
           </Grid>
 
-          <Divider sx={{ my: 10, borderColor: 'rgba(226, 232, 240, 0.8)' }} />
-
-          {/* Organising Committee Header */}
-          <Typography 
-            variant="subtitle2" 
-            color="secondary.main" 
-            fontWeight="900" 
-            align="center" 
-            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: '60px' }}
-          >
-            Organising Committee
-          </Typography>
+          {/* Organising Committee Subsection */}
+          <SectionHeader title="Organising Committee" mt={8} />
 
           <Grid container spacing={3.75} justifyContent="center" sx={{ mb: 8 }}>
             {[
@@ -571,18 +610,8 @@ const Home = () => {
             ))}
           </Grid>
 
-          <Divider sx={{ my: 10, borderColor: 'rgba(226, 232, 240, 0.8)' }} />
-
-          {/* Programme Coordinators Section */}
-          <Typography 
-            variant="subtitle2" 
-            fontWeight="900" 
-            color="secondary.main" 
-            align="center" 
-            sx={{ textTransform: 'uppercase', letterSpacing: '2px', mb: '60px' }}
-          >
-            Programme Coordinators
-          </Typography>
+          {/* Programme Coordinators Subsection */}
+          <SectionHeader title="Programme Coordinators" mt={8} />
 
           <Grid container spacing={3.75} justifyContent="center">
             {[
