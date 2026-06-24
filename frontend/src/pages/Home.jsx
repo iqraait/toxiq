@@ -47,47 +47,53 @@ import noorjahanPhoto from '../assets/noorjahan_fixed.jpg';
 const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: SideIcon }) => (
   <Card sx={{ 
     bgcolor: '#ffffff', 
-    borderRadius: '20px', 
-    border: '1.5px solid rgba(226, 232, 240, 0.8)',
-    boxShadow: '0 8px 30px rgba(30, 58, 138, 0.03)',
-    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    '&:hover': {
-      transform: 'translateY(-6px)',
-      boxShadow: '0 15px 35px rgba(30, 58, 138, 0.07)',
-      borderColor: '#2563eb'
-    },
-    p: 2.5,
+    borderRadius: '28px', 
+    border: '1px solid rgba(226, 232, 240, 0.8)',
+    boxShadow: '0 10px 30px rgba(15, 23, 42, 0.06)',
+    transition: 'all 0.35s ease',
+    p: 3,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 2.5,
-    height: 160,
+    gap: 3,
+    height: 180,
+    minHeight: 180,
+    maxHeight: 180,
     width: '100%',
     minWidth: 0,
     boxSizing: 'border-box',
     position: 'relative',
-    overflow: 'hidden'
+    overflow: 'hidden',
+
+    "&::before": {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '5px',
+      background: 'linear-gradient(90deg, #2563eb, #7c3aed)'
+    },
+
+    "&:hover": {
+      transform: 'translateY(-10px)',
+      boxShadow: '0 25px 50px rgba(15, 23, 42, 0.12)',
+      borderColor: '#2563eb'
+    }
   }}>
-    <Box sx={{ 
-      position: 'relative', 
-      display: 'inline-flex', 
-      flexShrink: 0,
-      borderRadius: '50%',
-      background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
-      p: '2.5px',
-      boxShadow: '0 4px 12px rgba(37, 99, 235, 0.15)'
-    }}>
+    <Box sx={{ position: 'relative', display: 'inline-flex', flexShrink: 0 }}>
       <Avatar 
         src={photo} 
         alt={name} 
         sx={{ 
-          width: 70, 
-          height: 70, 
-          border: '2px solid #ffffff', 
+          width: 80, 
+          height: 80, 
+          border: '2.5px solid #ffffff', 
+          boxShadow: '0 0 0 2px #2563eb, 0 4px 15px rgba(37, 99, 235, 0.2)',
           bgcolor: '#2563eb',
           color: '#ffffff',
           fontWeight: 'bold',
-          fontSize: '1.2rem'
+          fontSize: '1.35rem'
         }}
       >
         {initials}
@@ -95,34 +101,34 @@ const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: Sid
       {isPatron && (
         <Box sx={{ 
           position: 'absolute', 
-          bottom: -2, 
-          right: -2, 
-          width: 22, 
-          height: 22, 
+          bottom: -4, 
+          right: -4, 
+          width: 26, 
+          height: 26, 
           borderRadius: '50%', 
           background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)', 
-          border: '2px solid #ffffff',
+          border: '2.5px solid #ffffff',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)',
           zIndex: 2
         }}>
-          <WorkspacePremiumIcon sx={{ color: '#ffffff', fontSize: '0.75rem' }} />
+          <WorkspacePremiumIcon sx={{ color: '#ffffff', fontSize: '0.9rem' }} />
         </Box>
       )}
     </Box>
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left', pr: SideIcon ? 5.5 : 0 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, minWidth: 0, textAlign: 'left', pr: (!isPatron && SideIcon) ? 5 : 0 }}>
       <Typography 
         variant="caption" 
         color="#2563eb" 
         fontWeight="800" 
         sx={{ 
           textTransform: 'uppercase', 
-          letterSpacing: '1px', 
+          letterSpacing: '0.8px', 
           display: 'block', 
-          mb: 0.4, 
-          fontSize: '0.7rem',
+          mb: 0.8, 
+          fontSize: '0.75rem',
           lineHeight: 1.2,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
@@ -136,9 +142,9 @@ const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: Sid
         fontWeight="900" 
         color="#0f172a" 
         sx={{ 
-          mb: 0.4, 
-          lineHeight: 1.15, 
-          fontSize: '0.95rem',
+          mb: 0.8, 
+          lineHeight: 1.2, 
+          fontSize: '1.1rem',
           fontFamily: "'Raleway', sans-serif",
           display: '-webkit-box',
           WebkitLineClamp: 2,
@@ -155,8 +161,8 @@ const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: Sid
         color="text.secondary" 
         fontWeight="600" 
         sx={{ 
-          fontSize: '0.75rem', 
-          lineHeight: 1.3,
+          fontSize: '0.82rem', 
+          lineHeight: 1.4,
           display: '-webkit-box',
           WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
@@ -169,25 +175,40 @@ const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: Sid
       </Typography>
     </Box>
 
-    {/* Right-side badge for all cards */}
-    {SideIcon && (
+    {/* Right-side faint watermark for Patrons */}
+    {isPatron && (
       <Box sx={{ 
         position: 'absolute', 
-        right: 16, 
+        right: -10, 
         top: '50%', 
         transform: 'translateY(-50%)', 
-        width: 36, 
-        height: 36, 
+        opacity: 0.05, 
+        color: '#2563eb',
+        pointerEvents: 'none',
+        zIndex: 0
+      }}>
+        <WorkspacePremiumIcon sx={{ fontSize: '110px' }} />
+      </Box>
+    )}
+
+    {/* Right-side badge for Organising Committee */}
+    {!isPatron && SideIcon && (
+      <Box sx={{ 
+        position: 'absolute', 
+        right: 20, 
+        top: '50%', 
+        transform: 'translateY(-50%)', 
+        width: 44, 
+        height: 44, 
         borderRadius: '50%', 
         bgcolor: '#f5f3ff', 
         border: '1px solid #ddd6fe',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 2px 10px rgba(124, 58, 237, 0.04)',
-        zIndex: 1
+        boxShadow: '0 2px 10px rgba(124, 58, 237, 0.04)'
       }}>
-        <SideIcon sx={{ color: '#7c3aed', fontSize: '1.15rem' }} />
+        <SideIcon sx={{ color: '#7c3aed', fontSize: '1.35rem' }} />
       </Box>
     )}
   </Card>
@@ -613,12 +634,12 @@ const Home = () => {
           {/* Patrons Subsection */}
           <SectionHeader title="Patrons" />
 
-          <Grid container spacing={3.75} justifyContent="center" sx={{ mb: 8 }}>
+          <Grid container spacing={4} justifyContent="center" alignItems="stretch" sx={{ mb: 10 }}>
             {[
               { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto, initials: 'PA' },
               { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto, initials: 'SM' }
             ].map((patron, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex' }}>
+              <Grid item xs={12} md={6} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
                   name={patron.name}
                   role="Conference Patron"
@@ -626,16 +647,15 @@ const Home = () => {
                   photo={patron.photo}
                   initials={patron.initials}
                   isPatron={true}
-                  sideIcon={WorkspacePremiumIcon}
                 />
               </Grid>
             ))}
           </Grid>
 
           {/* Organising Committee Subsection */}
-          <SectionHeader title="Organising Committee" mt={8} />
+          <SectionHeader title="Organising Committee" mt={0} />
 
-          <Grid container spacing={3.75} justifyContent="center" sx={{ mb: 8 }}>
+          <Grid container spacing={4} justifyContent="center" alignItems="stretch" sx={{ mb: 10 }}>
             {[
               { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager, IQRAA Group', photo: jazeelPhoto, initials: 'JN', sideIcon: FlagIcon },
               { role: 'Vice Chairperson', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD', sideIcon: AccountTreeIcon },
@@ -644,7 +664,7 @@ const Home = () => {
               { role: 'Organizing Secretary', name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine', photo: nirmalPhoto, initials: 'NP', sideIcon: AssignmentIcon },
               { role: 'Organizing Secretary', name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy', photo: anasPhoto, initials: 'MA', sideIcon: LocalHospitalIcon }
             ].map((member, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex' }}>
+              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
                   name={member.name}
                   role={member.role}
@@ -659,9 +679,9 @@ const Home = () => {
           </Grid>
 
           {/* Programme Coordinators Subsection */}
-          <SectionHeader title="Programme Coordinators" mt={8} />
+          <SectionHeader title="Programme Coordinators" mt={0} />
 
-          <Grid container spacing={3.75} justifyContent="center">
+          <Grid container spacing={4} justifyContent="center" alignItems="stretch">
             {[
               { name: 'Dr Noorjahan V A', role: 'Consultant, Emergency Medicine', photo: noorjahanPhoto, initials: 'NV', sideIcon: MedicationIcon },
               { name: 'Dr Aswath Raj P R', role: 'Specialist, Emergency Medicine', photo: aswathPhoto, initials: 'AR', sideIcon: MedicationIcon },
@@ -670,7 +690,7 @@ const Home = () => {
               { name: 'Mr Noufal K K', role: 'Head, Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK', sideIcon: HubIcon },
               { name: 'Dr Shinad N V', role: 'In charge, Clinical Pharmacy', photo: shinadPhoto, initials: 'SN', sideIcon: MedicationIcon }
             ].map((coord, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex' }}>
+              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
                   name={coord.name}
                   role="Programme Coordinator"
