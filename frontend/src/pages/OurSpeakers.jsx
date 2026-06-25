@@ -10,6 +10,7 @@ import API from '../services/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { purpleGradientText } from '../theme';
+import akhilPhoto from '../assets/akhil.png';
 
 const SpeakerCard = ({ name, designation, description, photo }) => {
   const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '';
@@ -116,7 +117,10 @@ const OurSpeakers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const getImageUrl = (path) => {
+  const getImageUrl = (path, name) => {
+    if (name && name.includes('Akhil')) {
+      return akhilPhoto;
+    }
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
       return path;
@@ -204,7 +208,7 @@ const OurSpeakers = () => {
                 name={sp.name}
                 designation={sp.designation}
                 description={sp.description}
-                photo={getImageUrl(sp.photo)}
+                photo={getImageUrl(sp.photo, sp.name)}
               />
             ))}
           </Box>
