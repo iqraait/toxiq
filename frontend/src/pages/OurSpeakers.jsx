@@ -11,6 +11,11 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { purpleGradientText } from '../theme';
 import akhilPhoto from '../assets/akhil.png';
+import pillayPhoto from '../assets/pillay.png';
+import ralphPhoto from '../assets/ralph.png';
+import vimalPhoto from '../assets/vimal.jpg';
+import gunaseelanPhoto from '../assets/gunaseelan.png';
+import amrithanandPhoto from '../assets/amrithanand.png';
 
 const SpeakerCard = ({ name, designation, description, photo }) => {
   const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '';
@@ -118,8 +123,14 @@ const OurSpeakers = () => {
   const [error, setError] = useState('');
 
   const getImageUrl = (path, name) => {
-    if (name && name.includes('Akhil')) {
-      return akhilPhoto;
+    if (name) {
+      const lowerName = name.toLowerCase();
+      if (lowerName.includes('akhil')) return akhilPhoto;
+      if (lowerName.includes('pillay')) return pillayPhoto;
+      if (lowerName.includes('ralph') || lowerName.includes('ravikar')) return ralphPhoto;
+      if (lowerName.includes('vimal')) return vimalPhoto;
+      if (lowerName.includes('gunaseelan')) return gunaseelanPhoto;
+      if (lowerName.includes('amrithanand')) return amrithanandPhoto;
     }
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
