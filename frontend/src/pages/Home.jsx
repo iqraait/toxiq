@@ -438,12 +438,32 @@ const Home = () => {
           {/* Patrons Subsection */}
           <SectionHeader title="Patrons" />
 
-          <Grid container spacing={4} justifyContent="center" alignItems="stretch" sx={{ mb: 10 }}>
+          <Box 
+            sx={{ 
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: '30px',
+              alignItems: 'stretch',
+              mb: 10
+            }}
+          >
             {[
               { name: 'Dr P C Anver', role: 'Executive Director', photo: anverPhoto, initials: 'PA' },
               { name: 'Dr Shamsudeen M', role: 'Chief of Medical Services', photo: shamsudeenPhoto, initials: 'SM' }
             ].map((patron, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
+              <Box 
+                key={i} 
+                sx={{ 
+                  width: { 
+                    xs: '100%', 
+                    sm: 'calc(50% - 15px)', 
+                    md: 'calc(33.333% - 20px)' 
+                  }, 
+                  display: 'flex', 
+                  alignItems: 'stretch' 
+                }}
+              >
                 <MemberCard 
                   name={patron.name}
                   role="Conference Patron"
@@ -451,14 +471,26 @@ const Home = () => {
                   photo={patron.photo}
                   initials={patron.initials}
                 />
-              </Grid>
+              </Box>
             ))}
-          </Grid>
+          </Box>
 
           {/* Organising Committee Subsection */}
           <SectionHeader title="Organising Committee" mt={0} />
 
-          <Grid container spacing={4} justifyContent="center" alignItems="stretch" sx={{ mb: 10 }}>
+          <Box 
+            sx={{ 
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)'
+              },
+              gap: '30px',
+              alignItems: 'stretch',
+              mb: 10
+            }}
+          >
             {[
               { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'IQRAA - Group General Manager', photo: jazeelPhoto, initials: 'JN' },
               { role: 'Vice Chairperson', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
@@ -467,7 +499,7 @@ const Home = () => {
               { role: 'Organizing Secretary', name: 'Dr. Nirmal Peter Abraham', desc: 'Consultant, Emergency Medicine', photo: nirmalPhoto, initials: 'NP' },
               { role: 'Organizing Secretary', name: 'Dr Muhammed Anas V K', desc: 'HOD, Dept. of Clinical Pharmacy', photo: anasPhoto, initials: 'MA' }
             ].map((member, i) => (
-              <Grid item xs={12} sm={4} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
+              <Box key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
                   name={member.name}
                   role={member.role}
@@ -475,14 +507,25 @@ const Home = () => {
                   photo={member.photo}
                   initials={member.initials}
                 />
-              </Grid>
+              </Box>
             ))}
-          </Grid>
+          </Box>
 
           {/* Programme Coordinators Subsection */}
           <SectionHeader title="Programme Coordinators" mt={0} />
 
-          <Grid container spacing={4} justifyContent="center" alignItems="stretch">
+          <Box 
+            sx={{ 
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)'
+              },
+              gap: '30px',
+              alignItems: 'stretch'
+            }}
+          >
             {[
               { name: 'Dr Noorjahan V A', role: 'Consultant,Emergency Medicine', photo: noorjahanPhoto, initials: 'NV' },
               { name: 'Dr Aswath Raj P R', role: 'Specialist,Emergency Medicine', photo: aswathPhoto, initials: 'AR' },
@@ -491,7 +534,7 @@ const Home = () => {
               { name: 'Mr Noufal K K', role: 'Head - IQRAA laboratory Services', photo: noufalPhoto, initials: 'NK' },
               { name: 'Dr Shinad N V', role: 'In charge,Clinical Pharmacy', photo: shinadPhoto, initials: 'SN' }
             ].map((coord, i) => (
-              <Grid item xs={12} sm={4} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
+              <Box key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
                 <MemberCard 
                   name={coord.name}
                   role="Programme Coordinator"
@@ -499,9 +542,9 @@ const Home = () => {
                   photo={coord.photo}
                   initials={coord.initials}
                 />
-              </Grid>
+              </Box>
             ))}
-          </Grid>
+          </Box>
         </Container>
       </Box>
 
