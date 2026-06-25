@@ -43,6 +43,7 @@ import shahalPhoto from '../assets/shahal_fixed.jpg';
 import noufalPhoto from '../assets/noufal_fixed.jpg';
 import shinadPhoto from '../assets/shinad_fixed.jpg';
 import noorjahanPhoto from '../assets/noorjahan_fixed.jpg';
+import homeBanner from '../assets/home_banner.jpg';
 
 const MemberCard = ({ name, role, desc, photo, initials, isPatron, sideIcon: SideIcon }) => (
   <Card sx={{ 
@@ -356,136 +357,13 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Banner Section */}
-      {!(activeBanner.title || activeBanner.subtitle) && activeBanner.image ? (
-        <Box sx={{ width: '100%', overflow: 'hidden' }}>
-          <img 
-            src={getImageUrl(activeBanner.image)} 
-            alt="TOXIQ Conference Banner" 
-            style={{ width: '100%', height: 'auto', display: 'block' }} 
-          />
-        </Box>
-      ) : (
-        <Box 
-          sx={{ 
-            background: activeBanner.image 
-              ? `linear-gradient(rgba(4, 27, 58, 0.82), rgba(3, 20, 45, 0.88)), url('${getImageUrl(activeBanner.image)}') no-repeat center center / cover`
-              : 'linear-gradient(135deg, #091b29 0%, #062425 100%)', // Fallback premium dark gradient
-            color: '#ffffff',
-            py: activeBanner.title || activeBanner.subtitle ? { xs: 10, md: 15 } : 0,
-            minHeight: activeBanner.title || activeBanner.subtitle ? 'auto' : { xs: '250px', sm: '400px', md: '500px' },
-            position: 'relative',
-            overflow: 'hidden',
-            boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center'
-          }}
-        >
-          {/* Subtle grid background pattern */}
-          <Box 
-            sx={{
-              position: 'absolute',
-              top: 0, left: 0, right: 0, bottom: 0,
-              opacity: 0.05,
-              backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1px, transparent 0), radial-gradient(rgba(255,255,255,0.15) 1px, transparent 0)',
-              backgroundSize: '24px 24px',
-              backgroundPosition: '0 0, 12px 12px',
-              pointerEvents: 'none'
-            }}
-          />
-          
-          {(activeBanner.title || activeBanner.subtitle) && (
-            <Container maxWidth="md" sx={{ position: 'relative', zIndex: 5 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                {activeBanner.title && (
-                  <Typography 
-                    variant="h2" 
-                    sx={{ 
-                      fontWeight: 900, 
-                      mb: 2, 
-                      fontSize: { xs: '2.4rem', sm: '3.2rem', md: '4rem' },
-                      letterSpacing: '-1.5px',
-                      lineHeight: 1.15,
-                      textShadow: '0 4px 15px rgba(0,0,0,0.5)'
-                    }}
-                  >
-                    {activeBanner.title}
-                  </Typography>
-                )}
-                
-                {activeBanner.subtitle && (
-                  <Typography 
-                    variant="h5" 
-                    sx={{ 
-                      mb: 3, 
-                      color: '#2dd4bf', 
-                      fontWeight: 700,
-                      fontSize: { xs: '1.15rem', sm: '1.4rem', md: '1.75rem' },
-                      lineHeight: 1.3,
-                      textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-                      maxWidth: '800px'
-                    }}
-                  >
-                    {activeBanner.subtitle}
-                  </Typography>
-                )}
-                
-                <Typography 
-                  variant="body1" 
-                  sx={{ 
-                    mb: 5, 
-                    color: '#cbd5e1', 
-                    fontWeight: 400,
-                    maxWidth: '650px',
-                    lineHeight: 1.8,
-                    fontSize: { xs: '0.95rem', md: '1.08rem' },
-                    textShadow: '0 2px 6px rgba(0,0,0,0.5)'
-                  }}
-                >
-                  Join experts, researchers, and healthcare professionals for a comprehensive toxicology program with hands-on learning and scientific exchange.
-                </Typography>
-                
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} justifyContent="center" sx={{ width: { xs: '100%', sm: 'auto' } }}>
-                  <Button 
-                    variant="contained" 
-                    color="secondary" 
-                    size="large"
-                    sx={{ px: 5, py: 1.8, borderRadius: '30px', fontSize: '1rem', fontWeight: 800, minWidth: '180px' }}
-                    onClick={handleBannerCta}
-                  >
-                    {activeBanner.cta_text || 'Register Now'}
-                  </Button>
-                  <Button 
-                    variant="outlined" 
-                    sx={{ 
-                      px: 5, 
-                      py: 1.8, 
-                      borderRadius: '30px', 
-                      fontSize: '1rem', 
-                      color: '#ffffff', 
-                      borderColor: 'rgba(255,255,255,0.4)',
-                      fontWeight: 800,
-                      minWidth: '180px',
-                      '&:hover': {
-                        borderColor: '#2dd4bf',
-                        color: '#2dd4bf',
-                        bgcolor: 'rgba(45, 212, 191, 0.05)'
-                      }
-                    }}
-                    onClick={() => {
-                      const docSection = document.getElementById('about-section');
-                      if (docSection) docSection.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    View Program
-                  </Button>
-                </Stack>
-              </Box>
-            </Container>
-          )}
-        </Box>
-      )}
+      <Box sx={{ width: '100%', overflow: 'hidden' }}>
+        <img 
+          src={homeBanner} 
+          alt="TOXIQ Conference Banner" 
+          style={{ width: '100%', height: 'auto', display: 'block' }} 
+        />
+      </Box>
 
       {/* Statistics / Highlights Section */}
       <Container 
@@ -493,7 +371,7 @@ const Home = () => {
         sx={{ 
           maxWidth: '1400px', 
           mx: 'auto', 
-          mt: (activeBanner.title || activeBanner.subtitle) ? -6 : { xs: 2, sm: 4, md: 6 }, 
+          mt: { xs: 4, sm: 6, md: 8 }, 
           mb: 8, 
           zIndex: 10,
           px: { xs: 2, sm: 3, md: 4 }
