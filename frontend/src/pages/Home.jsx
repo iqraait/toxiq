@@ -487,7 +487,7 @@ const Home = () => {
               { name: 'Dr Noorjahan V A', role: 'Consultant,Emergency Medicine', photo: noorjahanPhoto, initials: 'NV' },
               { name: 'Dr Aswath Raj P R', role: 'Specialist,Emergency Medicine', photo: aswathPhoto, initials: 'AR' },
               { name: 'Dr Muhammed Shahal', role: 'Specialist,Emergency Medicine', photo: shahalPhoto, initials: 'MS' },
-              { name: 'Dr Vajid N V', role: 'Head, Research and development', photo: vajidPhoto, initials: 'VN' },
+              { name: 'Dr Vajid N V', role: 'Head, Research & development', photo: vajidPhoto, initials: 'VN' },
               { name: 'Mr Noufal K K', role: 'Head - IQRAA laboratory Services', photo: noufalPhoto, initials: 'NK' },
               { name: 'Dr Shinad N V', role: 'In charge,Clinical Pharmacy', photo: shinadPhoto, initials: 'SN' }
             ].map((coord, i) => (
