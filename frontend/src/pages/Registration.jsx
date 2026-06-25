@@ -14,6 +14,7 @@ import Footer from '../components/Footer';
 import GlassCard from '../components/GlassCard';
 import DynamicFormRenderer from '../components/DynamicFormRenderer';
 import { purpleGradientText } from '../theme';
+import registrationBanner from '../assets/registration_banner.png';
 
 const formatDate = (dateStr) => {
   if (!dateStr || dateStr === 'N/A') return 'N/A';
@@ -273,28 +274,26 @@ const Registration = () => {
           <Grid item xs={12} md={10} lg={9}>
             
             {/* Section 1: Registration Details Banner Card */}
-            {settings?.registration_banner && (
-              <GlassCard sx={{ 
-                p: 3, 
-                mb: 4, 
-                border: '1px solid rgba(30, 58, 138, 0.12)', 
-                boxShadow: '0 10px 45px rgba(30, 58, 138, 0.03)',
-                display: 'flex', 
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
-                <img 
-                  src={getImageUrl(settings.registration_banner)} 
-                  alt="Registration Details" 
-                  style={{ 
-                    width: '100%', 
-                    maxHeight: '480px', 
-                    objectFit: 'contain', 
-                    borderRadius: '12px'
-                  }} 
-                />
-              </GlassCard>
-            )}
+            <GlassCard sx={{ 
+              p: 3, 
+              mb: 4, 
+              border: '1px solid rgba(30, 58, 138, 0.12)', 
+              boxShadow: '0 10px 45px rgba(30, 58, 138, 0.03)',
+              display: 'flex', 
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <img 
+                src={registrationBanner} 
+                alt="Registration Details" 
+                style={{ 
+                  width: '100%', 
+                  maxHeight: '520px', 
+                  objectFit: 'contain', 
+                  borderRadius: '12px'
+                }} 
+              />
+            </GlassCard>
 
             {/* Section 2: Registration Form Inputs Card */}
             <GlassCard sx={{ 
