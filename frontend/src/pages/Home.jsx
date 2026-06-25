@@ -460,7 +460,7 @@ const Home = () => {
 
           <Grid container spacing={4} justifyContent="center" alignItems="stretch" sx={{ mb: 10 }}>
             {[
-              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'Group General Manager,IQRAA', photo: jazeelPhoto, initials: 'JN' },
+              { role: 'Organising Chairperson', name: 'Mr Jazeel Nalakath', desc: 'IQRAA - Group General Manager', photo: jazeelPhoto, initials: 'JN' },
               { role: 'Vice Chairperson', name: 'Dr. Sanal Dev S S', desc: 'Consultant, Emergency Medicine', photo: sanalPhoto, initials: 'SD' },
               { role: 'Convener', name: 'Dr Renjith T P', desc: 'Consultant, Emergency Medicine', photo: renjithPhoto, initials: 'RT' },
               { role: 'Joint Convener', name: 'Dr Josna Jose', desc: 'In charge, Toxicovigilance and PIC', photo: josnaPhoto, initials: 'JJ' },
@@ -487,8 +487,8 @@ const Home = () => {
               { name: 'Dr Noorjahan V A', role: 'Consultant,Emergency Medicine', photo: noorjahanPhoto, initials: 'NV' },
               { name: 'Dr Aswath Raj P R', role: 'Specialist,Emergency Medicine', photo: aswathPhoto, initials: 'AR' },
               { name: 'Dr Muhammed Shahal', role: 'Specialist,Emergency Medicine', photo: shahalPhoto, initials: 'MS' },
-              { name: 'Dr Vajid N V', role: 'Head,Iqraa Centre,Research & Development', photo: vajidPhoto, initials: 'VN' },
-              { name: 'Mr Noufal K K', role: 'Head,Iqraa Clinical laboratory Services', photo: noufalPhoto, initials: 'NK' },
+              { name: 'Dr Vajid N V', role: 'Head, Research and development', photo: vajidPhoto, initials: 'VN' },
+              { name: 'Mr Noufal K K', role: 'Head - IQRAA laboratory Services', photo: noufalPhoto, initials: 'NK' },
               { name: 'Dr Shinad N V', role: 'In charge,Clinical Pharmacy', photo: shinadPhoto, initials: 'SN' }
             ].map((coord, i) => (
               <Grid item xs={12} sm={4} md={4} key={i} sx={{ display: 'flex', alignItems: 'stretch' }}>
