@@ -38,14 +38,43 @@ const RegistrationSuccess = () => {
 
   if (!registrationId) {
     return (
-      <Box minHeight="100vh" className="gradient-bg">
+      <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }} className="gradient-bg">
         <Navbar />
-        <Container maxWidth="sm" sx={{ py: 10 }}>
-          <Box textAlign="center">
-            <Typography variant="h6" color="textSecondary" mb={3}>No registration information found.</Typography>
-            <Button variant="contained" onClick={() => navigate('/')}>Go Home</Button>
-          </Box>
+        <Container maxWidth="md" sx={{ py: 8, flexGrow: 1 }}>
+          <GlassCard sx={{ p: 5, maxWidth: '600px', mx: 'auto', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+            <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
+              <CheckCircleIcon sx={{ fontSize: '5.5rem', color: 'success.main', mb: 2, filter: 'drop-shadow(0 4px 12px rgba(16, 185, 129, 0.2))' }} />
+              <Typography 
+                variant="h3" 
+                fontWeight="900" 
+                fontFamily="'Raleway', sans-serif" 
+                sx={purpleGradientText}
+                gutterBottom
+              >
+                Registration Submitted!
+              </Typography>
+              <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
+                If you have completed your payment via the external link, your registration will be processed shortly.
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                An email confirmation with your unique Registration ID and PDF receipt will be sent to your registered email address once payment verification is complete.
+              </Typography>
+            </Box>
+            <Divider sx={{ my: 3 }} />
+            <Stack direction="row" spacing={2} justifyContent="center">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<HomeIcon />}
+                onClick={() => navigate('/')}
+                sx={{ py: 1.5, px: 4, borderRadius: '30px', fontWeight: 'bold' }}
+              >
+                Return Home
+              </Button>
+            </Stack>
+          </GlassCard>
         </Container>
+        <Footer />
       </Box>
     );
   }

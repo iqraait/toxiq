@@ -20,9 +20,38 @@ class PaymentInline(TabularInline):
 
 @admin.register(Registration)
 class RegistrationAdmin(ModelAdmin):
-    list_display = ('registration_id', 'participant_name', 'participant_email', 'participant_phone', 'created_at')
+    list_display = ('registration_id', 'participant_name', 'participant_email', 'participant_phone', 'payment_status_display', 'created_at')
     search_fields = ('registration_id', 'participant_name', 'participant_email', 'participant_phone')
+    actions = ['approve_registrations']
     inlines = [PaymentInline]
+
+    def payment_status_display(self, obj):
+        payment = obj.payments.first()
+        if payment:
+            return payment.payment_status
+        return "NO PAYMENT"
+    payment_status_display.short_description = 'Payment Status'
+
+    def approve_registrations(self, request, queryset):
+        from .services import process_successful_payment
+        import uuid
+        count = 0
+        for registration in queryset:
+            if not registration.registration_id:
+                # Find the pending payment
+                payment = registration.payments.filter(payment_status='PENDING').first()
+                if not payment:
+                    # Create a default payment if none exists
+                    payment = Payment.objects.create(
+                        registration=registration,
+                        transaction_id=f"MANUAL-{uuid.uuid4().hex[:12].upper()}",
+                        amount=registration.form.fee_amount,
+                        payment_status='PENDING'
+                    )
+                process_successful_payment(payment, gateway_response={"marked_as_paid_via_action": request.user.username})
+                count += 1
+        self.message_user(request, f"Successfully approved {count} registrations and sent confirmation emails.")
+    approve_registrations.short_description = "Approve selected registrations (Mark as Paid)"
 
 @admin.register(Payment)
 class PaymentAdmin(ModelAdmin):

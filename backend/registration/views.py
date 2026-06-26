@@ -473,3 +473,58 @@ class PayUDebugView(APIView):
             "hash_test": test_hash
         }, status=status.HTTP_200_OK)
 
+class EasebuzzWebhookCallbackView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        """
+        Receives webhook POST notification from Easebuzz, processes payment,
+        and marks the registration as successful.
+        """
+        logger.info("Received Easebuzz webhook callback:")
+        logger.info(request.data)
+        
+        txnid = request.data.get('txnid')
+        email = request.data.get('email')
+        phone = request.data.get('phone')
+        status_str = request.data.get('status')
+        
+        if not txnid and not email:
+            return Response({"error": "Missing txnid or email"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        payment = None
+        if txnid:
+            payment = Payment.objects.filter(transaction_id=txnid).first()
+            
+        if not payment and email:
+            payment = Payment.objects.filter(
+                payment_status='PENDING',
+                registration__participant_email=email
+            ).order_by('-created_at').first()
+            
+        if not payment and phone:
+            payment = Payment.objects.filter(
+                payment_status='PENDING',
+                registration__participant_phone=phone
+            ).order_by('-created_at').first()
+            
+        if not payment:
+            logger.warning(f"No pending payment found for Easebuzz callback: txnid={txnid}, email={email}")
+            return Response({"error": "No matching pending payment found"}, status=status.HTTP_404_NOT_FOUND)
+            
+        if payment.payment_status == 'PENDING':
+            if status_str in ['success', 'SUCCESS', 'active', 'successful']:
+                process_successful_payment(payment, gateway_response=request.data)
+                logger.info(f"Payment processed successfully for txnid={payment.transaction_id}")
+            elif status_str in ['failure', 'failed', 'userCancelled', 'cancelled']:
+                payment.payment_status = 'FAILED'
+                payment.gateway_response = request.data
+                payment.save()
+                logger.info(f"Payment marked as FAILED for txnid={payment.transaction_id}")
+            else:
+                # Default to success if webhook is triggered and status is not explicitly failed
+                process_successful_payment(payment, gateway_response=request.data)
+                logger.info(f"Payment processed successfully (default success) for txnid={payment.transaction_id}")
+            
+        return Response({"status": "acknowledged"}, status=status.HTTP_200_OK)
+

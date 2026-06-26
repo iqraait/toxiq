@@ -10,7 +10,8 @@ from .views import (
     RegistrationReceiptDownloadView,
     PaymentListView,
     PayUDebugView,
-    MarkPaymentSuccessView
+    MarkPaymentSuccessView,
+    EasebuzzWebhookCallbackView
 )
 
 router = DefaultRouter()
@@ -22,6 +23,7 @@ urlpatterns = [
     path('submit/', RegistrationSubmitView.as_view(), name='registration_submit'),
     path('payment/simulate-callback/', SimulatePaymentCallbackView.as_view(), name='payment_simulate_callback'),
     path('payment/payu-callback/', PayUWebhookCallbackView.as_view(), name='payment_payu_callback'),
+    path('payment/easebuzz-callback/', EasebuzzWebhookCallbackView.as_view(), name='payment_easebuzz_callback'),
     path('payment/tracking/', PaymentListView.as_view(), name='payment_tracking'),
     path('payment/<int:pk>/mark-success/', MarkPaymentSuccessView.as_view(), name='mark_payment_success'),
     path('payment/debug/', PayUDebugView.as_view(), name='payment_debug'),
