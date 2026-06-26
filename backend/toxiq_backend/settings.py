@@ -217,10 +217,11 @@ DEFAULT_FROM_EMAIL = 'toxiq26iqraa@gmail.com'
 EMAIL_HOST = env('EMAIL_HOST')
 if EMAIL_HOST:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_PORT = env('EMAIL_PORT')
+    EMAIL_PORT = env.int('EMAIL_PORT', default=587)
     EMAIL_HOST_USER = env('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-    EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+    EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+    EMAIL_TIMEOUT = 5
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
