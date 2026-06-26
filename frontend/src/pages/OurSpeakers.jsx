@@ -16,6 +16,11 @@ import ralphPhoto from '../assets/ralph.png';
 import vimalPhoto from '../assets/vimal.jpg';
 import gunaseelanPhoto from '../assets/gunaseelan.png';
 import amrithanandPhoto from '../assets/amrithanand.png';
+import jaicobPhoto from '../assets/jaicob.png';
+import senthilkumaranPhoto from '../assets/senthilkumaran.png';
+import gireeshPhoto from '../assets/gireesh.png';
+import jayeshPhoto from '../assets/jayesh.png';
+import chandniPhoto from '../assets/chandni.jpg';
 
 const SpeakerCard = ({ name, designation, description, photo }) => {
   const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '';
@@ -131,6 +136,11 @@ const OurSpeakers = () => {
       if (lowerName.includes('vimal')) return vimalPhoto;
       if (lowerName.includes('gunaseelan')) return gunaseelanPhoto;
       if (lowerName.includes('amrithanand')) return amrithanandPhoto;
+      if (lowerName.includes('jaicob')) return jaicobPhoto;
+      if (lowerName.includes('senthilkumaran')) return senthilkumaranPhoto;
+      if (lowerName.includes('gireesh')) return gireeshPhoto;
+      if (lowerName.includes('jayesh')) return jayeshPhoto;
+      if (lowerName.includes('chandni')) return chandniPhoto;
     }
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
