@@ -213,7 +213,7 @@ SIMPLE_JWT = {
 }
 
 # Email Settings
-DEFAULT_FROM_EMAIL = 'toxiq26@iqraahospital.in'
+DEFAULT_FROM_EMAIL = 'toxiq26iqraa@gmail.com'
 EMAIL_HOST = env('EMAIL_HOST')
 if EMAIL_HOST:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

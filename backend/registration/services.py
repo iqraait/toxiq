@@ -52,7 +52,7 @@ Warm regards,
 Organizing Committee
 TOXIQ'26"""
 
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'toxiq26@iqraahospital.in')
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'toxiq26iqraa@gmail.com')
     email = EmailMessage(
         subject=subject,
         body=body,
