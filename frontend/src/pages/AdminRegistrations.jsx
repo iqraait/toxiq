@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DownloadIcon from '@mui/icons-material/Download';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EmailIcon from '@mui/icons-material/Email';
 
 import API from '../services/api';
 import GlassCard from '../components/GlassCard';
@@ -96,7 +97,7 @@ const AdminRegistrations = () => {
   };
 
   const handleDownloadReceipt = (regId) => {
-    const url = `http://localhost:8001/api/registration/${regId}/receipt/`;
+    const url = `${API.defaults.baseURL}registration/${regId}/receipt/`;
     window.open(url, '_blank');
   };
 
@@ -112,13 +113,24 @@ const AdminRegistrations = () => {
     }
   };
 
+  const handleResendEmail = async (regId) => {
+    if (!window.confirm('Are you sure you want to resend the confirmation email and PDF receipt to this participant?')) return;
+    try {
+      await API.post(`registration/submissions/${regId}/resend-email/`);
+      alert('Confirmation email resent successfully.');
+    } catch (err) {
+      console.error('Error resending email:', err);
+      alert(err.response?.data?.error || 'Failed to resend confirmation email.');
+    }
+  };
+
   const getActivePaymentStatus = (reg) => {
     const pay = reg.payments?.[0];
     return pay ? pay.payment_status : 'PENDING';
   };
 
   const handleExport = (format) => {
-    const url = `http://localhost:8001/api/reports/export-registrations/?format=${format}`;
+    const url = `${API.defaults.baseURL}reports/export-registrations/?format=${format}`;
     window.open(url, '_blank');
   };
 
@@ -262,6 +274,16 @@ const AdminRegistrations = () => {
                             onClick={() => handleMarkAsPaid(reg.payments[0].id)}
                           >
                             <CheckCircleIcon fontSize="small" />
+                          </IconButton>
+                        )}
+                        {payStatus === 'SUCCESS' && (
+                          <IconButton 
+                            size="small" 
+                            color="info" 
+                            title="Resend Email" 
+                            onClick={() => handleResendEmail(reg.id)}
+                          >
+                            <EmailIcon fontSize="small" />
                           </IconButton>
                         )}
                         <IconButton 

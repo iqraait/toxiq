@@ -546,3 +546,26 @@ class EasebuzzWebhookCallbackView(APIView):
             
         return Response({"status": "acknowledged"}, status=status.HTTP_200_OK)
 
+class ResendConfirmationEmailView(APIView):
+    permission_classes = [IsAdminUserRole]
+
+    def post(self, request, pk):
+        try:
+            registration = Registration.objects.get(pk=pk)
+        except Registration.DoesNotExist:
+            return Response({"error": "Registration not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        payment = registration.payments.first()
+        if not payment:
+            return Response({"error": "No payment record found for this registration"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Generate and resend
+        from .receipt import generate_receipt_pdf
+        from .services import send_registration_email
+        try:
+            pdf_buffer = generate_receipt_pdf(registration, payment)
+            send_registration_email(registration, payment, pdf_buffer)
+            return Response({"message": "Confirmation email resent successfully"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": f"Failed to send email: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
