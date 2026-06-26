@@ -88,10 +88,17 @@ def process_successful_payment(payment, gateway_response=None):
         if registration.registration_id:
             logger.info(f"Registration {registration.id} already processed with ID {registration.registration_id}")
             return registration
+        # Find the maximum existing registration ID and generate the next sequential ID
+        import re
+        last_reg = Registration.objects.filter(registration_id__isnull=False).order_by('-registration_id').first()
+        if last_reg:
+            num_str = re.sub(r'^\D+', '', last_reg.registration_id)
+            last_num = int(num_str) if num_str else 0
+            new_num = last_num + 1
+        else:
+            new_num = 1
             
-        # Get current count of successful registrations to generate sequential ID
-        success_count = Registration.objects.filter(registration_id__isnull=False).count()
-        new_reg_id = f"TOXIQ{success_count + 1:04d}"
+        new_reg_id = f"TOXIQ{new_num:04d}"
         
         # Update registration details
         registration.registration_id = new_reg_id
