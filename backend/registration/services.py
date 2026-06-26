@@ -11,23 +11,48 @@ def send_registration_email(registration, payment, pdf_buffer):
     """
     Sends the confirmation email to the participant with the PDF receipt attached.
     """
-    subject = "TOXIQ Program Registration Successful"
+    subject = "Registration Confirmed – TOXIQ'26: National Conference on Clinical Toxicology"
     body = f"""Dear Participant,
 
-Thank you for registering for the TOXIQ Program.
+Thank you for registering for TOXIQ'26! 
 
-Your Registration ID:
-{registration.registration_id}
+Your Registration ID is: {registration.registration_id}
+Your payment has been successfully verified, and your official PDF receipt is attached to this email.
 
-Payment Status:
-Successful
+--------------------------------------------------
 
-Please keep this Registration ID for future reference.
+We are delighted to welcome you to TOXIQ'26, a two-day scientific conference dedicated to advancing knowledge and practice in Clinical Toxicology.
 
-Regards,
-TOXIQ Program Team"""
+Theme: Every poisoning case is a race against time. Every decision can save a life.
 
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'toxiq-program@hospital.com')
+Join us for an engaging academic experience where science meets bedside practice through cutting-edge research, challenging case discussions, and the latest advances in the diagnosis and management of poisoned patients.
+
+Conference Details:
+- Dates: 1–2 August 2026
+- Venue: Gender Park, Calicut
+
+Highlights of TOXIQ'26:
+- Renowned National Faculty
+- Challenging Real-Life Toxicology Cases
+- Latest Evidence & Clinical Updates
+- Interactive Panel Discussions
+- Scientific Poster Presentations
+- Networking Opportunities with Healthcare Professionals
+- Practical learning that directly enhances patient care
+
+Website: https://www.toxiq26iqraa.com/
+
+For enquiries:
+- Phone: +91 8137 001 900
+- Email: toxiq26@iqraahospital.in
+
+We look forward to welcoming you to Calicut!
+
+Warm regards,
+Organizing Committee
+TOXIQ'26"""
+
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'toxiq26@iqraahospital.in')
     email = EmailMessage(
         subject=subject,
         body=body,
