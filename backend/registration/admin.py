@@ -22,7 +22,7 @@ class PaymentInline(TabularInline):
 class RegistrationAdmin(ModelAdmin):
     list_display = ('registration_id', 'participant_name', 'participant_email', 'participant_phone', 'payment_status_display', 'created_at')
     search_fields = ('registration_id', 'participant_name', 'participant_email', 'participant_phone')
-    actions = ['approve_registrations']
+    actions = ['approve_registrations', 'resend_emails']
     inlines = [PaymentInline]
 
     def payment_status_display(self, obj):
@@ -52,6 +52,19 @@ class RegistrationAdmin(ModelAdmin):
                 count += 1
         self.message_user(request, f"Successfully approved {count} registrations and sent confirmation emails.")
     approve_registrations.short_description = "Approve selected registrations (Mark as Paid)"
+
+    def resend_emails(self, request, queryset):
+        from .services import send_registration_email
+        from .receipt import generate_receipt_pdf
+        count = 0
+        for registration in queryset:
+            payment = registration.payments.first()
+            if payment:
+                pdf_buffer = generate_receipt_pdf(registration, payment)
+                send_registration_email(registration, payment, pdf_buffer)
+                count += 1
+        self.message_user(request, f"Successfully resent {count} confirmation emails.")
+    resend_emails.short_description = "Resend confirmation email & PDF receipt"
 
 @admin.register(Payment)
 class PaymentAdmin(ModelAdmin):
