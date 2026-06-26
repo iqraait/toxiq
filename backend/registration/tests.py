@@ -147,6 +147,8 @@ class RegistrationSystemTests(TestCase):
         data2 = response2.json()
         payment_data2 = data2['payment']
         self.assertEqual(float(payment_data2['amount']), 0.00)
+        self.assertEqual(payment_data2['payment_status'], 'SUCCESS')
+        self.assertTrue(data2.get('free'))
         
         # Test case 3: Option without custom price (should fallback to default fee_amount = 100.00)
         # Total expected amount = 100.00 + 10% = 110.00

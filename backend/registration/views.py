@@ -246,7 +246,25 @@ class RegistrationSubmitView(APIView):
             
         # Create a unique transaction ID
         txnid = f"TXN{uuid.uuid4().hex[:12].upper()}"
-        
+
+        # Check if this is a free registration (amount is 0)
+        if amount <= 0:
+            payment = Payment.objects.create(
+                registration=registration,
+                transaction_id=txnid,
+                amount=amount,
+                currency=form.currency,
+                payment_status='SUCCESS'
+            )
+            registration = process_successful_payment(payment, gateway_response={"info": "Free registration bypass"})
+            
+            response_data = {
+                'registration': RegistrationSerializer(registration).data,
+                'payment': PaymentSerializer(payment).data,
+                'free': True
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+
         # Save a pending Payment record
         payment = Payment.objects.create(
             registration=registration,

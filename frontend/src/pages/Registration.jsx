@@ -173,6 +173,18 @@ const Registration = () => {
     try {
       const res = await API.post('registration/submit/', formData);
       
+      if (res.data.free) {
+        navigate('/registration/success', {
+          state: {
+            registrationId: res.data.registration.registration_id,
+            registrationDbId: res.data.registration.id,
+            txnid: res.data.payment.transaction_id,
+            amount: 0
+          }
+        });
+        return;
+      }
+      
       const { checkout, custom_payment_link } = res.data;
       
       if (custom_payment_link) {
