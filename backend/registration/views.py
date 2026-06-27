@@ -454,7 +454,7 @@ class PaymentListView(APIView):
     permission_classes = [IsAdminUserRole]
 
     def get(self, request):
-        payments = Payment.objects.all().order_by('-created_at')
+        payments = Payment.objects.select_related('registration').all().order_by('-created_at')
         
         # Filters
         status_filter = request.query_params.get('status')

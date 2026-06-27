@@ -14,43 +14,43 @@ def send_registration_email(registration, payment, pdf_buffer):
     subject = "Registration Confirmed – TOXIQ'26: National Conference on Clinical Toxicology"
     body = f"""Dear Participant,
 
-Thank you for registering for TOXIQ'26! 
+Thank you for registering for TOXIQ’26.
 
-Your Registration ID is: {registration.registration_id}
+Your Registration ID: {registration.registration_id}
+
 Your payment has been successfully verified, and your official PDF receipt is attached to this email.
 
---------------------------------------------------
+⸻
 
-We are delighted to welcome you to TOXIQ'26, a two-day scientific conference dedicated to advancing knowledge and practice in Clinical Toxicology.
-
-Theme: Every poisoning case is a race against time. Every decision can save a life.
+We are delighted to welcome you to TOXIQ’26, a two-day scientific conference dedicated to advancing knowledge and practice in Clinical Toxicology.
 
 Join us for an engaging academic experience where science meets bedside practice through cutting-edge research, challenging case discussions, and the latest advances in the diagnosis and management of poisoned patients.
 
-Conference Details:
-- Dates: 1–2 August 2026
-- Venue: Gender Park, Calicut
+Conference Details
+	•	Dates: 1–2 August 2026
+	•	Venue: Gender Park, Calicut, Kerala
 
-Highlights of TOXIQ'26:
-- Renowned National Faculty
-- Challenging Real-Life Toxicology Cases
-- Latest Evidence & Clinical Updates
-- Interactive Panel Discussions
-- Scientific Poster Presentations
-- Networking Opportunities with Healthcare Professionals
-- Practical learning that directly enhances patient care
+Interested in showcasing your academic excellence?
 
-Website: https://www.toxiq26iqraa.com/
+Participants are invited to take part in:
+	•	Scientific Oral Presentation
+	•	Scientific Poster Presentation
+	•	ToxiQuest – Toxicology Quiz Competition
 
-For enquiries:
-- Phone: +91 8137 001 900
-- Email: toxiq26@iqraahospital.in
+We encourage you to participate and make the most of these exciting academic opportunities.
 
-We look forward to welcoming you to Calicut!
+Website: https://www.toxiq26iqraa.com
+
+For Enquiries
+	•	Phone: +91 8137 001 900
+	•	Email: toxiq26@iqraahospital.in
+
+We look forward to welcoming you to Calicut for an enriching academic experience.
 
 Warm regards,
+
 Organizing Committee
-TOXIQ'26"""
+TOXIQ’26"""
 
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'toxiq26iqraa@gmail.com')
     email = EmailMessage(

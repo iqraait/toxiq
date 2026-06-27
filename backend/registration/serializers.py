@@ -15,10 +15,17 @@ class RegistrationFormSerializer(serializers.ModelSerializer):
         model = RegistrationForm
         fields = ('id', 'title', 'instructions', 'fee_amount', 'currency', 'tax_percentage', 'is_active', 'fields')
 
+class PaymentRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registration
+        fields = ('id', 'registration_id', 'participant_name')
+
 class PaymentSerializer(serializers.ModelSerializer):
+    registration = PaymentRegistrationSerializer(read_only=True)
+
     class Meta:
         model = Payment
-        fields = ('id', 'transaction_id', 'amount', 'currency', 'payment_status', 'payment_mode', 'created_at', 'updated_at')
+        fields = ('id', 'transaction_id', 'amount', 'currency', 'payment_status', 'payment_mode', 'created_at', 'updated_at', 'registration')
 
 class RegistrationSerializer(serializers.ModelSerializer):
     payments = PaymentSerializer(many=True, read_only=True)
