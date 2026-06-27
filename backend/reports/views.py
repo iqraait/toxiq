@@ -125,7 +125,7 @@ class ExportRegistrationsView(APIView):
     permission_classes = [IsAdminUserRole]
 
     def get(self, request):
-        export_format = request.query_params.get('format', 'excel').lower()
+        export_format = request.query_params.get('file_format', 'excel').lower()
         registrations = Registration.objects.all().order_by('-created_at')
         
         # Log Admin Action
@@ -154,7 +154,7 @@ class ExportArticlesView(APIView):
     permission_classes = [IsAdminUserRole]
 
     def get(self, request):
-        export_format = request.query_params.get('format', 'excel').lower()
+        export_format = request.query_params.get('file_format', 'excel').lower()
         articles = ArticleSubmission.objects.all().order_by('-submitted_date')
         
         # Log Admin Action
@@ -183,7 +183,7 @@ class ExportRevenueView(APIView):
     permission_classes = [IsAdminUserRole]
 
     def get(self, request):
-        export_format = request.query_params.get('format', 'excel').lower()
+        export_format = request.query_params.get('file_format', 'excel').lower()
         period = request.query_params.get('period', 'all').lower() # all, daily, monthly, yearly
         
         payments = Payment.objects.filter(payment_status='SUCCESS').order_by('-created_at')

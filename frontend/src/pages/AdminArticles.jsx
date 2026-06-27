@@ -82,9 +82,28 @@ const AdminArticles = () => {
     window.open(fileUrl, '_blank');
   };
 
-  const handleExport = (format) => {
-    const url = `http://localhost:8001/api/reports/export-articles/?format=${format}`;
-    window.open(url, '_blank');
+  const handleExport = async (format) => {
+    try {
+      const response = await API.get(`reports/export-articles/?file_format=${format}`, {
+        responseType: 'blob',
+      });
+      
+      const fileExt = format === 'pdf' ? 'pdf' : 'xlsx';
+      const contentType = format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      
+      const blob = new Blob([response.data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `TOXIQ_Articles_Report.${fileExt}`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error exporting articles:', err);
+      alert('Failed to export articles report.');
+    }
   };
 
   return (

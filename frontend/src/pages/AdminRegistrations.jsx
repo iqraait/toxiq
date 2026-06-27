@@ -129,9 +129,28 @@ const AdminRegistrations = () => {
     return pay ? pay.payment_status : 'PENDING';
   };
 
-  const handleExport = (format) => {
-    const url = `${API.defaults.baseURL}reports/export-registrations/?format=${format}`;
-    window.open(url, '_blank');
+  const handleExport = async (format) => {
+    try {
+      const response = await API.get(`reports/export-registrations/?file_format=${format}`, {
+        responseType: 'blob',
+      });
+      
+      const fileExt = format === 'pdf' ? 'pdf' : 'xlsx';
+      const contentType = format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      
+      const blob = new Blob([response.data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `TOXIQ_Registrations_Report.${fileExt}`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error exporting registrations:', err);
+      alert('Failed to export registrations report.');
+    }
   };
 
   return (

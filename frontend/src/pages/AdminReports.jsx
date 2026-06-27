@@ -36,12 +36,33 @@ const AdminReports = () => {
     fetchAuditLogs();
   }, []);
 
-  const handleDownloadReport = (type, format) => {
-    let url = `http://localhost:8001/api/reports/export-${type}/?format=${format}`;
-    if (type === 'revenue') {
-      url += `&period=${period}`;
+  const handleDownloadReport = async (type, format) => {
+    try {
+      let queryParams = `file_format=${format}`;
+      if (type === 'revenue') {
+        queryParams += `&period=${period}`;
+      }
+      
+      const response = await API.get(`reports/export-${type}/?${queryParams}`, {
+        responseType: 'blob',
+      });
+      
+      const fileExt = format === 'pdf' ? 'pdf' : 'xlsx';
+      const contentType = format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      
+      const blob = new Blob([response.data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `TOXIQ_${type.charAt(0).toUpperCase() + type.slice(1)}_Report.${fileExt}`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(`Error exporting ${type} report:`, err);
+      alert(`Failed to export ${type} report.`);
     }
-    window.open(url, '_blank');
   };
 
   return (
