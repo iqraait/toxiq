@@ -36,6 +36,11 @@ import hidayathullahPhoto from '../assets/hidayathullah.png';
 import shamsudheenPhoto from '../assets/shamsudheen.png';
 import jyotishPhoto from '../assets/jyotish.jpg';
 import noushadPhoto from '../assets/noushad.png';
+import sijuPhoto from '../assets/siju.png';
+import shihabudheenPhoto from '../assets/shihabudheen.png';
+import sabarishPhoto from '../assets/sabarish.jpg';
+import shameerPhoto from '../assets/shameer.png';
+import farisPhoto from '../assets/faris.jpg';
 
 const SpeakerCard = ({ name, designation, description, photo }) => {
   const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '';
@@ -171,6 +176,11 @@ const OurSpeakers = () => {
       if (lowerName.includes('shamsudeen') || lowerName.includes('shamsudheen')) return shamsudheenPhoto;
       if (lowerName.includes('jyotish')) return jyotishPhoto;
       if (lowerName.includes('noushad')) return noushadPhoto;
+      if (lowerName.includes('siju')) return sijuPhoto;
+      if (lowerName.includes('shihabudeen') || lowerName.includes('shihabudheen')) return shihabudheenPhoto;
+      if (lowerName.includes('sabarish')) return sabarishPhoto;
+      if (lowerName.includes('shameer')) return shameerPhoto;
+      if (lowerName.includes('faris')) return farisPhoto;
     }
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {

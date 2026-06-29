@@ -141,7 +141,12 @@ def seed_db():
             ('Dr. Hidayathullah P K M', 'Senior Consultant Pediatrician, Iqraa Hospital', 'Experienced pediatrician with over 30 years of medical practice.'),
             ('Dr. Shamsudheen M', 'Chief of Medical Services & Consultant Physician, Iqraa Hospital', 'Experienced specialist in internal and general medicine, guiding conference administration.'),
             ('Dr. Jyotish Chalil Gopinathan', 'Senior Consultant Nephrologist, Meitra Hospital & Iqraa Hospital', 'Expert in kidney disease and transplantation, as well as a published poet.'),
-            ('Dr. Noushad Babu', 'Surgical Gastroenterologist, Iqraa Hospital & Alshifa Hospital', 'Gastrointestinal surgeon and liver transplantation specialist.')
+            ('Dr. Noushad Babu', 'Surgical Gastroenterologist, Iqraa Hospital & Alshifa Hospital', 'Gastrointestinal surgeon and liver transplantation specialist.'),
+            ('Dr. Siju V Abraham', 'Associate Professor of Emergency Medicine, Jubilee Mission Medical College', 'Specialist in critical care, resuscitation, stroke care, and toxicology.'),
+            ('Dr. Shihabudheen P', 'Consultant in Internal Medicine & Intensive Care, Iqraa Hospital', 'Experienced critical care specialist with a focus on clinical toxicology.'),
+            ('Dr. Sabarish B', 'Consultant in Emergency Medicine & Critical Care, Amrita Hospital', 'Expert in venomous snakebite management and ICU critical care.'),
+            ('Dr. Shameer VK', 'Associate Professor of General Medicine, Government Medical College, Kozhikode', 'Clinical leader and advisor on infectious diseases and internal medicine.'),
+            ('Dr. Faris Hussain K. N.', 'Senior Consultant in Critical Care Medicine, Iqraa Hospital', 'Award-winning critical care specialist and leader in healthcare quality improvement.')
         ]
         for name, des, desc in speakers:
             Speaker.objects.create(name=name, designation=des, description=desc)
