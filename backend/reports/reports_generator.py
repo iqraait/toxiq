@@ -248,6 +248,16 @@ def generate_registrations_pdf(registrations):
     story = []
     styles = getSampleStyleSheet()
     
+    dynamic_keys = set()
+    for reg in registrations:
+        if reg.field_data:
+            dynamic_keys.update(reg.field_data.keys())
+    sorted_dynamic_keys = sorted(list(dynamic_keys))
+    
+    total_cols_count = 7 + len(sorted_dynamic_keys)
+    fs = 8 if total_cols_count <= 9 else 6
+    ld = 10 if total_cols_count <= 9 else 8
+    
     # Custom styles
     title_style = ParagraphStyle(
         'RepTitle',
@@ -261,16 +271,16 @@ def generate_registrations_pdf(registrations):
         'RepCellBold',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=9,
-        leading=11,
+        fontSize=fs,
+        leading=ld,
         textColor=colors.HexColor('#ffffff')
     )
     cell_normal = ParagraphStyle(
         'RepCellNormal',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=8,
-        leading=10,
+        fontSize=fs,
+        leading=ld,
         textColor=colors.HexColor('#334155')
     )
 
@@ -283,33 +293,56 @@ def generate_registrations_pdf(registrations):
         Paragraph("Name", cell_bold),
         Paragraph("Email", cell_bold),
         Paragraph("Phone", cell_bold),
+    ]
+    for key in sorted_dynamic_keys:
+        headers.append(Paragraph(key.replace('_', ' ').title(), cell_bold))
+    headers.extend([
         Paragraph("Date", cell_bold),
         Paragraph("Payment", cell_bold),
-        Paragraph("Txn ID", cell_bold),
         Paragraph("Amount", cell_bold)
-    ]
+    ])
     
     table_data = [headers]
     for reg in registrations:
         payment = reg.payments.filter(payment_status='SUCCESS').first() or reg.payments.first()
         status = payment.payment_status if payment else "N/A"
-        txnid = payment.transaction_id if payment else "N/A"
         amount = f"{payment.currency} {payment.amount:.2f}" if payment else "N/A"
-        
         reg_date = reg.created_at.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d")
         
-        table_data.append([
+        row = [
             Paragraph(reg.registration_id or "PENDING", cell_normal),
-            Paragraph(reg.participant_name[:20], cell_normal),
-            Paragraph(reg.participant_email[:25], cell_normal),
-            Paragraph(reg.participant_phone[:15], cell_normal),
+            Paragraph(reg.participant_name, cell_normal),
+            Paragraph(reg.participant_email, cell_normal),
+            Paragraph(reg.participant_phone, cell_normal),
+        ]
+        
+        field_data = reg.field_data or {}
+        for key in sorted_dynamic_keys:
+            val = field_data.get(key, '')
+            if isinstance(val, list):
+                val = ", ".join(map(str, val))
+            elif isinstance(val, dict):
+                val = val.get('name', val.get('url', str(val)))
+            row.append(Paragraph(str(val), cell_normal))
+            
+        row.extend([
             Paragraph(reg_date, cell_normal),
             Paragraph(status, cell_normal),
-            Paragraph(txnid[:12], cell_normal),
-            Paragraph(amount, cell_normal),
+            Paragraph(amount, cell_normal)
         ])
+        table_data.append(row)
         
-    t = Table(table_data, colWidths=[65, 110, 140, 80, 65, 65, 85, 70])
+    if sorted_dynamic_keys:
+        std_widths = [50, 75, 85, 60]  # Reg ID, Name, Email, Phone
+        end_widths = [50, 45, 45]     # Date, Payment, Amount
+        tot_std = sum(std_widths) + sum(end_widths)
+        rem_width = 732 - tot_std
+        dyn_width = max(rem_width / len(sorted_dynamic_keys), 40)
+        col_widths = std_widths + [dyn_width] * len(sorted_dynamic_keys) + end_widths
+    else:
+        col_widths = [70, 120, 150, 90, 80, 80, 90]
+        
+    t = Table(table_data, colWidths=col_widths)
     t.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1A365D')),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
@@ -317,7 +350,7 @@ def generate_registrations_pdf(registrations):
         ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor('#94a3b8')),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#cbd5e1')),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8fafc')]),
-        ('PADDING', (0, 0), (-1, -1), 6),
+        ('PADDING', (0, 0), (-1, -1), 4),
     ]))
     story.append(t)
     doc.build(story)

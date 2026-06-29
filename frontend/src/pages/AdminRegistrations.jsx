@@ -3,7 +3,7 @@ import {
   Box, Typography, Button, TextField, MenuItem, 
   Table, TableBody, TableCell, TableContainer, TableHead, 
   TableRow, Paper, IconButton, Chip, Dialog, DialogTitle, 
-  DialogContent, DialogActions, Grid, Stack, CircularProgress, Alert 
+  DialogContent, DialogActions, Grid, Stack, CircularProgress, Alert, Divider 
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -153,6 +153,13 @@ const AdminRegistrations = () => {
     }
   };
 
+  // Dynamically identify all dynamic fields present in registrations
+  const dynamicKeys = Array.from(
+    new Set(
+      registrations.flatMap((reg) => Object.keys(reg.field_data || {}))
+    )
+  ).sort();
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
@@ -247,6 +254,11 @@ const AdminRegistrations = () => {
                 <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
+                {dynamicKeys.map((key) => (
+                  <TableCell key={key} sx={{ fontWeight: 'bold' }}>
+                    {key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                  </TableCell>
+                ))}
                 <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Date Registered</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', align: 'center' }}>Actions</TableCell>
@@ -261,6 +273,16 @@ const AdminRegistrations = () => {
                     <TableCell>{reg.participant_name}</TableCell>
                     <TableCell>{reg.participant_email}</TableCell>
                     <TableCell>{reg.participant_phone}</TableCell>
+                    {dynamicKeys.map((key) => {
+                      const val = reg.field_data?.[key] ?? '';
+                      let displayVal = String(val);
+                      if (Array.isArray(val)) {
+                        displayVal = val.join(', ');
+                      } else if (typeof val === 'object' && val !== null) {
+                        displayVal = val.name || val.url || JSON.stringify(val);
+                      }
+                      return <TableCell key={key}>{displayVal}</TableCell>;
+                    })}
                     <TableCell>
                       <Chip
                         label={payStatus}
@@ -320,7 +342,7 @@ const AdminRegistrations = () => {
               })}
               {registrations.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
+                  <TableCell colSpan={7 + dynamicKeys.length} align="center" sx={{ py: 6 }}>
                     No registration records match your filter criteria.
                   </TableCell>
                 </TableRow>
