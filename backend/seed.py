@@ -131,7 +131,17 @@ def seed_db():
         speakers = [
             ('Dr. Rajesh V. Iyer', 'Professor & Head of Critical Care, Apex Hospital', 'Renowned emergency medical pioneer with over 25 years of experience in managing pesticide exposure and snakebite cases.'),
             ('Dr. Sarah Sterling', 'Lead Toxicologist, London Forensic Unit', 'Expert in clinical pharmacology and designer of national antidote registry guidelines. Visiting lecturer at Oxford.'),
-            ('Prof. Amit Kumar', 'Director of Clinical Pharmacology, IMS', 'Researcher of novel chelating agents and author of the Clinical Toxicology Handbook for Emergency Doctors.')
+            ('Prof. Amit Kumar', 'Director of Clinical Pharmacology, IMS', 'Researcher of novel chelating agents and author of the Clinical Toxicology Handbook for Emergency Doctors.'),
+            ('Dr. Freston Marc Sirur', 'Department of Emergency Medicine', 'Emergency medicine specialist and educator.'),
+            ('Dr. Ramakrishnan UK', 'Professor, Department of Forensic Medicine & Toxicology, Amrita School of Medicine', 'Expert in clinical forensic medicine and toxicology.'),
+            ('Dr. Sandeep Das', 'Wildlife Biologist & Researcher, University of Calicut', 'EDGE Fellow working on amphibian and snake conservation in the Western Ghats.'),
+            ('Dr. Venugopalan P P', 'Director & Chair of Emergency Medicine, Meitra Hospital', 'Pioneer of Emergency Medicine in Kerala, expert in trauma care and resuscitation.'),
+            ('Dr. Roney Thomas', 'Professor of Emergency Medicine, Malabar Medical College', 'Experienced emergency medicine educator and orthopaedic specialist.'),
+            ('Dr. Rajeev P C', 'Professor of Emergency Medicine, Jubilee Mission Medical College', 'Clinical and academic emergency medicine specialist with expertise in prehospital care.'),
+            ('Dr. Hidayathullah P K M', 'Senior Consultant Pediatrician, Iqraa Hospital', 'Experienced pediatrician with over 30 years of medical practice.'),
+            ('Dr. Shamsudheen M', 'Chief of Medical Services & Consultant Physician, Iqraa Hospital', 'Experienced specialist in internal and general medicine, guiding conference administration.'),
+            ('Dr. Jyotish Chalil Gopinathan', 'Senior Consultant Nephrologist, Meitra Hospital & Iqraa Hospital', 'Expert in kidney disease and transplantation, as well as a published poet.'),
+            ('Dr. Noushad Babu', 'Surgical Gastroenterologist, Iqraa Hospital & Alshifa Hospital', 'Gastrointestinal surgeon and liver transplantation specialist.')
         ]
         for name, des, desc in speakers:
             Speaker.objects.create(name=name, designation=des, description=desc)

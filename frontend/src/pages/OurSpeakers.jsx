@@ -26,6 +26,16 @@ import jayakrishnanPhoto from '../assets/jayakrishnan.png';
 import purushothamanPhoto from '../assets/purushothaman.jpg';
 import sathishkumarPhoto from '../assets/sathishkumar.jpg';
 import girishPhoto from '../assets/girish.jpg';
+import frestonPhoto from '../assets/freston.png';
+import ramakrishnanPhoto from '../assets/ramakrishnan.png';
+import sandeepPhoto from '../assets/sandeep.png';
+import venugopalanPhoto from '../assets/venugopalan.png';
+import roneyPhoto from '../assets/roney.png';
+import rajeevPhoto from '../assets/rajeev.png';
+import hidayathullahPhoto from '../assets/hidayathullah.png';
+import shamsudheenPhoto from '../assets/shamsudheen.png';
+import jyotishPhoto from '../assets/jyotish.jpg';
+import noushadPhoto from '../assets/noushad.png';
 
 const SpeakerCard = ({ name, designation, description, photo }) => {
   const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '';
@@ -151,6 +161,16 @@ const OurSpeakers = () => {
       if (lowerName.includes('purushothaman')) return purushothamanPhoto;
       if (lowerName.includes('sathishkumar')) return sathishkumarPhoto;
       if (lowerName.includes('girish')) return girishPhoto;
+      if (lowerName.includes('freston')) return frestonPhoto;
+      if (lowerName.includes('ramakrishnan')) return ramakrishnanPhoto;
+      if (lowerName.includes('sandeep')) return sandeepPhoto;
+      if (lowerName.includes('venugopalan')) return venugopalanPhoto;
+      if (lowerName.includes('roney')) return roneyPhoto;
+      if (lowerName.includes('rajeev')) return rajeevPhoto;
+      if (lowerName.includes('hidayathullah')) return hidayathullahPhoto;
+      if (lowerName.includes('shamsudeen') || lowerName.includes('shamsudheen')) return shamsudheenPhoto;
+      if (lowerName.includes('jyotish')) return jyotishPhoto;
+      if (lowerName.includes('noushad')) return noushadPhoto;
     }
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
