@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Container, Typography, Box, CircularProgress, 
   Avatar, Card, Alert, Button
@@ -29,6 +29,10 @@ import girishPhoto from '../assets/girish.jpg';
 import frestonPhoto from '../assets/freston.png';
 import ramakrishnanPhoto from '../assets/ramakrishnan.png';
 import sandeepPhoto from '../assets/sandeep.png';
+import neerajPhoto from '../assets/neeraj.jpg';
+import midhunPhoto from '../assets/midhun.png';
+import linuPhoto from '../assets/linu.png';
+import vineethPhoto from '../assets/vineeth.png';
 import venugopalanPhoto from '../assets/venugopalan.png';
 import roneyPhoto from '../assets/roney.png';
 import rajeevPhoto from '../assets/rajeev.png';
@@ -169,6 +173,10 @@ const OurSpeakers = () => {
       if (lowerName.includes('freston')) return frestonPhoto;
       if (lowerName.includes('ramakrishnan')) return ramakrishnanPhoto;
       if (lowerName.includes('sandeep')) return sandeepPhoto;
+      if (lowerName.includes('neeraj')) return neerajPhoto;
+      if (lowerName.includes('midhun')) return midhunPhoto;
+      if (lowerName.includes('linu')) return linuPhoto;
+      if (lowerName.includes('vineeth')) return vineethPhoto;
       if (lowerName.includes('venugopalan')) return venugopalanPhoto;
       if (lowerName.includes('roney')) return roneyPhoto;
       if (lowerName.includes('rajeev')) return rajeevPhoto;
