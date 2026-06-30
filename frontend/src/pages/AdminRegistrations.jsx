@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Box, Typography, Button, TextField, MenuItem, 
   Table, TableBody, TableCell, TableContainer, TableHead, 
@@ -18,6 +18,7 @@ import GlassCard from '../components/GlassCard';
 
 const AdminRegistrations = () => {
   const [registrations, setRegistrations] = useState([]);
+  const [formFields, setFormFields] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -52,8 +53,20 @@ const AdminRegistrations = () => {
     }
   };
 
+  const fetchFormConfig = async () => {
+    try {
+      const res = await API.get('registration/forms/active/');
+      setFormFields(res.data.fields || []);
+    } catch (err) {
+      console.error('Error fetching active form config:', err);
+    }
+  };
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchFormConfig();
     fetchRegistrations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]); // refetch on status filter, search is triggered by clicking Search or Enter
 
   const handleSearchKeyPress = (e) => {
@@ -153,12 +166,29 @@ const AdminRegistrations = () => {
     }
   };
 
-  // Dynamically identify all dynamic fields present in registrations
-  const dynamicKeys = Array.from(
-    new Set(
-      registrations.flatMap((reg) => Object.keys(reg.field_data || {}))
-    )
-  ).sort();
+  const getFieldValueByLabel = (reg, labelKeywords) => {
+    const field = formFields.find(f => {
+      const label = f.label.toLowerCase();
+      return labelKeywords.some(keyword => label.includes(keyword));
+    });
+    if (field) {
+      const val = reg.field_data?.[String(field.id)];
+      if (val !== undefined && val !== null && val !== '') {
+        if (Array.isArray(val)) {
+          return val.join(', ');
+        }
+        if (typeof val === 'object') {
+          return val.name || val.url || JSON.stringify(val);
+        }
+        return String(val);
+      }
+    }
+    // Fallbacks
+    if (labelKeywords.includes('name')) return reg.participant_name;
+    if (labelKeywords.includes('email')) return reg.participant_email;
+    if (labelKeywords.includes('phone')) return reg.participant_phone;
+    return '';
+  };
 
   return (
     <Box>
@@ -251,14 +281,17 @@ const AdminRegistrations = () => {
             <TableHead sx={{ bgcolor: '#f8fafc' }}>
               <TableRow>
                 <TableCell sx={{ fontWeight: 'bold' }}>Reg ID</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>FUll name</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>email</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
-                {dynamicKeys.map((key) => (
-                  <TableCell key={key} sx={{ fontWeight: 'bold' }}>
-                    {key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
-                  </TableCell>
-                ))}
+                <TableCell sx={{ fontWeight: 'bold' }}>designation</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>institute</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Specialty / Department of Practice *</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Registration Category *</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>medical council name</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>REg no :</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>food preference</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>paid amount</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Date Registered</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', align: 'center' }}>Actions</TableCell>
@@ -267,22 +300,22 @@ const AdminRegistrations = () => {
             <TableBody>
               {registrations.map((reg) => {
                 const payStatus = getActivePaymentStatus(reg);
+                const payment = reg.payments?.[0];
+                const paidAmount = payment ? `${payment.currency || 'INR'} ${parseFloat(payment.amount).toFixed(2)}` : 'N/A';
                 return (
                   <TableRow key={reg.id} hover>
                     <TableCell sx={{ fontWeight: 'bold' }}>{reg.registration_id || 'PENDING'}</TableCell>
-                    <TableCell>{reg.participant_name}</TableCell>
-                    <TableCell>{reg.participant_email}</TableCell>
-                    <TableCell>{reg.participant_phone}</TableCell>
-                    {dynamicKeys.map((key) => {
-                      const val = reg.field_data?.[key] ?? '';
-                      let displayVal = String(val);
-                      if (Array.isArray(val)) {
-                        displayVal = val.join(', ');
-                      } else if (typeof val === 'object' && val !== null) {
-                        displayVal = val.name || val.url || JSON.stringify(val);
-                      }
-                      return <TableCell key={key}>{displayVal}</TableCell>;
-                    })}
+                    <TableCell>{getFieldValueByLabel(reg, ['name', 'fullname'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['email'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['phone', 'whatsapp'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['designation'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['institute', 'hospital'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['specialty', 'department'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['category'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['council', 'medical council'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['reg no', 'registration no'])}</TableCell>
+                    <TableCell>{getFieldValueByLabel(reg, ['food', 'preference'])}</TableCell>
+                    <TableCell>{paidAmount}</TableCell>
                     <TableCell>
                       <Chip
                         label={payStatus}
@@ -342,7 +375,7 @@ const AdminRegistrations = () => {
               })}
               {registrations.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7 + dynamicKeys.length} align="center" sx={{ py: 6 }}>
+                  <TableCell colSpan={15} align="center" sx={{ py: 6 }}>
                     No registration records match your filter criteria.
                   </TableCell>
                 </TableRow>
