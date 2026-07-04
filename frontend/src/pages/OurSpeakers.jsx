@@ -52,12 +52,13 @@ import shameerPhoto from '../assets/shameer.png';
 import farisPhoto from '../assets/faris.jpg';
 import nithinPhoto from '../assets/nithin.png';
 import vijayPhoto from '../assets/vijay.png';
-import aravindPhoto from '../assets/aravind.jpg';
+import aravindPhoto from '../assets/aravind.png';
 import vinayakPhoto from '../assets/vinayak.png';
 import roshanPhoto from '../assets/roshan.jpg';
 import ashidaPhoto from '../assets/ashida.png';
 import jabirPhoto from '../assets/jabir.jpg';
 import mohammedShahalPhoto from '../assets/mohammed_shahal.png';
+import krishnakumarPhoto from '../assets/krishnakumar.jpg';
 
 
 const SpeakerCard = ({ name, designation, description, photo }) => {
@@ -216,6 +217,7 @@ const OurSpeakers = () => {
       if (lowerName.includes('ashida')) return ashidaPhoto;
       if (lowerName.includes('jabir')) return jabirPhoto;
       if (lowerName.includes('shahal') || lowerName.includes('mohammed shahal')) return mohammedShahalPhoto;
+      if (lowerName.includes('krishnakumar')) return krishnakumarPhoto;
     }
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
