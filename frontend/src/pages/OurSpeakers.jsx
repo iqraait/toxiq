@@ -50,6 +50,15 @@ import shihabudheenPhoto from '../assets/shihabudheen.png';
 import sabarishPhoto from '../assets/sabarish.jpg';
 import shameerPhoto from '../assets/shameer.png';
 import farisPhoto from '../assets/faris.jpg';
+import nithinPhoto from '../assets/nithin.png';
+import vijayPhoto from '../assets/vijay.png';
+import aravindPhoto from '../assets/aravind.jpg';
+import vinayakPhoto from '../assets/vinayak.png';
+import roshanPhoto from '../assets/roshan.jpg';
+import ashidaPhoto from '../assets/ashida.png';
+import jabirPhoto from '../assets/jabir.jpg';
+import mohammedShahalPhoto from '../assets/mohammed_shahal.png';
+
 
 const SpeakerCard = ({ name, designation, description, photo }) => {
   const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '';
@@ -199,6 +208,14 @@ const OurSpeakers = () => {
       if (lowerName.includes('sabarish')) return sabarishPhoto;
       if (lowerName.includes('shameer')) return shameerPhoto;
       if (lowerName.includes('faris')) return farisPhoto;
+      if (lowerName.includes('nithin')) return nithinPhoto;
+      if (lowerName.includes('vijay')) return vijayPhoto;
+      if (lowerName.includes('aravind')) return aravindPhoto;
+      if (lowerName.includes('vinayak')) return vinayakPhoto;
+      if (lowerName.includes('roshan')) return roshanPhoto;
+      if (lowerName.includes('ashida')) return ashidaPhoto;
+      if (lowerName.includes('jabir')) return jabirPhoto;
+      if (lowerName.includes('shahal') || lowerName.includes('mohammed shahal')) return mohammedShahalPhoto;
     }
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
