@@ -204,6 +204,7 @@ const AdminRegistrations = () => {
   };
 
   const getFieldValueByLabel = (reg, labelKeywords) => {
+    // 1. Try finding by matching label against active formFields
     const field = formFields.find(f => {
       const label = f.label.toLowerCase();
       return labelKeywords.some(keyword => label.includes(keyword));
@@ -220,10 +221,46 @@ const AdminRegistrations = () => {
         return String(val);
       }
     }
-    // Fallbacks
-    if (labelKeywords.includes('name')) return reg.participant_name;
-    if (labelKeywords.includes('email')) return reg.participant_email;
-    if (labelKeywords.includes('phone')) return reg.participant_phone;
+
+    // 2. Legacy / historical fallback map
+    const fieldData = reg.field_data || {};
+    const isEra2 = '31' in fieldData;
+    const isEra1 = '1' in fieldData && !('31' in fieldData) && !('65' in fieldData);
+
+    const formatVal = (val) => {
+      if (val === undefined || val === null) return '';
+      if (Array.isArray(val)) return val.join(', ');
+      if (typeof val === 'object') return val.name || val.url || JSON.stringify(val);
+      return String(val);
+    };
+
+    if (isEra2) {
+      if (labelKeywords.includes('prefix')) return formatVal(fieldData['30']);
+      if (labelKeywords.includes('name')) return formatVal(fieldData['31']);
+      if (labelKeywords.includes('email')) return formatVal(fieldData['32']);
+      if (labelKeywords.includes('phone')) return formatVal(fieldData['33']);
+      if (labelKeywords.includes('designation')) return formatVal(fieldData['34']);
+      if (labelKeywords.includes('institute')) return formatVal(fieldData['35']);
+      if (labelKeywords.includes('specialty')) return formatVal(fieldData['37']);
+      if (labelKeywords.includes('category')) return formatVal(fieldData['38']);
+      if (labelKeywords.includes('council')) return formatVal(fieldData['39'] || fieldData['36']);
+      if (labelKeywords.includes('reg no')) return formatVal(fieldData['41']);
+      if (labelKeywords.includes('food')) return formatVal(fieldData['40']);
+    } else if (isEra1) {
+      if (labelKeywords.includes('name')) return formatVal(fieldData['1']);
+      if (labelKeywords.includes('email')) return formatVal(fieldData['2']);
+      if (labelKeywords.includes('phone')) return formatVal(fieldData['3']);
+      if (labelKeywords.includes('institute')) return formatVal(fieldData['4']);
+      if (labelKeywords.includes('designation')) return formatVal(fieldData['5']);
+      if (labelKeywords.includes('category')) return formatVal(fieldData['6']);
+      if (labelKeywords.includes('council')) return formatVal(fieldData['7']);
+    }
+
+    // 3. Fallbacks on registration root properties
+    if (labelKeywords.includes('name')) return reg.participant_name || '';
+    if (labelKeywords.includes('email')) return reg.participant_email || '';
+    if (labelKeywords.includes('phone')) return reg.participant_phone || '';
+
     return '';
   };
 

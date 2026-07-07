@@ -86,6 +86,7 @@ def generate_registrations_excel(registrations):
         reg_date = reg.created_at.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M")
         
         def get_val(keywords):
+            # 1. Active form fields
             for field in form_fields:
                 label_lower = field.label.lower()
                 if any(kw in label_lower for kw in keywords):
@@ -96,6 +97,43 @@ def generate_registrations_excel(registrations):
                         elif isinstance(val, dict):
                             return val.get('name', val.get('url', str(val)))
                         return str(val)
+
+            # 2. Historical fallback map
+            field_data = reg.field_data or {}
+            is_era2 = '31' in field_data
+            is_era1 = '1' in field_data and '31' not in field_data and '65' not in field_data
+
+            def format_val(val):
+                if val is None:
+                    return ''
+                if isinstance(val, list):
+                    return ", ".join(map(str, val))
+                elif isinstance(val, dict):
+                    return val.get('name', val.get('url', str(val)))
+                return str(val)
+
+            if is_era2:
+                if any(kw in 'prefix' for kw in keywords): return format_val(field_data.get('30'))
+                if any(kw in 'name' for kw in keywords): return format_val(field_data.get('31'))
+                if any(kw in 'email' for kw in keywords): return format_val(field_data.get('32'))
+                if any(kw in 'phone' for kw in keywords): return format_val(field_data.get('33'))
+                if any(kw in 'designation' for kw in keywords): return format_val(field_data.get('34'))
+                if any(kw in 'institute' for kw in keywords): return format_val(field_data.get('35'))
+                if any(kw in 'specialty' for kw in keywords): return format_val(field_data.get('37'))
+                if any(kw in 'category' for kw in keywords): return format_val(field_data.get('38'))
+                if any(kw in 'council' for kw in keywords): return format_val(field_data.get('39') or field_data.get('36'))
+                if any(kw in 'reg no' for kw in keywords): return format_val(field_data.get('41'))
+                if any(kw in 'food' for kw in keywords): return format_val(field_data.get('40'))
+            elif is_era1:
+                if any(kw in 'name' for kw in keywords): return format_val(field_data.get('1'))
+                if any(kw in 'email' for kw in keywords): return format_val(field_data.get('2'))
+                if any(kw in 'phone' for kw in keywords): return format_val(field_data.get('3'))
+                if any(kw in 'institute' for kw in keywords): return format_val(field_data.get('4'))
+                if any(kw in 'designation' for kw in keywords): return format_val(field_data.get('5'))
+                if any(kw in 'category' for kw in keywords): return format_val(field_data.get('6'))
+                if any(kw in 'council' for kw in keywords): return format_val(field_data.get('7'))
+
+            # 3. Model level fallbacks
             if 'name' in keywords:
                 return reg.participant_name or ''
             elif 'email' in keywords:
@@ -328,6 +366,7 @@ def generate_registrations_pdf(registrations):
         reg_date = reg.created_at.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d")
         
         def get_val(keywords):
+            # 1. Active form fields
             for field in form_fields:
                 label_lower = field.label.lower()
                 if any(kw in label_lower for kw in keywords):
@@ -338,6 +377,43 @@ def generate_registrations_pdf(registrations):
                         elif isinstance(val, dict):
                             return val.get('name', val.get('url', str(val)))
                         return str(val)
+
+            # 2. Historical fallback map
+            field_data = reg.field_data or {}
+            is_era2 = '31' in field_data
+            is_era1 = '1' in field_data and '31' not in field_data and '65' not in field_data
+
+            def format_val(val):
+                if val is None:
+                    return ''
+                if isinstance(val, list):
+                    return ", ".join(map(str, val))
+                elif isinstance(val, dict):
+                    return val.get('name', val.get('url', str(val)))
+                return str(val)
+
+            if is_era2:
+                if any(kw in 'prefix' for kw in keywords): return format_val(field_data.get('30'))
+                if any(kw in 'name' for kw in keywords): return format_val(field_data.get('31'))
+                if any(kw in 'email' for kw in keywords): return format_val(field_data.get('32'))
+                if any(kw in 'phone' for kw in keywords): return format_val(field_data.get('33'))
+                if any(kw in 'designation' for kw in keywords): return format_val(field_data.get('34'))
+                if any(kw in 'institute' for kw in keywords): return format_val(field_data.get('35'))
+                if any(kw in 'specialty' for kw in keywords): return format_val(field_data.get('37'))
+                if any(kw in 'category' for kw in keywords): return format_val(field_data.get('38'))
+                if any(kw in 'council' for kw in keywords): return format_val(field_data.get('39') or field_data.get('36'))
+                if any(kw in 'reg no' for kw in keywords): return format_val(field_data.get('41'))
+                if any(kw in 'food' for kw in keywords): return format_val(field_data.get('40'))
+            elif is_era1:
+                if any(kw in 'name' for kw in keywords): return format_val(field_data.get('1'))
+                if any(kw in 'email' for kw in keywords): return format_val(field_data.get('2'))
+                if any(kw in 'phone' for kw in keywords): return format_val(field_data.get('3'))
+                if any(kw in 'institute' for kw in keywords): return format_val(field_data.get('4'))
+                if any(kw in 'designation' for kw in keywords): return format_val(field_data.get('5'))
+                if any(kw in 'category' for kw in keywords): return format_val(field_data.get('6'))
+                if any(kw in 'council' for kw in keywords): return format_val(field_data.get('7'))
+
+            # 3. Model level fallbacks
             if 'name' in keywords:
                 return reg.participant_name or ''
             elif 'email' in keywords:
