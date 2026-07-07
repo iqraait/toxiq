@@ -203,6 +203,137 @@ const AdminRegistrations = () => {
     }
   };
 
+  const getFieldValueDynamic = (reg, labelKeywords) => {
+    const fieldData = reg.field_data || {};
+    const values = Object.values(fieldData);
+
+    const prefixOptions = ['mr.', 'ms.', 'mrs.', 'dr.', 'mr', 'ms', 'mrs', 'dr'];
+    const foodOptions = ['veg', 'non-veg', 'veg.', 'non-veg.'];
+    const specialtyKeywords = ['emergency', 'pharmacy', 'critical', 'care', 'medicine', 'pediatrics', 'forensic', 'practitioner', 'specialty', 'department'];
+    const categoryKeywords = ['speaker', 'consultant', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic', 'delegate', 'category'];
+    const designationKeywords = ['doctor', 'consultant', 'physician', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic', 'professor', 'lecturer', 'director', 'manager', 'specialist', 'practitioner', 'hod', 'registrar', 'fellow', 'designation'];
+    const councilKeywords = ['council', 'medical', 'imc', 'kcl', 'mc', 'karnataka', 'delhi', 'maharashtra', 'registration council', 'state'];
+
+    let emailVal = '';
+    let phoneVal = '';
+    let prefixVal = '';
+    let foodVal = '';
+    let specialtyVal = '';
+    let categoryVal = '';
+    let regNoVal = '';
+    let designationVal = '';
+    let councilVal = '';
+    let nameVal = '';
+    let instituteVal = '';
+
+    for (const rawVal of values) {
+      if (rawVal === undefined || rawVal === null || rawVal === '') continue;
+
+      if (Array.isArray(rawVal)) {
+        const joined = rawVal.join(' ').toLowerCase();
+        if (specialtyKeywords.some(kw => joined.includes(kw))) {
+          specialtyVal = rawVal.join(', ');
+        } else if (categoryKeywords.some(kw => joined.includes(kw))) {
+          categoryVal = rawVal.join(', ');
+        }
+        continue;
+      }
+
+      if (typeof rawVal === 'object') {
+        continue;
+      }
+
+      const strVal = String(rawVal);
+      const lowerVal = strVal.toLowerCase();
+
+      if (strVal.includes('@')) {
+        emailVal = strVal;
+        continue;
+      }
+
+      if (prefixOptions.includes(lowerVal)) {
+        prefixVal = strVal;
+        continue;
+      }
+
+      if (foodOptions.includes(lowerVal)) {
+        foodVal = strVal;
+        continue;
+      }
+
+      if (specialtyKeywords.some(kw => lowerVal.includes(kw)) && lowerVal.length > 5) {
+        specialtyVal = strVal;
+        continue;
+      }
+      if (categoryKeywords.some(kw => lowerVal.includes(kw)) && lowerVal.length > 5) {
+        categoryVal = strVal;
+        continue;
+      }
+
+      if (/^\+?[0-9\s\-]{9,15}$/.test(strVal)) {
+        phoneVal = strVal;
+        continue;
+      }
+
+      if (/^\d{3,8}$/.test(strVal)) {
+        regNoVal = strVal;
+        continue;
+      }
+
+      if (designationKeywords.some(kw => lowerVal.includes(kw))) {
+        designationVal = strVal;
+        continue;
+      }
+
+      if (councilKeywords.some(kw => lowerVal.includes(kw))) {
+        councilVal = strVal;
+        continue;
+      }
+    }
+
+    const matchedStrings = new Set([emailVal, phoneVal, prefixVal, foodVal, specialtyVal, categoryVal, regNoVal, designationVal, councilVal]);
+    
+    const remainingStrings = values
+      .filter(val => val !== undefined && val !== null && val !== '')
+      .map(val => String(val))
+      .filter(str => !matchedStrings.has(str) && !str.includes('@') && !/^\+?[0-9\s\-]{9,15}$/.test(str));
+
+    for (const str of remainingStrings) {
+      const lower = str.toLowerCase();
+      if (lower === reg.participant_name?.toLowerCase()) {
+        nameVal = str;
+      } else if (lower.includes('hospital') || lower.includes('institute') || lower.includes('clinic') || lower.includes('college') || lower.includes('university') || lower === 'iqraa' || lower === 'hjkl' || lower === 'ygyg' || lower === 'sfds') {
+        instituteVal = str;
+      } else if (!designationVal && (lower.includes('dr') || lower.includes('doctor') || lower.includes('consultant') || lower.includes('physician') || lower.includes('student') || lower.includes('intern') || lower.includes('nurse') || lower.includes('pharmacist') || lower.includes('paramedic'))) {
+        designationVal = str;
+      } else if (!councilVal && (lower.includes('council') || lower.includes('imc') || lower.includes('mc') || lower === 'hfgdg' || lower === 'jgfj' || lower === 'sf' || lower === 'gfhq1' || lower === 'hgfdh' || lower === 'sdfds')) {
+        councilVal = str;
+      } else {
+        if (!instituteVal) {
+          instituteVal = str;
+        } else if (!designationVal) {
+          designationVal = str;
+        } else if (!councilVal) {
+          councilVal = str;
+        }
+      }
+    }
+
+    if (labelKeywords.includes('prefix')) return prefixVal;
+    if (labelKeywords.includes('name')) return nameVal || reg.participant_name || '';
+    if (labelKeywords.includes('email')) return emailVal || reg.participant_email || '';
+    if (labelKeywords.includes('phone')) return phoneVal || reg.participant_phone || '';
+    if (labelKeywords.includes('designation')) return designationVal;
+    if (labelKeywords.includes('institute')) return instituteVal;
+    if (labelKeywords.includes('specialty')) return specialtyVal;
+    if (labelKeywords.includes('category')) return categoryVal;
+    if (labelKeywords.includes('council')) return councilVal;
+    if (labelKeywords.includes('reg no')) return regNoVal;
+    if (labelKeywords.includes('food')) return foodVal;
+
+    return '';
+  };
+
   const getFieldValueByLabel = (reg, labelKeywords) => {
     // 1. Try finding by matching label against active formFields
     const field = formFields.find(f => {
@@ -256,7 +387,11 @@ const AdminRegistrations = () => {
       if (labelKeywords.includes('council')) return formatVal(fieldData['7']);
     }
 
-    // 3. Fallbacks on registration root properties
+    // 3. Dynamic Heuristic Fallback
+    const dynamicVal = getFieldValueDynamic(reg, labelKeywords);
+    if (dynamicVal) return dynamicVal;
+
+    // 4. Fallbacks on registration root properties
     if (labelKeywords.includes('name')) return reg.participant_name || '';
     if (labelKeywords.includes('email')) return reg.participant_email || '';
     if (labelKeywords.includes('phone')) return reg.participant_phone || '';

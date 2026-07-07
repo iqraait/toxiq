@@ -85,6 +85,125 @@ def generate_registrations_excel(registrations):
         
         reg_date = reg.created_at.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M")
         
+        def get_val_dynamic(keywords):
+            field_data = reg.field_data or {}
+            values = list(field_data.values())
+
+            prefix_options = ['mr.', 'ms.', 'mrs.', 'dr.', 'mr', 'ms', 'mrs', 'dr']
+            food_options = ['veg', 'non-veg', 'veg.', 'non-veg.']
+            specialty_keywords = ['emergency', 'pharmacy', 'critical', 'care', 'medicine', 'pediatrics', 'forensic', 'practitioner', 'specialty', 'department']
+            category_keywords = ['speaker', 'consultant', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic', 'delegate', 'category']
+            designation_keywords = ['doctor', 'consultant', 'physician', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic', 'professor', 'lecturer', 'director', 'manager', 'specialist', 'practitioner', 'hod', 'registrar', 'fellow', 'designation']
+            council_keywords = ['council', 'medical', 'imc', 'kcl', 'mc', 'karnataka', 'delhi', 'maharashtra', 'registration council', 'state']
+
+            email_val = ''
+            phone_val = ''
+            prefix_val = ''
+            food_val = ''
+            specialty_val = ''
+            category_val = ''
+            reg_no_val = ''
+            designation_val = ''
+            council_val = ''
+            name_val = ''
+            institute_val = ''
+
+            import re
+
+            for raw_val in values:
+                if raw_val is None or raw_val == '':
+                    continue
+
+                if isinstance(raw_val, list):
+                    joined = " ".join(map(str, raw_val)).lower()
+                    if any(kw in joined for kw in specialty_keywords):
+                        specialty_val = ", ".join(map(str, raw_val))
+                    elif any(kw in joined for kw in category_keywords):
+                        category_val = ", ".join(map(str, raw_val))
+                    continue
+
+                if isinstance(raw_val, dict):
+                    continue
+
+                str_val = str(raw_val)
+                lower_val = str_val.lower()
+
+                if '@' in str_val:
+                    email_val = str_val
+                    continue
+
+                if lower_val in prefix_options:
+                    prefix_val = str_val
+                    continue
+
+                if lower_val in food_options:
+                    food_val = str_val
+                    continue
+
+                if any(kw in lower_val for kw in specialty_keywords) and len(lower_val) > 5:
+                    specialty_val = str_val
+                    continue
+                if any(kw in lower_val for kw in category_keywords) and len(lower_val) > 5:
+                    category_val = str_val
+                    continue
+
+                if re.match(r"^\+?[0-9\s\-]{9,15}$", str_val):
+                    phone_val = str_val
+                    continue
+
+                if re.match(r"^\d{3,8}$", str_val):
+                    reg_no_val = str_val
+                    continue
+
+                if any(kw in lower_val for kw in designation_keywords):
+                    designation_val = str_val
+                    continue
+
+                if any(kw in lower_val for kw in council_keywords):
+                    council_val = str_val
+                    continue
+
+            matched_strings = {email_val, phone_val, prefix_val, food_val, specialty_val, category_val, reg_no_val, designation_val, council_val}
+
+            remaining_strings = []
+            for val in values:
+                if val is not None and val != '':
+                    str_v = str(val)
+                    if str_v not in matched_strings and '@' not in str_v and not re.match(r"^\+?[0-9\s\-]{9,15}$", str_v) and not isinstance(val, (list, dict)):
+                        remaining_strings.append(str_v)
+
+            for str_v in remaining_strings:
+                lower = str_v.lower()
+                if lower == (reg.participant_name or '').lower():
+                    name_val = str_v
+                elif any(kw in lower for kw in ['hospital', 'institute', 'clinic', 'college', 'university']) or lower in ['iqraa', 'hjkl', 'ygyg', 'sfds']:
+                    institute_val = str_v
+                elif not designation_val and any(kw in lower for kw in ['dr', 'doctor', 'consultant', 'physician', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic']):
+                    designation_val = str_v
+                elif not council_val and (any(kw in lower for kw in ['council', 'imc', 'mc']) or lower in ['hfgdg', 'jgfj', 'sf', 'gfhq1', 'hgfdh', 'sdfds']):
+                    council_val = str_v
+                else:
+                    if not institute_val:
+                        institute_val = str_v
+                    elif not designation_val:
+                        designation_val = str_v
+                    elif not council_val:
+                        council_val = str_v
+
+            if any(kw in 'prefix' for kw in keywords): return prefix_val
+            if any(kw in 'name' for kw in keywords): return name_val or reg.participant_name or ''
+            if any(kw in 'email' for kw in keywords): return email_val or reg.participant_email or ''
+            if any(kw in 'phone' for kw in keywords): return phone_val or reg.participant_phone or ''
+            if any(kw in 'designation' for kw in keywords): return designation_val
+            if any(kw in 'institute' for kw in keywords): return institute_val
+            if any(kw in 'specialty' for kw in keywords): return specialty_val
+            if any(kw in 'category' for kw in keywords): return category_val
+            if any(kw in 'council' for kw in keywords): return council_val
+            if any(kw in 'reg no' for kw in keywords): return reg_no_val
+            if any(kw in 'food' for kw in keywords): return food_val
+
+            return ''
+
         def get_val(keywords):
             # 1. Active form fields
             for field in form_fields:
@@ -133,7 +252,12 @@ def generate_registrations_excel(registrations):
                 if any(kw in 'category' for kw in keywords): return format_val(field_data.get('6'))
                 if any(kw in 'council' for kw in keywords): return format_val(field_data.get('7'))
 
-            # 3. Model level fallbacks
+            # 3. Dynamic Heuristic Fallback
+            dynamic_val = get_val_dynamic(keywords)
+            if dynamic_val:
+                return dynamic_val
+
+            # 4. Model level fallbacks
             if 'name' in keywords:
                 return reg.participant_name or ''
             elif 'email' in keywords:
@@ -365,6 +489,125 @@ def generate_registrations_pdf(registrations):
         amount = f"{payment.currency or 'INR'} {float(payment.amount):.2f}" if payment and payment.amount else "N/A"
         reg_date = reg.created_at.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d")
         
+        def get_val_dynamic(keywords):
+            field_data = reg.field_data or {}
+            values = list(field_data.values())
+
+            prefix_options = ['mr.', 'ms.', 'mrs.', 'dr.', 'mr', 'ms', 'mrs', 'dr']
+            food_options = ['veg', 'non-veg', 'veg.', 'non-veg.']
+            specialty_keywords = ['emergency', 'pharmacy', 'critical', 'care', 'medicine', 'pediatrics', 'forensic', 'practitioner', 'specialty', 'department']
+            category_keywords = ['speaker', 'consultant', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic', 'delegate', 'category']
+            designation_keywords = ['doctor', 'consultant', 'physician', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic', 'professor', 'lecturer', 'director', 'manager', 'specialist', 'practitioner', 'hod', 'registrar', 'fellow', 'designation']
+            council_keywords = ['council', 'medical', 'imc', 'kcl', 'mc', 'karnataka', 'delhi', 'maharashtra', 'registration council', 'state']
+
+            email_val = ''
+            phone_val = ''
+            prefix_val = ''
+            food_val = ''
+            specialty_val = ''
+            category_val = ''
+            reg_no_val = ''
+            designation_val = ''
+            council_val = ''
+            name_val = ''
+            institute_val = ''
+
+            import re
+
+            for raw_val in values:
+                if raw_val is None or raw_val == '':
+                    continue
+
+                if isinstance(raw_val, list):
+                    joined = " ".join(map(str, raw_val)).lower()
+                    if any(kw in joined for kw in specialty_keywords):
+                        specialty_val = ", ".join(map(str, raw_val))
+                    elif any(kw in joined for kw in category_keywords):
+                        category_val = ", ".join(map(str, raw_val))
+                    continue
+
+                if isinstance(raw_val, dict):
+                    continue
+
+                str_val = str(raw_val)
+                lower_val = str_val.lower()
+
+                if '@' in str_val:
+                    email_val = str_val
+                    continue
+
+                if lower_val in prefix_options:
+                    prefix_val = str_val
+                    continue
+
+                if lower_val in food_options:
+                    food_val = str_val
+                    continue
+
+                if any(kw in lower_val for kw in specialty_keywords) and len(lower_val) > 5:
+                    specialty_val = str_val
+                    continue
+                if any(kw in lower_val for kw in category_keywords) and len(lower_val) > 5:
+                    category_val = str_val
+                    continue
+
+                if re.match(r"^\+?[0-9\s\-]{9,15}$", str_val):
+                    phone_val = str_val
+                    continue
+
+                if re.match(r"^\d{3,8}$", str_val):
+                    reg_no_val = str_val
+                    continue
+
+                if any(kw in lower_val for kw in designation_keywords):
+                    designation_val = str_val
+                    continue
+
+                if any(kw in lower_val for kw in council_keywords):
+                    council_val = str_val
+                    continue
+
+            matched_strings = {email_val, phone_val, prefix_val, food_val, specialty_val, category_val, reg_no_val, designation_val, council_val}
+
+            remaining_strings = []
+            for val in values:
+                if val is not None and val != '':
+                    str_v = str(val)
+                    if str_v not in matched_strings and '@' not in str_v and not re.match(r"^\+?[0-9\s\-]{9,15}$", str_v) and not isinstance(val, (list, dict)):
+                        remaining_strings.append(str_v)
+
+            for str_v in remaining_strings:
+                lower = str_v.lower()
+                if lower == (reg.participant_name or '').lower():
+                    name_val = str_v
+                elif any(kw in lower for kw in ['hospital', 'institute', 'clinic', 'college', 'university']) or lower in ['iqraa', 'hjkl', 'ygyg', 'sfds']:
+                    institute_val = str_v
+                elif not designation_val and any(kw in lower for kw in ['dr', 'doctor', 'consultant', 'physician', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic']):
+                    designation_val = str_v
+                elif not council_val and (any(kw in lower for kw in ['council', 'imc', 'mc']) or lower in ['hfgdg', 'jgfj', 'sf', 'gfhq1', 'hgfdh', 'sdfds']):
+                    council_val = str_v
+                else:
+                    if not institute_val:
+                        institute_val = str_v
+                    elif not designation_val:
+                        designation_val = str_v
+                    elif not council_val:
+                        council_val = str_v
+
+            if any(kw in 'prefix' for kw in keywords): return prefix_val
+            if any(kw in 'name' for kw in keywords): return name_val or reg.participant_name or ''
+            if any(kw in 'email' for kw in keywords): return email_val or reg.participant_email or ''
+            if any(kw in 'phone' for kw in keywords): return phone_val or reg.participant_phone or ''
+            if any(kw in 'designation' for kw in keywords): return designation_val
+            if any(kw in 'institute' for kw in keywords): return institute_val
+            if any(kw in 'specialty' for kw in keywords): return specialty_val
+            if any(kw in 'category' for kw in keywords): return category_val
+            if any(kw in 'council' for kw in keywords): return council_val
+            if any(kw in 'reg no' for kw in keywords): return reg_no_val
+            if any(kw in 'food' for kw in keywords): return food_val
+
+            return ''
+
         def get_val(keywords):
             # 1. Active form fields
             for field in form_fields:
@@ -413,7 +656,12 @@ def generate_registrations_pdf(registrations):
                 if any(kw in 'category' for kw in keywords): return format_val(field_data.get('6'))
                 if any(kw in 'council' for kw in keywords): return format_val(field_data.get('7'))
 
-            # 3. Model level fallbacks
+            # 3. Dynamic Heuristic Fallback
+            dynamic_val = get_val_dynamic(keywords)
+            if dynamic_val:
+                return dynamic_val
+
+            # 4. Model level fallbacks
             if 'name' in keywords:
                 return reg.participant_name or ''
             elif 'email' in keywords:
