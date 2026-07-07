@@ -128,6 +128,22 @@ class ExportRegistrationsView(APIView):
         export_format = request.query_params.get('file_format', 'excel').lower()
         registrations = Registration.objects.all().order_by('-created_at')
         
+        status_filter = request.query_params.get('payment_status')
+        search_query = request.query_params.get('search')
+        
+        if status_filter:
+            registrations = registrations.filter(payments__payment_status=status_filter).distinct()
+        if search_query:
+            registrations = registrations.filter(
+                participant_name__icontains=search_query
+            ) | registrations.filter(
+                participant_email__icontains=search_query
+            ) | registrations.filter(
+                registration_id__icontains=search_query
+            ) | registrations.filter(
+                participant_phone__icontains=search_query
+            )
+        
         # Log Admin Action
         AuditLog.log(
             user=request.user, 

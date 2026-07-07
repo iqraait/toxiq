@@ -3,7 +3,8 @@ import {
   Box, Typography, Button, TextField, MenuItem, 
   Table, TableBody, TableCell, TableContainer, TableHead, 
   TableRow, Paper, IconButton, Chip, Dialog, DialogTitle, 
-  DialogContent, DialogActions, Grid, Stack, CircularProgress, Alert, Divider 
+  DialogContent, DialogActions, Grid, Stack, CircularProgress, Alert, Divider,
+  TablePagination
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -26,6 +27,11 @@ const AdminRegistrations = () => {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
 
+  // Pagination states
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [totalCount, setTotalCount] = useState(0);
+
   // Selected item modal states
   const [selectedReg, setSelectedReg] = useState(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -42,9 +48,20 @@ const AdminRegistrations = () => {
     setLoading(true);
     try {
       const res = await API.get('registration/submissions/', {
-        params: { search, payment_status: status }
+        params: { 
+          search, 
+          payment_status: status,
+          page: page + 1,
+          page_size: rowsPerPage
+        }
       });
-      setRegistrations(res.data.results || res.data);
+      if (res.data.results !== undefined) {
+        setRegistrations(res.data.results);
+        setTotalCount(res.data.count || 0);
+      } else {
+        setRegistrations(res.data);
+        setTotalCount(res.data.length || 0);
+      }
     } catch (err) {
       console.error('Error fetching registrations:', err);
       setError('Failed to load registrations. Ensure backend server is responsive.');
@@ -63,16 +80,31 @@ const AdminRegistrations = () => {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchFormConfig();
+  }, []);
+
+  useEffect(() => {
     fetchRegistrations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]); // refetch on status filter, search is triggered by clicking Search or Enter
+  }, [status, page, rowsPerPage]);
+
+  const handleSearch = () => {
+    if (page !== 0) {
+      setPage(0);
+    } else {
+      fetchRegistrations();
+    }
+  };
 
   const handleSearchKeyPress = (e) => {
     if (e.key === 'Enter') {
-      fetchRegistrations();
+      handleSearch();
     }
+  };
+
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+    setPage(0);
   };
 
   const handleOpenDetails = (reg) => {
@@ -144,7 +176,12 @@ const AdminRegistrations = () => {
 
   const handleExport = async (format) => {
     try {
-      const response = await API.get(`reports/export-registrations/?file_format=${format}`, {
+      const response = await API.get('reports/export-registrations/', {
+        params: {
+          file_format: format,
+          search: search,
+          payment_status: status
+        },
         responseType: 'blob',
       });
       
@@ -232,7 +269,7 @@ const AdminRegistrations = () => {
               onKeyPress={handleSearchKeyPress}
               InputProps={{
                 endAdornment: (
-                  <IconButton onClick={fetchRegistrations}>
+                  <IconButton onClick={handleSearch}>
                     <SearchIcon />
                   </IconButton>
                 ),
@@ -246,7 +283,7 @@ const AdminRegistrations = () => {
               size="small"
               label="Payment Status"
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={handleStatusChange}
             >
               <MenuItem value="">All Statuses</MenuItem>
               <MenuItem value="SUCCESS">Success</MenuItem>
@@ -259,7 +296,7 @@ const AdminRegistrations = () => {
               fullWidth
               variant="contained"
               color="primary"
-              onClick={fetchRegistrations}
+              onClick={handleSearch}
               sx={{ borderRadius: '8px', py: 1 }}
             >
               Filter / Search
@@ -276,113 +313,128 @@ const AdminRegistrations = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer component={Paper} sx={{ borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-          <Table>
-            <TableHead sx={{ bgcolor: '#f8fafc' }}>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Reg ID</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>FUll name</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>email</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>designation</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>institute</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Specialty / Department of Practice *</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Registration Category *</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>medical council name</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>REg no :</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>food preference</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>paid amount</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Date Registered</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', align: 'center' }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {registrations.map((reg) => {
-                const payStatus = getActivePaymentStatus(reg);
-                const payment = reg.payments?.[0];
-                const paidAmount = payment ? `${payment.currency || 'INR'} ${parseFloat(payment.amount).toFixed(2)}` : 'N/A';
-                return (
-                  <TableRow key={reg.id} hover>
-                    <TableCell sx={{ fontWeight: 'bold' }}>{reg.registration_id || 'PENDING'}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['name', 'fullname'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['email'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['phone', 'whatsapp'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['designation'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['institute', 'hospital'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['specialty', 'department'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['category'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['council', 'medical council'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['reg no', 'registration no'])}</TableCell>
-                    <TableCell>{getFieldValueByLabel(reg, ['food', 'preference'])}</TableCell>
-                    <TableCell>{paidAmount}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={payStatus}
-                        size="small"
-                        color={
-                          payStatus === 'SUCCESS' ? 'success' :
-                          payStatus === 'PENDING' ? 'warning' : 'error'
-                        }
-                        sx={{ fontWeight: 'bold', fontSize: '0.75rem' }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {new Date(reg.created_at).toLocaleDateString('en-IN', {
-                        year: 'numeric', month: 'short', day: 'numeric'
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      <Stack direction="row" spacing={0.5}>
-                        <IconButton size="small" color="primary" onClick={() => handleOpenDetails(reg)}>
-                          <VisibilityIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton size="small" color="secondary" onClick={() => handleOpenEdit(reg)}>
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        {payStatus === 'PENDING' && reg.payments?.[0]?.id && (
+        <>
+          <TableContainer component={Paper} sx={{ borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+            <Table>
+              <TableHead sx={{ bgcolor: '#f8fafc' }}>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Reg ID</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>FUll name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>email</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>designation</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>institute</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Specialty / Department of Practice *</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Registration Category *</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>medical council name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>REg no :</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>food preference</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>paid amount</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Date Registered</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', align: 'center' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {registrations.map((reg) => {
+                  const payStatus = getActivePaymentStatus(reg);
+                  const payment = reg.payments?.[0];
+                  const paidAmount = payment ? `${payment.currency || 'INR'} ${parseFloat(payment.amount).toFixed(2)}` : 'N/A';
+                  return (
+                    <TableRow key={reg.id} hover>
+                      <TableCell sx={{ fontWeight: 'bold' }}>{reg.registration_id || 'PENDING'}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['name', 'fullname'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['email'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['phone', 'whatsapp'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['designation'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['institute', 'hospital'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['specialty', 'department'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['category'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['council', 'medical council'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['reg no', 'registration no'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['food', 'preference'])}</TableCell>
+                      <TableCell>{paidAmount}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={payStatus}
+                          size="small"
+                          color={
+                            payStatus === 'SUCCESS' ? 'success' :
+                            payStatus === 'PENDING' ? 'warning' : 'error'
+                          }
+                          sx={{ fontWeight: 'bold', fontSize: '0.75rem' }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {new Date(reg.created_at).toLocaleDateString('en-IN', {
+                          year: 'numeric', month: 'short', day: 'numeric'
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <Stack direction="row" spacing={0.5}>
+                          <IconButton size="small" color="primary" onClick={() => handleOpenDetails(reg)}>
+                            <VisibilityIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton size="small" color="secondary" onClick={() => handleOpenEdit(reg)}>
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          {payStatus === 'PENDING' && reg.payments?.[0]?.id && (
+                            <IconButton 
+                              size="small" 
+                              color="success" 
+                              title="Mark as Paid" 
+                              onClick={() => handleMarkAsPaid(reg.payments[0].id)}
+                            >
+                              <CheckCircleIcon fontSize="small" />
+                            </IconButton>
+                          )}
+                          {payStatus === 'SUCCESS' && (
+                            <IconButton 
+                              size="small" 
+                              color="info" 
+                              title="Resend Email" 
+                              onClick={() => handleResendEmail(reg.id)}
+                            >
+                              <EmailIcon fontSize="small" />
+                            </IconButton>
+                          )}
                           <IconButton 
                             size="small" 
-                            color="success" 
-                            title="Mark as Paid" 
-                            onClick={() => handleMarkAsPaid(reg.payments[0].id)}
+                            color="action" 
+                            disabled={payStatus !== 'SUCCESS'} 
+                            onClick={() => handleDownloadReceipt(reg.id)}
                           >
-                            <CheckCircleIcon fontSize="small" />
+                            <DownloadIcon fontSize="small" />
                           </IconButton>
-                        )}
-                        {payStatus === 'SUCCESS' && (
-                          <IconButton 
-                            size="small" 
-                            color="info" 
-                            title="Resend Email" 
-                            onClick={() => handleResendEmail(reg.id)}
-                          >
-                            <EmailIcon fontSize="small" />
-                          </IconButton>
-                        )}
-                        <IconButton 
-                          size="small" 
-                          color="action" 
-                          disabled={payStatus !== 'SUCCESS'} 
-                          onClick={() => handleDownloadReceipt(reg.id)}
-                        >
-                          <DownloadIcon fontSize="small" />
-                        </IconButton>
-                      </Stack>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {registrations.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={15} align="center" sx={{ py: 6 }}>
+                      No registration records match your filter criteria.
                     </TableCell>
                   </TableRow>
-                );
-              })}
-              {registrations.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={15} align="center" sx={{ py: 6 }}>
-                    No registration records match your filter criteria.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 20, 50, 100]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(e, newPage) => setPage(newPage)}
+            onRowsPerPageChange={(e) => {
+              setRowsPerPage(parseInt(e.target.value, 10));
+              setPage(0);
+            }}
+            sx={{ mt: 2 }}
+          />
+        </>
       )}
 
       {/* Details View Modal */}

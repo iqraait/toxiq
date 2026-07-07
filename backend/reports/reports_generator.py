@@ -2,7 +2,7 @@ from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from django.utils import timezone
-from reportlab.lib.pagesizes import letter, landscape
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -97,11 +97,11 @@ def generate_registrations_excel(registrations):
                             return val.get('name', val.get('url', str(val)))
                         return str(val)
             if 'name' in keywords:
-                return reg.participant_name
+                return reg.participant_name or ''
             elif 'email' in keywords:
-                return reg.participant_email
+                return reg.participant_email or ''
             elif 'phone' in keywords:
-                return reg.participant_phone
+                return reg.participant_phone or ''
             return ''
 
         row_data = [
@@ -257,11 +257,11 @@ def generate_registrations_pdf(registrations):
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer,
-        pagesize=landscape(letter),
-        rightMargin=30,
-        leftMargin=30,
-        topMargin=30,
-        bottomMargin=30
+        pagesize=landscape(A4),
+        rightMargin=20,
+        leftMargin=20,
+        topMargin=20,
+        bottomMargin=20
     )
     story = []
     styles = getSampleStyleSheet()
@@ -270,8 +270,8 @@ def generate_registrations_pdf(registrations):
     active_form = RegistrationForm.objects.filter(is_active=True).first()
     form_fields = list(active_form.fields.all().order_by('order', 'id')) if active_form else []
     
-    fs = 6
-    ld = 8
+    fs = 7
+    ld = 9
     
     # Custom styles
     title_style = ParagraphStyle(
@@ -324,7 +324,7 @@ def generate_registrations_pdf(registrations):
     for reg in registrations:
         payment = reg.payments.filter(payment_status='SUCCESS').first() or reg.payments.first()
         status = payment.payment_status if payment else "N/A"
-        amount = f"{payment.currency} {payment.amount:.2f}" if payment else "N/A"
+        amount = f"{payment.currency or 'INR'} {float(payment.amount):.2f}" if payment and payment.amount else "N/A"
         reg_date = reg.created_at.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d")
         
         def get_val(keywords):
@@ -339,11 +339,11 @@ def generate_registrations_pdf(registrations):
                             return val.get('name', val.get('url', str(val)))
                         return str(val)
             if 'name' in keywords:
-                return reg.participant_name
+                return reg.participant_name or ''
             elif 'email' in keywords:
-                return reg.participant_email
+                return reg.participant_email or ''
             elif 'phone' in keywords:
-                return reg.participant_phone
+                return reg.participant_phone or ''
             return ''
 
         row = [
@@ -364,7 +364,7 @@ def generate_registrations_pdf(registrations):
         ]
         table_data.append(row)
         
-    col_widths = [45, 70, 75, 55, 55, 55, 60, 60, 45, 40, 35, 40, 42, 55]
+    col_widths = [50, 80, 85, 60, 60, 65, 65, 65, 50, 45, 35, 45, 45, 50]
         
     t = Table(table_data, colWidths=col_widths)
     t.setStyle(TableStyle([

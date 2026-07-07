@@ -1,0 +1,28 @@
+<div class="conference-description">
+    <p>
+        <strong>ToxIQ 2026</strong> is a premier national conference in Clinical Toxicology,
+        bringing together Clinical Toxicologists, Emergency Medicine Physicians,
+        Critical Care and Intensive Care Physicians, Internal Medicine Physicians,
+        Pediatricians and Pediatric Intensivists, Forensic Medicine Specialists, Clinical pharmacists and other Health care professionals
+        on a common platform to share expertise, discuss current challenges, and
+        advance the science and practice of Clinical Toxicology and Poison Management.
+    </p>
+
+    <p>
+        The conference is designed to provide practical, evidence-based updates
+        through expert lectures, interactive panel discussions, debates, clinical
+        case-based learning, scientific presentations, and networking opportunities.
+        Participants will gain insights from renowned national faculty and engage
+        in meaningful discussions on contemporary issues and emerging trends in toxicology.
+    </p>
+
+    <p>
+        In addition, <strong>ToxIQ 2026</strong> will feature a range of academic
+        competitions aimed at encouraging research and scholarly engagement,
+        including the <strong>Postgraduate (PG) Quiz Competition, Oral Paper
+        Presentations, and Poster Presentations</strong>. These sessions provide
+        an excellent platform for students, trainees, and young researchers to
+        showcase their knowledge, present their research findings, and interact
+        with experts in the field of toxicology.
+    </p>
+</div>

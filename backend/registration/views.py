@@ -127,9 +127,18 @@ class RegistrationFieldViewSet(viewsets.ModelViewSet):
                 return
         serializer.save()
 
+from rest_framework.pagination import PageNumberPagination
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all().order_by('-created_at')
     serializer_class = RegistrationSerializer
+    pagination_class = StandardResultsSetPagination
+
     
     def get_permissions(self):
         # Admin gets everything, public can retrieve their own (requires registration_id)
