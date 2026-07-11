@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { 
   Container, Typography, Box, Grid, Button, 
   Card, CardContent, Stack, useTheme, CardActions,
-  Divider, CircularProgress
+  Divider, CircularProgress, Chip, Dialog, IconButton
 } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import FolderIcon from '@mui/icons-material/Folder';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CloseIcon from '@mui/icons-material/Close';
+import CollectionsIcon from '@mui/icons-material/Collections';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -16,6 +20,9 @@ const BrochureGallery = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [lightboxImage, setLightboxImage] = useState(null);
+  const [lightboxCaption, setLightboxCaption] = useState('');
 
   const getFileUrl = (path) => {
     if (!path) return null;
@@ -242,50 +249,328 @@ const BrochureGallery = () => {
                 No gallery images uploaded.
               </Typography>
             </GlassCard>
-          ) : (
-            <Grid container spacing={2.5}>
-              {gallery.map((g) => (
-                <Grid item xs={12} sm={6} md={3} key={g.id}>
-                  <Box 
-                    sx={{ 
-                      position: 'relative', 
-                      borderRadius: 4, 
-                      overflow: 'hidden', 
-                      height: '240px', 
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.04)',
-                      border: '1.5px solid rgba(226, 232, 240, 0.6)',
-                      '&:hover img': { transform: 'scale(1.08)' },
-                      '&:hover .caption-overlay': { opacity: 1 }
-                    }}
-                  >
-                    <img 
-                      src={getFileUrl(g.image)} 
-                      alt={g.caption} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'all 0.3s ease-in-out' }}
-                    />
-                    <Box 
-                      className="caption-overlay"
+          ) : (() => {
+            // Group gallery images by folders dynamically
+            const folderMap = {};
+            gallery.forEach((g) => {
+              let folderName = 'Symposium Highlights';
+              let cleanCaption = g.caption || 'TOXIQ Highlight';
+              
+              if (g.caption) {
+                if (g.caption.includes(':')) {
+                  const parts = g.caption.split(':');
+                  folderName = parts[0].trim();
+                  cleanCaption = parts.slice(1).join(':').trim();
+                } else if (g.caption.includes(' - ')) {
+                  const parts = g.caption.split(' - ');
+                  folderName = parts[0].trim();
+                  cleanCaption = parts.slice(1).join(' - ').trim();
+                } else if (g.caption.includes('/')) {
+                  const parts = g.caption.split('/');
+                  folderName = parts[0].trim();
+                  cleanCaption = parts.slice(1).join('/').trim();
+                }
+              }
+              
+              if (!folderMap[folderName]) {
+                folderMap[folderName] = [];
+              }
+              
+              folderMap[folderName].push({
+                ...g,
+                cleanCaption
+              });
+            });
+
+            const folderNames = Object.keys(folderMap);
+
+            if (!selectedFolder) {
+              return (
+                <Grid container spacing={3.5}>
+                  {folderNames.map((folderName) => {
+                    const imagesInFolder = folderMap[folderName];
+                    const coverImage = imagesInFolder[0]?.image;
+                    const coverUrl = getFileUrl(coverImage);
+                    
+                    return (
+                      <Grid item xs={12} sm={6} md={4} key={folderName}>
+                        <Card 
+                          onClick={() => setSelectedFolder(folderName)}
+                          sx={{ 
+                            cursor: 'pointer',
+                            borderRadius: '24px',
+                            overflow: 'hidden',
+                            position: 'relative',
+                            height: '280px',
+                            border: '1.5px solid rgba(226, 232, 240, 0.7)',
+                            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.02)',
+                            transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-end',
+                            '&:hover': {
+                              transform: 'translateY(-8px)',
+                              boxShadow: '0 20px 40px rgba(13, 148, 136, 0.12)',
+                              borderColor: 'secondary.main',
+                              '& .folder-cover': { transform: 'scale(1.08)' },
+                              '& .folder-badge': { bgcolor: 'secondary.main', color: '#fff' }
+                            }
+                          }}
+                        >
+                          {coverUrl ? (
+                            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden' }}>
+                              <img 
+                                src={coverUrl} 
+                                alt={folderName} 
+                                className="folder-cover"
+                                style={{ 
+                                  width: '100%', 
+                                  height: '100%', 
+                                  objectFit: 'cover', 
+                                  transition: 'all 0.4s ease-in-out' 
+                                }}
+                              />
+                              <Box sx={{ 
+                                position: 'absolute', 
+                                top: 0, left: 0, right: 0, bottom: 0, 
+                                background: 'linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 60%, rgba(15, 23, 42, 0.15) 100%)' 
+                              }} />
+                            </Box>
+                          ) : (
+                            <Box sx={{ 
+                              position: 'absolute', 
+                              top: 0, left: 0, right: 0, bottom: 0, 
+                              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                              <CollectionsIcon sx={{ fontSize: '4rem', color: 'rgba(255,255,255,0.15)' }} />
+                            </Box>
+                          )}
+
+                          <Box sx={{
+                            position: 'absolute',
+                            top: 20,
+                            left: 20,
+                            bgcolor: 'rgba(15, 23, 42, 0.75)',
+                            backdropFilter: 'blur(10px)',
+                            borderRadius: '12px',
+                            px: 2,
+                            py: 0.8,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            border: '1px solid rgba(255, 255, 255, 0.15)',
+                            zIndex: 2
+                          }}>
+                            <FolderIcon sx={{ color: '#2dd4bf', fontSize: '1.2rem' }} />
+                            <Typography variant="caption" sx={{ color: '#ffffff', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                              Album
+                            </Typography>
+                          </Box>
+
+                          <Box sx={{ p: 4, zIndex: 2, color: '#ffffff' }}>
+                            <Typography 
+                              variant="h5" 
+                              fontWeight="900" 
+                              sx={{ 
+                                fontFamily: "'Raleway', sans-serif", 
+                                mb: 1,
+                                textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                              }}
+                            >
+                              {folderName}
+                            </Typography>
+                            <Stack direction="row" alignItems="center" spacing={1}>
+                              <Chip 
+                                className="folder-badge"
+                                label={`${imagesInFolder.length} Photo${imagesInFolder.length > 1 ? 's' : ''}`}
+                                size="small"
+                                sx={{ 
+                                  bgcolor: 'rgba(255,255,255,0.15)', 
+                                  color: '#ffffff', 
+                                  fontWeight: '800',
+                                  fontSize: '0.75rem',
+                                  transition: 'all 0.3s ease'
+                                }}
+                              />
+                              <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                                Click to explore &rarr;
+                              </Typography>
+                            </Stack>
+                          </Box>
+                        </Card>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              );
+            }
+
+            return (
+              <Box>
+                <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} gap={2} mb={4}>
+                  <Box>
+                    <Button 
+                      startIcon={<ArrowBackIcon />}
+                      onClick={() => setSelectedFolder(null)}
                       sx={{ 
-                        position: 'absolute', 
-                        bottom: 0, left: 0, right: 0, 
-                        bgcolor: 'rgba(15, 23, 42, 0.85)', 
-                        color: '#fff', 
-                        p: 2, 
-                        opacity: 0, 
-                        transition: 'opacity 0.3s ease-in-out',
-                        textAlign: 'center'
+                        mb: 2, 
+                        color: 'primary.main', 
+                        fontWeight: '800',
+                        textTransform: 'none',
+                        borderRadius: '12px',
+                        border: '1.5px solid',
+                        borderColor: 'primary.main',
+                        px: 2.5,
+                        py: 1,
+                        '&:hover': {
+                          bgcolor: 'primary.main',
+                          color: '#ffffff'
+                        }
                       }}
                     >
-                      <Typography variant="caption" fontWeight="bold" sx={{ fontSize: '0.85rem' }}>
-                        {g.caption || 'TOXIQ Conference'}
-                      </Typography>
-                    </Box>
+                      Back to Albums
+                    </Button>
+                    <Typography 
+                      variant="h4" 
+                      sx={{ 
+                        fontWeight: 900, 
+                        color: 'primary.main', 
+                        fontFamily: "'Raleway', sans-serif",
+                        mt: 1
+                      }}
+                    >
+                      {selectedFolder}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Viewing {folderMap[selectedFolder].length} images in this album. Click an image to view in full resolution.
+                    </Typography>
                   </Box>
+                </Stack>
+
+                <Grid container spacing={2.5}>
+                  {folderMap[selectedFolder].map((g) => (
+                    <Grid item xs={12} sm={6} md={3} key={g.id}>
+                      <Box 
+                        onClick={() => {
+                          setLightboxImage(getFileUrl(g.image));
+                          setLightboxCaption(g.cleanCaption || 'TOXIQ Highlight');
+                        }}
+                        sx={{ 
+                          position: 'relative', 
+                          borderRadius: '20px', 
+                          overflow: 'hidden', 
+                          height: '240px', 
+                          cursor: 'pointer',
+                          boxShadow: '0 8px 30px rgba(0,0,0,0.03)',
+                          border: '1.5px solid rgba(226, 232, 240, 0.8)',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          '&:hover': { 
+                            transform: 'scale(1.03) translateY(-4px)',
+                            boxShadow: '0 12px 35px rgba(0,0,0,0.08)',
+                            borderColor: 'secondary.main',
+                            '& img': { transform: 'scale(1.05)' },
+                            '& .caption-overlay': { opacity: 1 }
+                          }
+                        }}
+                      >
+                        <img 
+                          src={getFileUrl(g.image)} 
+                          alt={g.cleanCaption} 
+                          style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                            objectFit: 'cover', 
+                            transition: 'all 0.4s ease-in-out' 
+                          }}
+                        />
+                        <Box 
+                          className="caption-overlay"
+                          sx={{ 
+                            position: 'absolute', 
+                            bottom: 0, left: 0, right: 0, 
+                            bgcolor: 'rgba(15, 23, 42, 0.85)', 
+                            color: '#fff', 
+                            p: 2, 
+                            opacity: 0, 
+                            transition: 'opacity 0.3s ease-in-out',
+                            textAlign: 'center',
+                            backdropFilter: 'blur(3px)'
+                          }}
+                        >
+                          <Typography variant="body2" fontWeight="800" sx={{ fontSize: '0.85rem' }}>
+                            {g.cleanCaption}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
-          )}
+              </Box>
+            );
+          })()}
         </Box>
+
+        {/* Lightbox Modal */}
+        <Dialog 
+          open={!!lightboxImage} 
+          onClose={() => setLightboxImage(null)}
+          maxWidth="lg"
+          PaperProps={{
+            sx: {
+              bgcolor: 'rgba(15, 23, 42, 0.95)',
+              boxShadow: 'none',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }
+          }}
+        >
+          <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3, pt: 6 }}>
+            <IconButton 
+              onClick={() => setLightboxImage(null)}
+              sx={{ 
+                position: 'absolute', 
+                top: 16, 
+                right: 16, 
+                color: '#ffffff',
+                bgcolor: 'rgba(255,255,255,0.1)',
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' }
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            
+            {lightboxImage && (
+              <img 
+                src={lightboxImage} 
+                alt={lightboxCaption} 
+                style={{ 
+                  maxWidth: '100%', 
+                  maxHeight: '75vh', 
+                  objectFit: 'contain',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+                }} 
+              />
+            )}
+            
+            <Typography 
+              variant="subtitle1" 
+              sx={{ 
+                color: '#ffffff', 
+                mt: 3, 
+                fontWeight: '700',
+                textAlign: 'center',
+                fontFamily: "'Raleway', sans-serif"
+              }}
+            >
+              {lightboxCaption}
+            </Typography>
+          </Box>
+        </Dialog>
 
       </Container>
 

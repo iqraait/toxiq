@@ -867,7 +867,13 @@ const AdminCMS = () => {
         <DialogTitle sx={{ fontWeight: 'bold' }}>Add Gallery Image</DialogTitle>
         <DialogContent>
           <Stack spacing={2.5} mt={1.5}>
-            <TextField fullWidth label="Caption / Description" value={galCaption} onChange={(e) => setGalCaption(e.target.value)} />
+            <TextField 
+              fullWidth 
+              label="Caption / Description" 
+              value={galCaption} 
+              onChange={(e) => setGalCaption(e.target.value)} 
+              helperText="Tip: To place this image in a folder, use the format: 'Folder Name: Image Title' (e.g., 'Inauguration: Lighting the lamp')"
+            />
             
             <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />} color="secondary">
               Select Image *

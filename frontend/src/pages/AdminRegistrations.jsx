@@ -13,6 +13,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EmailIcon from '@mui/icons-material/Email';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import API from '../services/api';
 import GlassCard from '../components/GlassCard';
@@ -166,6 +167,18 @@ const AdminRegistrations = () => {
     } catch (err) {
       console.error('Error resending email:', err);
       alert(err.response?.data?.error || 'Failed to resend confirmation email.');
+    }
+  };
+
+  const handleDeleteRegistration = async (regId) => {
+    if (!window.confirm('Are you sure you want to permanently delete this registration record? This action cannot be undone.')) return;
+    try {
+      await API.delete(`registration/submissions/${regId}/`);
+      alert('Registration record deleted successfully.');
+      fetchRegistrations();
+    } catch (err) {
+      console.error('Error deleting registration:', err);
+      alert(err.response?.data?.error || 'Failed to delete registration record.');
     }
   };
 
@@ -577,6 +590,14 @@ const AdminRegistrations = () => {
                             onClick={() => handleDownloadReceipt(reg.id)}
                           >
                             <DownloadIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton 
+                            size="small" 
+                            color="error" 
+                            title="Delete Record" 
+                            onClick={() => handleDeleteRegistration(reg.id)}
+                          >
+                            <DeleteIcon fontSize="small" />
                           </IconButton>
                         </Stack>
                       </TableCell>
