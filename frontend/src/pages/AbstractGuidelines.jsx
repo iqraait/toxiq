@@ -20,7 +20,7 @@ const AbstractGuidelines = () => {
     { text: "Submissions must relate to Clinical Toxicology and may include case reports, case series, educational posters, completed research, or ongoing research projects." },
     { text: "Authors may indicate a preference for E-Poster or Oral Presentation; however, the final allocation will be determined by the Review Committee. Priority for Oral Presentations will be given to completed and ongoing research studies." },
     { text: "The submitted work must be original, unpublished, and not previously presented at any national or international scientific meeting." },
-    { text: "Abstracts must be submitted through the conference portal using the participant’s Registration ID by 20 July 2026. Authors may edit or withdraw submissions until this deadline; no changes will be permitted thereafter." },
+    { text: "Abstracts must be submitted through the conference portal using the participant’s Registration ID by 25 July 2026. Authors may edit or withdraw submissions until this deadline; no changes will be permitted thereafter." },
     { text: "Abstracts should be written in English using Times New Roman, 12-point font, single spacing, and be limited to 500 words. Include the title, author(s), institution, affiliation, and 3–5 keywords." },
     { text: "The title should be concise, informative, and written in Title Case. Avoid abbreviations unless they are widely recognized." },
     { 
@@ -32,8 +32,8 @@ const AbstractGuidelines = () => {
     { text: "Advertisements or images for which the authors do not hold proprietary rights must not be included." },
     { text: "Sources of funding, potential conflicts of interest, and, where applicable, statements on ethical approval or exemption for studies involving human subjects must be clearly disclosed." },
     { text: "Abstracts must be uploaded in Microsoft Word (.docx) or PDF format through the conference portal." },
-    { text: "Abstracts selected through scientific review will be invited for presentation during the conference. Notification of acceptance will be sent by 25 July 2026." },
-    { text: "Final E-Poster and Oral Presentation files must be uploaded by 28 July 2026. Submissions received after this date will not be considered." },
+    { text: "Abstracts selected through scientific review will be invited for presentation during the conference. Notification of acceptance will be sent by 28 July 2026." },
+    { text: "Final E-Poster and Oral Presentation files must be uploaded by 30 July 2026. Submissions received after this date will not be considered." },
     { text: "Presenters are requested to report to the presentation venue at least 15 minutes before the start of their session." },
     { text: "The decision of the Review Committee regarding abstract acceptance and presentation format shall be final." }
   ];
@@ -95,21 +95,21 @@ const AbstractGuidelines = () => {
                   <Box sx={{ p: 3, bgcolor: 'rgba(239, 68, 68, 0.02)', border: '1px solid rgba(239, 68, 68, 0.1)', borderRadius: '16px', textAlign: 'center' }}>
                     <EventAvailableIcon color="error" sx={{ mb: 1 }} />
                     <Typography variant="subtitle2" color="error.main" fontWeight="bold">Submission Deadline</Typography>
-                    <Typography variant="h6" fontWeight="bold" color="text.primary" mt={0.5}>20 July 2026</Typography>
+                    <Typography variant="h6" fontWeight="bold" color="text.primary" mt={0.5}>25 July 2026</Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <Box sx={{ p: 3, bgcolor: 'rgba(13, 148, 136, 0.02)', border: '1px solid rgba(13, 148, 136, 0.1)', borderRadius: '16px', textAlign: 'center' }}>
                     <EventAvailableIcon color="primary" sx={{ mb: 1 }} />
                     <Typography variant="subtitle2" color="primary.main" fontWeight="bold">Acceptance Notification</Typography>
-                    <Typography variant="h6" fontWeight="bold" color="text.primary" mt={0.5}>25 July 2026</Typography>
+                    <Typography variant="h6" fontWeight="bold" color="text.primary" mt={0.5}>28 July 2026</Typography>
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <Box sx={{ p: 3, bgcolor: 'rgba(124, 58, 237, 0.02)', border: '1px solid rgba(124, 58, 237, 0.1)', borderRadius: '16px', textAlign: 'center' }}>
                     <EventAvailableIcon color="secondary" sx={{ mb: 1 }} />
                     <Typography variant="subtitle2" color="secondary.main" fontWeight="bold">Final Upload Deadline</Typography>
-                    <Typography variant="h6" fontWeight="bold" color="text.primary" mt={0.5}>28 July 2026</Typography>
+                    <Typography variant="h6" fontWeight="bold" color="text.primary" mt={0.5}>30 July 2026</Typography>
                   </Box>
                 </Grid>
               </Grid>
