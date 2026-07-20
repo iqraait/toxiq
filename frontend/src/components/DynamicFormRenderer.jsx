@@ -11,21 +11,14 @@ const DynamicFormRenderer = ({ fields = [], values = {}, onChange, files = {}, o
 
   const getOptionInfo = (opt) => {
     if (typeof opt === 'object' && opt !== null) {
-      let label = opt.value;
-      if (opt.price !== undefined && opt.price !== null) {
-        const priceNum = parseFloat(opt.price);
-        if (priceNum === 0) {
-          label = `${opt.value} (FREE)`;
-        } else {
-          label = `${opt.value} (${currency} ${priceNum})`;
-        }
-      }
+      const cleanLabel = opt.value ? String(opt.value).replace(/\s*\([^)]*(?:INR|FREE|\d+)[^)]*\)/gi, '').trim() : '';
       return {
         value: opt.value,
-        label: label
+        label: cleanLabel || opt.value
       };
     }
-    return { value: opt, label: opt };
+    const cleanStr = opt ? String(opt).replace(/\s*\([^)]*(?:INR|FREE|\d+)[^)]*\)/gi, '').trim() : '';
+    return { value: opt, label: cleanStr || opt };
   };
 
   const handleInputChange = (fieldId, value) => {
