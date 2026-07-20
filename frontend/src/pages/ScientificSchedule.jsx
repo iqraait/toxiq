@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { 
   Container, Typography, Box, Button, Stack, 
-  Dialog, DialogContent, IconButton, Tooltip, Chip 
+  Dialog, DialogContent, IconButton 
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import CloseIcon from '@mui/icons-material/Close';
-import DownloadIcon from '@mui/icons-material/Download';
 import PaymentIcon from '@mui/icons-material/Payment';
 
 import Navbar from '../components/Navbar';
@@ -131,12 +129,12 @@ const ScientificSchedule = () => {
         </GlassCard>
 
         {/* Big High-Res Schedule Images Section */}
-        <Stack spacing={5}>
+        <Stack spacing={4}>
           {schedulePages.map((page) => (
             <GlassCard 
               key={page.id}
               sx={{ 
-                p: { xs: 1.5, sm: 2.5, md: 3 }, 
+                p: { xs: 1, sm: 2 }, 
                 border: '1px solid rgba(30, 58, 138, 0.12)', 
                 boxShadow: '0 15px 45px rgba(0,0,0,0.06)',
                 borderRadius: '20px',
@@ -147,51 +145,11 @@ const ScientificSchedule = () => {
                 }
               }}
             >
-              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} px={1}>
-                <Chip 
-                  label={page.title} 
-                  color="primary" 
-                  sx={{ 
-                    fontWeight: '800', 
-                    fontSize: { xs: '0.85rem', sm: '0.95rem' },
-                    py: 2.2, 
-                    px: 1.5,
-                    borderRadius: '12px',
-                    bgcolor: '#1e3a8a'
-                  }} 
-                />
-
-                <Stack direction="row" spacing={1}>
-                  <Tooltip title="Click to view full screen">
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      color="secondary"
-                      startIcon={<ZoomInIcon />}
-                      onClick={() => handleOpenImage(page.src)}
-                      sx={{ borderRadius: '20px', fontWeight: '700' }}
-                    >
-                      Enlarge
-                    </Button>
-                  </Tooltip>
-                  <Tooltip title="Download Image">
-                    <IconButton 
-                      component="a" 
-                      href={page.src} 
-                      download={`TOXIQ2026_Schedule_Page_${page.id}.jpg`}
-                      color="primary"
-                    >
-                      <DownloadIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Stack>
-              </Box>
-
               <Box 
                 onClick={() => handleOpenImage(page.src)}
                 sx={{ 
                   cursor: 'zoom-in', 
-                  borderRadius: '12px', 
+                  borderRadius: '16px', 
                   overflow: 'hidden',
                   bgcolor: '#ffffff',
                   boxShadow: 'inset 0 0 10px rgba(0,0,0,0.05)',
@@ -202,12 +160,12 @@ const ScientificSchedule = () => {
               >
                 <img 
                   src={page.src} 
-                  alt={page.title} 
+                  alt={`TOXIQ 2026 Schedule Page ${page.id}`} 
                   style={{ 
                     width: '100%', 
                     height: 'auto', 
                     display: 'block', 
-                    borderRadius: '12px',
+                    borderRadius: '16px',
                     objectFit: 'contain'
                   }} 
                 />
