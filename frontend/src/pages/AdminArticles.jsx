@@ -3,7 +3,8 @@ import {
   Box, Typography, Button, TextField, MenuItem, 
   Table, TableBody, TableCell, TableContainer, TableHead, 
   TableRow, Paper, IconButton, Chip, Dialog, DialogTitle, 
-  DialogContent, DialogActions, Grid, Stack, CircularProgress, Alert 
+  DialogContent, DialogActions, Grid, Stack, CircularProgress, Alert,
+  TablePagination
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -22,6 +23,11 @@ const AdminArticles = () => {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
 
+  // Pagination states
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+
   // Moderation Dialog State
   const [selectedArt, setSelectedArt] = useState(null);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -33,9 +39,20 @@ const AdminArticles = () => {
     setLoading(true);
     try {
       const res = await API.get('articles/submissions/', {
-        params: { search, status }
+        params: { 
+          search, 
+          status,
+          page: page + 1,
+          page_size: rowsPerPage
+        }
       });
-      setArticles(res.data.results || res.data);
+      if (res.data.results !== undefined) {
+        setArticles(res.data.results);
+        setTotalCount(res.data.count || 0);
+      } else {
+        setArticles(res.data);
+        setTotalCount(res.data.length || 0);
+      }
     } catch (err) {
       console.error('Error fetching articles:', err);
       setError('Failed to fetch articles. Please check backend API server.');
@@ -46,11 +63,20 @@ const AdminArticles = () => {
 
   useEffect(() => {
     fetchArticles();
-  }, [status]); // refetch on status filter, search is triggered by Enter or button
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, page, rowsPerPage]);
+
+  const handleSearch = () => {
+    if (page !== 0) {
+      setPage(0);
+    } else {
+      fetchArticles();
+    }
+  };
 
   const handleSearchKeyPress = (e) => {
     if (e.key === 'Enter') {
-      fetchArticles();
+      handleSearch();
     }
   };
 
@@ -148,7 +174,7 @@ const AdminArticles = () => {
               onKeyPress={handleSearchKeyPress}
               InputProps={{
                 endAdornment: (
-                  <IconButton onClick={fetchArticles}>
+                  <IconButton onClick={handleSearch}>
                     <SearchIcon />
                   </IconButton>
                 ),
@@ -162,7 +188,10 @@ const AdminArticles = () => {
               size="small"
               label="Submission Status"
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => {
+                setStatus(e.target.value);
+                setPage(0);
+              }}
             >
               <MenuItem value="">All Submissions</MenuItem>
               <MenuItem value="SUBMITTED">Submitted</MenuItem>
@@ -176,7 +205,7 @@ const AdminArticles = () => {
               fullWidth
               variant="contained"
               color="primary"
-              onClick={fetchArticles}
+              onClick={handleSearch}
               sx={{ borderRadius: '8px', py: 1 }}
             >
               Filter / Search
@@ -192,67 +221,82 @@ const AdminArticles = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer component={Paper} sx={{ borderRadius: '12px', border: '1px solid #cbd5e1' }}>
-          <Table>
-            <TableHead sx={{ bgcolor: '#f8fafc' }}>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Reg ID</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Author</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Article Title</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Submitted Date</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', align: 'center' }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {articles.map((art) => (
-                <TableRow key={art.id} hover>
-                  <TableCell>{art.id}</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>{art.registration?.registration_id || 'PENDING'}</TableCell>
-                  <TableCell>{art.author_name}</TableCell>
-                  <TableCell sx={{ maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {art.article_title}
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={art.status}
-                      size="small"
-                      color={
-                        art.status === 'APPROVED' ? 'success' :
-                        art.status === 'UNDER_REVIEW' ? 'warning' :
-                        art.status === 'REJECTED' ? 'error' : 'default'
-                      }
-                      sx={{ fontWeight: 'bold', fontSize: '0.75rem' }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {new Date(art.submitted_date).toLocaleDateString('en-IN', {
-                      year: 'numeric', month: 'short', day: 'numeric'
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={0.5}>
-                      <IconButton size="small" color="primary" onClick={() => handleDownloadFile(art.file)}>
-                        <OpenInNewIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton size="small" color="secondary" onClick={() => handleOpenReview(art)}>
-                        <RateCheckIcon fontSize="small" />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {articles.length === 0 && (
+        <>
+          <TableContainer component={Paper} sx={{ borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+            <Table>
+              <TableHead sx={{ bgcolor: '#f8fafc' }}>
                 <TableRow>
-                  <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
-                    No article submissions logged.
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Reg ID</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Author</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Article Title</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Submitted Date</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', align: 'center' }}>Actions</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {articles.map((art) => (
+                  <TableRow key={art.id} hover>
+                    <TableCell>{art.id}</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>{art.registration?.registration_id || 'PENDING'}</TableCell>
+                    <TableCell>{art.author_name}</TableCell>
+                    <TableCell sx={{ maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {art.article_title}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={art.status}
+                        size="small"
+                        color={
+                          art.status === 'APPROVED' ? 'success' :
+                          art.status === 'UNDER_REVIEW' ? 'warning' :
+                          art.status === 'REJECTED' ? 'error' : 'default'
+                        }
+                        sx={{ fontWeight: 'bold', fontSize: '0.75rem' }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {new Date(art.submitted_date).toLocaleDateString('en-IN', {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                      })}
+                    </TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={0.5}>
+                        <IconButton size="small" color="primary" onClick={() => handleDownloadFile(art.file)}>
+                          <OpenInNewIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton size="small" color="secondary" onClick={() => handleOpenReview(art)}>
+                          <RateCheckIcon fontSize="small" />
+                        </IconButton>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {articles.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
+                      No article submissions logged.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 20, 50, 100]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(e, newPage) => setPage(newPage)}
+            onRowsPerPageChange={(e) => {
+              setRowsPerPage(parseInt(e.target.value, 10));
+              setPage(0);
+            }}
+            sx={{ mt: 2 }}
+          />
+        </>
       )}
 
       {/* Moderation Review Modal */}
