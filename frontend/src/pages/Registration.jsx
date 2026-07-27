@@ -390,7 +390,7 @@ const Registration = () => {
                         width: { xs: '100%', sm: 'auto' }
                       }}
                     >
-                      {submitting ? 'Processing...' : `Register & Pay ${formConfig.currency} ${totalAmt.toFixed(2)}`}
+                      {submitting ? 'Processing...' : 'Register and Pay'}
                     </Button>
                   </Box>
                 </Stack>
