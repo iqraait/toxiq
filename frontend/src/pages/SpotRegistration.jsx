@@ -69,7 +69,7 @@ const SpotRegistration = () => {
     const fetchForm = async () => {
       try {
         const [formRes, cmsRes] = await Promise.all([
-          API.get('SpotRegistration/forms/spot_active/'),
+          API.get('registration/forms/spot_active/'),
           API.get('cms/home/').catch(err => {
             console.error('Failed to load CMS content:', err);
             return null;
@@ -171,13 +171,13 @@ const SpotRegistration = () => {
     });
 
     try {
-      const res = await API.post('SpotRegistration/submit/', formData);
+      const res = await API.post('registration/submit/', formData);
       
       if (res.data.free) {
-        navigate('/SpotRegistration/success', {
+        navigate('/spot-registration/success', {
           state: {
-            SpotRegistrationId: res.data.SpotRegistration.SpotRegistration_id,
-            SpotRegistrationDbId: res.data.SpotRegistration.id,
+            registrationId: res.data.registration.registration_id,
+            registrationDbId: res.data.registration.id,
             txnid: res.data.payment.transaction_id,
             amount: 0
           }
@@ -199,7 +199,7 @@ const SpotRegistration = () => {
       form.action = checkout.action;
 
       Object.keys(checkout).forEach(key => {
-        if (key !== 'action' && key !== 'SpotRegistration_id_temp') {
+        if (key !== 'action' && key !== 'registration_id_temp') {
           const input = document.createElement('input');
           input.type = 'hidden';
           input.name = key;

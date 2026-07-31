@@ -73,7 +73,7 @@ const AdminSpotRegistrations = () => {
 
   const fetchFormConfig = async () => {
     try {
-      const res = await API.get('registration/forms/active/');
+      const res = await API.get('registration/forms/spot_active/');
       setFormFields(res.data.fields || []);
     } catch (err) {
       console.error('Error fetching active form config:', err);
