@@ -14,7 +14,7 @@ import Footer from '../components/Footer';
 import GlassCard from '../components/GlassCard';
 import DynamicFormRenderer from '../components/DynamicFormRenderer';
 import { purpleGradientText } from '../theme';
-import SpotRegistrationBanner from '../assets/SpotRegistration_banner.jpg';
+import SpotRegistrationBanner from '../assets/registration_banner.jpg';
 
 const formatDate = (dateStr) => {
   if (!dateStr || dateStr === 'N/A') return 'N/A';
