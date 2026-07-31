@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Registration from './pages/Registration';
+import SpotRegistration from './pages/SpotRegistration';
 import ArticleSubmission from './pages/ArticleSubmission';
 import Login from './pages/Login';
 import PayUSimulator from './pages/PayUSimulator';
@@ -16,6 +17,7 @@ import ScientificSchedule from './pages/ScientificSchedule';
 import AdminLayout from './pages/AdminLayout';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRegistrations from './pages/AdminRegistrations';
+import AdminSpotRegistrations from './pages/AdminSpotRegistrations';
 import AdminArticles from './pages/AdminArticles';
 import AdminCMS from './pages/AdminCMS';
 import AdminFormBuilder from './pages/AdminFormBuilder';
@@ -91,6 +93,7 @@ function App() {
       {/* Public Pages */}
       <Route path="/" element={<Home />} />
       <Route path="/registration" element={<Registration />} />
+      <Route path="/spot-registration" element={<SpotRegistration />} />
       <Route path="/article-submission" element={<ArticleSubmission />} />
       <Route path="/login" element={<Login />} />
       <Route path="/payment/simulator" element={<PayUSimulator />} />
@@ -106,6 +109,7 @@ function App() {
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="registrations" element={<AdminRegistrations />} />
+        <Route path="spot-registrations" element={<AdminSpotRegistrations />} />
         <Route path="articles" element={<AdminArticles />} />
         <Route path="cms" element={<AdminCMS />} />
         <Route path="form-builder" element={<AdminFormBuilder />} />

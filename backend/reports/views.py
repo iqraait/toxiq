@@ -130,7 +130,12 @@ class ExportRegistrationsView(APIView):
         
         status_filter = request.query_params.get('payment_status')
         search_query = request.query_params.get('search')
+        is_spot = request.query_params.get('is_spot')
         
+        if is_spot is not None:
+            is_spot_bool = is_spot.lower() == 'true'
+            registrations = registrations.filter(is_spot_registration=is_spot_bool)
+            
         if status_filter:
             registrations = registrations.filter(payments__payment_status=status_filter).distinct()
         if search_query:

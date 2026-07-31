@@ -90,7 +90,13 @@ def process_successful_payment(payment, gateway_response=None):
             return registration
         # Find the maximum existing registration ID and generate the next sequential ID
         import re
-        last_reg = Registration.objects.filter(registration_id__isnull=False).order_by('-registration_id').first()
+        if registration.is_spot_registration:
+            last_reg = Registration.objects.filter(is_spot_registration=True, registration_id__isnull=False).order_by('-registration_id').first()
+            prefix = "SRE"
+        else:
+            last_reg = Registration.objects.filter(is_spot_registration=False, registration_id__isnull=False).order_by('-registration_id').first()
+            prefix = "TOXIQ"
+            
         if last_reg:
             num_str = re.sub(r'^\D+', '', last_reg.registration_id)
             last_num = int(num_str) if num_str else 0
@@ -98,7 +104,7 @@ def process_successful_payment(payment, gateway_response=None):
         else:
             new_num = 1
             
-        new_reg_id = f"TOXIQ{new_num:04d}"
+        new_reg_id = f"{prefix}{new_num:04d}"
         
         # Update registration details
         registration.registration_id = new_reg_id

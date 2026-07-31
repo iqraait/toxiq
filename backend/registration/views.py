@@ -29,7 +29,7 @@ class RegistrationFormViewSet(viewsets.ModelViewSet):
     serializer_class = RegistrationFormSerializer
     
     def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'active']:
+        if self.action in ['list', 'retrieve', 'active', 'spot_active']:
             return [permissions.AllowAny()]
         return [IsAdminUserRole()]
 
@@ -112,6 +112,76 @@ class RegistrationFormViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(form)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'])
+    def spot_active(self, request):
+        """
+        Get the active spot registration form.
+        """
+        form = RegistrationForm.objects.filter(is_active=True, title__icontains='Spot').first()
+        if not form:
+            # Create a default spot registration form if none exists
+            form = RegistrationForm.objects.create(
+                title='TOXIQ Spot Registration Form',
+                fee_amount=500.00,
+                currency='INR',
+                is_active=True
+            )
+            # Same fields as regular, varying only the links for Category
+            RegistrationField.objects.create(
+                form=form, label='Prefix', field_type='dropdown', options=['Mr.', 'Ms.', 'Mrs.', 'Dr.'], is_required=True, order=1
+            )
+            RegistrationField.objects.create(
+                form=form, label='Full Name', field_type='text', is_required=True, order=2
+            )
+            RegistrationField.objects.create(
+                form=form, label='Email Address', field_type='email', is_required=True, order=3
+            )
+            RegistrationField.objects.create(
+                form=form, label='Phone Number (WhatsApp)', field_type='phone', is_required=True, order=4
+            )
+            RegistrationField.objects.create(
+                form=form, label='Designation', field_type='text', is_required=True, order=5
+            )
+            RegistrationField.objects.create(
+                form=form, label='Institute / Hospital', field_type='text', is_required=True, order=6
+            )
+            RegistrationField.objects.create(
+                form=form, 
+                label='Specialty / Department of Practice', 
+                field_type='checkbox', 
+                options=[
+                    'Emergency Medicine', 'Clinical Pharmacy', 'Critical Care', 
+                    'General Medicine', 'Pediatrics', 'Forensic Medicine', 
+                    'Family Medicine', 'General practitioner', 'Others'
+                ], 
+                is_required=True, 
+                order=7
+            )
+            RegistrationField.objects.create(
+                form=form, 
+                label='Registration Category', 
+                field_type='checkbox', 
+                options=[
+                    {'value': 'Specialist/Consultant', 'price': 3000.00, 'link': 'https://ease.buzz/2607rYniqF'},
+                    {'value': 'Residents/General Practitioners', 'price': 2000.00, 'link': 'https://ease.buzz/26076Np8fJ'},
+                    {'value': 'Students/Interns/Nurses/Clinical Pharmacists/Paramedics', 'price': 1000.00, 'link': 'https://ease.buzz/2607eI5NFq'}
+                ], 
+                is_required=True, 
+                order=8
+            )
+            RegistrationField.objects.create(
+                form=form, label='Medical Council Name', field_type='text', is_required=False, order=9
+            )
+            RegistrationField.objects.create(
+                form=form, label='Registration No:', field_type='number', is_required=False, order=10
+            )
+            RegistrationField.objects.create(
+                form=form, label='Food Preference', field_type='radio', options=['Veg', 'Non-Veg'], is_required=True, order=11
+            )
+            
+        serializer = self.get_serializer(form)
+        return Response(serializer.data)
+
 class RegistrationFieldViewSet(viewsets.ModelViewSet):
     queryset = RegistrationField.objects.all()
     serializer_class = RegistrationFieldSerializer
@@ -159,7 +229,12 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         # Admin Filters
         status_filter = self.request.query_params.get('payment_status')
         search_query = self.request.query_params.get('search')
+        is_spot = self.request.query_params.get('is_spot')
         
+        if is_spot is not None:
+            is_spot_bool = is_spot.lower() == 'true'
+            queryset = queryset.filter(is_spot_registration=is_spot_bool)
+            
         if status_filter:
             queryset = queryset.filter(payments__payment_status=status_filter).distinct()
         if search_query:
@@ -217,6 +292,12 @@ class RegistrationSubmitView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
         registration = serializer.save()
+        
+        # Check if form is spot registration
+        form = registration.form
+        if 'Spot' in form.title:
+            registration.is_spot_registration = True
+            registration.save()
         
         # Calculate fee
         import decimal

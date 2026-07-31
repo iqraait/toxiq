@@ -65,6 +65,7 @@ const Navbar = () => {
     { label: 'Scientific Schedule', action: () => navigate('/scientific-schedule') },
     { label: 'Brochure & Gallery', action: () => navigate('/brochure-gallery') },
     { label: 'Registration', action: () => navigate('/registration') },
+    { label: 'Spot Registration', action: () => navigate('/spot-registration') },
     { label: 'Article Submission', action: () => navigate('/article-submission') }
   ];
 

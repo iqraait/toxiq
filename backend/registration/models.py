@@ -48,6 +48,7 @@ class Registration(models.Model):
     participant_email = models.EmailField(blank=True)
     participant_phone = models.CharField(max_length=20, blank=True)
     field_data = models.JSONField(default=dict, help_text="Dynamic responses stored as json")
+    is_spot_registration = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

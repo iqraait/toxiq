@@ -65,6 +65,7 @@ const AdminLayout = () => {
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin/dashboard' },
     { text: 'Registrations', icon: <PeopleIcon />, path: '/admin/registrations' },
+    { text: 'Spot Registrations', icon: <PeopleIcon />, path: '/admin/spot-registrations' },
     { text: 'Article Submissions', icon: <DescriptionIcon />, path: '/admin/articles' },
     { text: 'Website CMS', icon: <EditNoteIcon />, path: '/admin/cms' },
     { text: 'Form Builder', icon: <BuildIcon />, path: '/admin/form-builder' },

@@ -1,0 +1,756 @@
+import { useState, useEffect } from 'react';
+import { 
+  Box, Typography, Button, TextField, MenuItem, 
+  Table, TableBody, TableCell, TableContainer, TableHead, 
+  TableRow, Paper, IconButton, Chip, Dialog, DialogTitle, 
+  DialogContent, DialogActions, Grid, Stack, CircularProgress, Alert, Divider,
+  TablePagination
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import DownloadIcon from '@mui/icons-material/Download';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import API from '../services/api';
+import GlassCard from '../components/GlassCard';
+
+const AdminSpotRegistrations = () => {
+  const [registrations, setRegistrations] = useState([]);
+  const [formFields, setFormFields] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  
+  // Search & Filters
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('');
+
+  // Pagination states
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Selected item modal states
+  const [selectedReg, setSelectedReg] = useState(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  
+  // Edit form state
+  const [editName, setEditName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editData, setEditData] = useState({});
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
+  const fetchRegistrations = async () => {
+    setLoading(true);
+    try {
+      const res = await API.get('registration/submissions/?is_spot=true&', {
+        params: { 
+          search, 
+          payment_status: status,
+          page: page + 1,
+          page_size: rowsPerPage
+        }
+      });
+      if (res.data.results !== undefined) {
+        setRegistrations(res.data.results);
+        setTotalCount(res.data.count || 0);
+      } else {
+        setRegistrations(res.data);
+        setTotalCount(res.data.length || 0);
+      }
+    } catch (err) {
+      console.error('Error fetching registrations:', err);
+      setError('Failed to load registrations. Ensure backend server is responsive.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFormConfig = async () => {
+    try {
+      const res = await API.get('registration/forms/active/');
+      setFormFields(res.data.fields || []);
+    } catch (err) {
+      console.error('Error fetching active form config:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchFormConfig();
+  }, []);
+
+  useEffect(() => {
+    fetchRegistrations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, page, rowsPerPage]);
+
+  const handleSearch = () => {
+    if (page !== 0) {
+      setPage(0);
+    } else {
+      fetchRegistrations();
+    }
+  };
+
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const handleStatusChange = (e) => {
+    setStatus(e.target.value);
+    setPage(0);
+  };
+
+  const handleOpenDetails = (reg) => {
+    setSelectedReg(reg);
+    setDetailsOpen(true);
+  };
+
+  const handleOpenEdit = (reg) => {
+    setSelectedReg(reg);
+    setEditName(reg.participant_name);
+    setEditEmail(reg.participant_email);
+    setEditPhone(reg.participant_phone);
+    setEditData(reg.field_data || {});
+    setEditOpen(true);
+  };
+
+  const handleEditSubmit = async () => {
+    setEditSubmitting(true);
+    try {
+      await API.put(`registration/submissions/?is_spot=true&${selectedReg.id}/`, {
+        participant_name: editName,
+        participant_email: editEmail,
+        participant_phone: editPhone,
+        field_data: editData,
+        form: selectedReg.form
+      });
+      setEditOpen(false);
+      fetchRegistrations();
+    } catch (err) {
+      console.error('Error updating registration:', err);
+      alert('Failed to update registration details.');
+    } finally {
+      setEditSubmitting(false);
+    }
+  };
+
+  const handleDownloadReceipt = (regId) => {
+    const url = `${API.defaults.baseURL}registration/${regId}/receipt/`;
+    window.open(url, '_blank');
+  };
+
+  const handleMarkAsPaid = async (paymentId) => {
+    if (!window.confirm('Are you sure you want to mark this registration as SUCCESS? This will generate a registration ID and send the confirmation email to the participant.')) return;
+    try {
+      await API.post(`registration/payment/${paymentId}/mark-success/`);
+      alert('Registration updated to SUCCESS successfully.');
+      fetchRegistrations();
+    } catch (err) {
+      console.error('Error marking payment as success:', err);
+      alert(err.response?.data?.error || 'Failed to update registration.');
+    }
+  };
+
+  const handleResendEmail = async (regId) => {
+    if (!window.confirm('Are you sure you want to resend the confirmation email and PDF receipt to this participant?')) return;
+    try {
+      await API.post(`registration/submissions/?is_spot=true&${regId}/resend-email/`);
+      alert('Confirmation email resent successfully.');
+    } catch (err) {
+      console.error('Error resending email:', err);
+      alert(err.response?.data?.error || 'Failed to resend confirmation email.');
+    }
+  };
+
+  const handleDeleteRegistration = async (regId) => {
+    if (!window.confirm('Are you sure you want to permanently delete this registration record? This action cannot be undone.')) return;
+    try {
+      await API.delete(`registration/submissions/?is_spot=true&${regId}/`);
+      alert('Registration record deleted successfully.');
+      fetchRegistrations();
+    } catch (err) {
+      console.error('Error deleting registration:', err);
+      alert(err.response?.data?.error || 'Failed to delete registration record.');
+    }
+  };
+
+  const getActivePaymentStatus = (reg) => {
+    const pay = reg.payments?.[0];
+    return pay ? pay.payment_status : 'PENDING';
+  };
+
+  const handleExport = async (format) => {
+    try {
+      const response = await API.get('reports/export-registrations/?is_spot=true&', {
+        params: {
+          file_format: format,
+          search: search,
+          payment_status: status
+        },
+        responseType: 'blob',
+      });
+      
+      const fileExt = format === 'pdf' ? 'pdf' : 'xlsx';
+      const contentType = format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      
+      const blob = new Blob([response.data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `TOXIQ_Registrations_Report.${fileExt}`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error exporting registrations:', err);
+      alert('Failed to export registrations report.');
+    }
+  };
+
+  const getFieldValueDynamic = (reg, labelKeywords) => {
+    const fieldData = reg.field_data || {};
+    const values = Object.values(fieldData);
+
+    const prefixOptions = ['mr.', 'ms.', 'mrs.', 'dr.', 'mr', 'ms', 'mrs', 'dr'];
+    const foodOptions = ['veg', 'non-veg', 'veg.', 'non-veg.'];
+    const specialtyKeywords = ['emergency', 'pharmacy', 'critical', 'care', 'medicine', 'pediatrics', 'forensic', 'practitioner', 'specialty', 'department'];
+    const categoryKeywords = ['speaker', 'consultant', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic', 'delegate', 'category'];
+    const designationKeywords = ['doctor', 'consultant', 'physician', 'resident', 'student', 'intern', 'nurse', 'pharmacist', 'paramedic', 'professor', 'lecturer', 'director', 'manager', 'specialist', 'practitioner', 'hod', 'registrar', 'fellow', 'designation'];
+    const councilKeywords = ['council', 'medical', 'imc', 'kcl', 'mc', 'karnataka', 'delhi', 'maharashtra', 'registration council', 'state'];
+
+    let emailVal = '';
+    let phoneVal = '';
+    let prefixVal = '';
+    let foodVal = '';
+    let specialtyVal = '';
+    let categoryVal = '';
+    let regNoVal = '';
+    let designationVal = '';
+    let councilVal = '';
+    let nameVal = '';
+    let instituteVal = '';
+
+    for (const rawVal of values) {
+      if (rawVal === undefined || rawVal === null || rawVal === '') continue;
+
+      if (Array.isArray(rawVal)) {
+        const joined = rawVal.join(' ').toLowerCase();
+        if (specialtyKeywords.some(kw => joined.includes(kw))) {
+          specialtyVal = rawVal.join(', ');
+        } else if (categoryKeywords.some(kw => joined.includes(kw))) {
+          categoryVal = rawVal.join(', ');
+        }
+        continue;
+      }
+
+      if (typeof rawVal === 'object') {
+        continue;
+      }
+
+      const strVal = String(rawVal);
+      const lowerVal = strVal.toLowerCase();
+
+      if (strVal.includes('@')) {
+        emailVal = strVal;
+        continue;
+      }
+
+      if (prefixOptions.includes(lowerVal)) {
+        prefixVal = strVal;
+        continue;
+      }
+
+      if (foodOptions.includes(lowerVal)) {
+        foodVal = strVal;
+        continue;
+      }
+
+      if (specialtyKeywords.some(kw => lowerVal.includes(kw)) && lowerVal.length > 5) {
+        specialtyVal = strVal;
+        continue;
+      }
+      if (categoryKeywords.some(kw => lowerVal.includes(kw)) && lowerVal.length > 5) {
+        categoryVal = strVal;
+        continue;
+      }
+
+      if (/^\+?[0-9\s\-]{9,15}$/.test(strVal)) {
+        phoneVal = strVal;
+        continue;
+      }
+
+      if (/^\d{3,8}$/.test(strVal)) {
+        regNoVal = strVal;
+        continue;
+      }
+
+      if (designationKeywords.some(kw => lowerVal.includes(kw))) {
+        designationVal = strVal;
+        continue;
+      }
+
+      if (councilKeywords.some(kw => lowerVal.includes(kw))) {
+        councilVal = strVal;
+        continue;
+      }
+    }
+
+    const matchedStrings = new Set([emailVal, phoneVal, prefixVal, foodVal, specialtyVal, categoryVal, regNoVal, designationVal, councilVal]);
+    
+    const remainingStrings = values
+      .filter(val => val !== undefined && val !== null && val !== '')
+      .map(val => String(val))
+      .filter(str => !matchedStrings.has(str) && !str.includes('@') && !/^\+?[0-9\s\-]{9,15}$/.test(str));
+
+    for (const str of remainingStrings) {
+      const lower = str.toLowerCase();
+      if (lower === reg.participant_name?.toLowerCase()) {
+        nameVal = str;
+      } else if (lower.includes('hospital') || lower.includes('institute') || lower.includes('clinic') || lower.includes('college') || lower.includes('university') || lower === 'iqraa' || lower === 'hjkl' || lower === 'ygyg' || lower === 'sfds') {
+        instituteVal = str;
+      } else if (!designationVal && (lower.includes('dr') || lower.includes('doctor') || lower.includes('consultant') || lower.includes('physician') || lower.includes('student') || lower.includes('intern') || lower.includes('nurse') || lower.includes('pharmacist') || lower.includes('paramedic'))) {
+        designationVal = str;
+      } else if (!councilVal && (lower.includes('council') || lower.includes('imc') || lower.includes('mc') || lower === 'hfgdg' || lower === 'jgfj' || lower === 'sf' || lower === 'gfhq1' || lower === 'hgfdh' || lower === 'sdfds')) {
+        councilVal = str;
+      } else {
+        if (!instituteVal) {
+          instituteVal = str;
+        } else if (!designationVal) {
+          designationVal = str;
+        } else if (!councilVal) {
+          councilVal = str;
+        }
+      }
+    }
+
+    if (labelKeywords.includes('prefix')) return prefixVal;
+    if (labelKeywords.includes('name')) return nameVal || reg.participant_name || '';
+    if (labelKeywords.includes('email')) return emailVal || reg.participant_email || '';
+    if (labelKeywords.includes('phone')) return phoneVal || reg.participant_phone || '';
+    if (labelKeywords.includes('designation')) return designationVal;
+    if (labelKeywords.includes('institute')) return instituteVal;
+    if (labelKeywords.includes('specialty')) return specialtyVal;
+    if (labelKeywords.includes('category')) return categoryVal;
+    if (labelKeywords.includes('council')) return councilVal;
+    if (labelKeywords.includes('reg no')) return regNoVal;
+    if (labelKeywords.includes('food')) return foodVal;
+
+    return '';
+  };
+
+  const getFieldValueByLabel = (reg, labelKeywords) => {
+    // 1. Try finding by matching label against active formFields
+    const field = formFields.find(f => {
+      const label = f.label.toLowerCase();
+      return labelKeywords.some(keyword => label.includes(keyword));
+    });
+    if (field) {
+      const val = reg.field_data?.[String(field.id)];
+      if (val !== undefined && val !== null && val !== '') {
+        if (Array.isArray(val)) {
+          return val.join(', ');
+        }
+        if (typeof val === 'object') {
+          return val.name || val.url || JSON.stringify(val);
+        }
+        return String(val);
+      }
+    }
+
+    // 2. Legacy / historical fallback map
+    const fieldData = reg.field_data || {};
+    const isEra2 = '31' in fieldData;
+    const isEra1 = '1' in fieldData && !('31' in fieldData) && !('65' in fieldData);
+
+    const formatVal = (val) => {
+      if (val === undefined || val === null) return '';
+      if (Array.isArray(val)) return val.join(', ');
+      if (typeof val === 'object') return val.name || val.url || JSON.stringify(val);
+      return String(val);
+    };
+
+    if (isEra2) {
+      if (labelKeywords.includes('prefix')) return formatVal(fieldData['30']);
+      if (labelKeywords.includes('name')) return formatVal(fieldData['31']);
+      if (labelKeywords.includes('email')) return formatVal(fieldData['32']);
+      if (labelKeywords.includes('phone')) return formatVal(fieldData['33']);
+      if (labelKeywords.includes('designation')) return formatVal(fieldData['34']);
+      if (labelKeywords.includes('institute')) return formatVal(fieldData['35']);
+      if (labelKeywords.includes('specialty')) return formatVal(fieldData['37']);
+      if (labelKeywords.includes('category')) return formatVal(fieldData['38']);
+      if (labelKeywords.includes('council')) return formatVal(fieldData['39'] || fieldData['36']);
+      if (labelKeywords.includes('reg no')) return formatVal(fieldData['41']);
+      if (labelKeywords.includes('food')) return formatVal(fieldData['40']);
+    } else if (isEra1) {
+      if (labelKeywords.includes('name')) return formatVal(fieldData['1']);
+      if (labelKeywords.includes('email')) return formatVal(fieldData['2']);
+      if (labelKeywords.includes('phone')) return formatVal(fieldData['3']);
+      if (labelKeywords.includes('institute')) return formatVal(fieldData['4']);
+      if (labelKeywords.includes('designation')) return formatVal(fieldData['5']);
+      if (labelKeywords.includes('category')) return formatVal(fieldData['6']);
+      if (labelKeywords.includes('council')) return formatVal(fieldData['7']);
+    }
+
+    // 3. Dynamic Heuristic Fallback
+    const dynamicVal = getFieldValueDynamic(reg, labelKeywords);
+    if (dynamicVal) return dynamicVal;
+
+    // 4. Fallbacks on registration root properties
+    if (labelKeywords.includes('name')) return reg.participant_name || '';
+    if (labelKeywords.includes('email')) return reg.participant_email || '';
+    if (labelKeywords.includes('phone')) return reg.participant_phone || '';
+
+    return '';
+  };
+
+  return (
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+        <Typography variant="h5" fontWeight="bold" fontFamily="'Raleway', sans-serif" color="primary.main">
+          Spot Registration Records
+        </Typography>
+        
+        <Stack direction="row" spacing={1.5}>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<FileDownloadIcon />}
+            onClick={() => handleExport('excel')}
+            sx={{ borderRadius: '20px' }}
+          >
+            Export Excel
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            startIcon={<FileDownloadIcon />}
+            onClick={() => handleExport('pdf')}
+            sx={{ borderRadius: '20px' }}
+          >
+            Export PDF
+          </Button>
+        </Stack>
+      </Box>
+
+      {/* Filters & Search bar */}
+      <GlassCard sx={{ p: 3, mb: 4 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6} md={7}>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder="Search by ID, Name, Email, or Phone..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyPress={handleSearchKeyPress}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              fullWidth
+              select
+              size="small"
+              label="Payment Status"
+              value={status}
+              onChange={handleStatusChange}
+            >
+              <MenuItem value="">All Statuses</MenuItem>
+              <MenuItem value="SUCCESS">Success</MenuItem>
+              <MenuItem value="PENDING">Pending</MenuItem>
+              <MenuItem value="FAILED">Failed</MenuItem>
+            </TextField>
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleSearch}
+              sx={{ borderRadius: '8px', py: 1 }}
+            >
+              Filter / Search
+            </Button>
+          </Grid>
+        </Grid>
+      </GlassCard>
+
+      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
+      {/* Main Grid Table */}
+      {loading ? (
+        <Box display="flex" justifyContent="center" py={10}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          <TableContainer component={Paper} sx={{ borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+            <Table>
+              <TableHead sx={{ bgcolor: '#f8fafc' }}>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Reg ID</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>FUll name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>email</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>designation</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>institute</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Specialty / Department of Practice *</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Registration Category *</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>medical council name</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>REg no :</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>food preference</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>paid amount</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Date Registered</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', align: 'center' }}>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {registrations.map((reg) => {
+                  const payStatus = getActivePaymentStatus(reg);
+                  const payment = reg.payments?.[0];
+                  const paidAmount = payment ? `${payment.currency || 'INR'} ${parseFloat(payment.amount).toFixed(2)}` : 'N/A';
+                  return (
+                    <TableRow key={reg.id} hover>
+                      <TableCell sx={{ fontWeight: 'bold' }}>{reg.registration_id || 'PENDING'}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['name', 'fullname'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['email'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['phone', 'whatsapp'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['designation'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['institute', 'hospital'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['specialty', 'department'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['category'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['council', 'medical council'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['reg no', 'registration no'])}</TableCell>
+                      <TableCell>{getFieldValueByLabel(reg, ['food', 'preference'])}</TableCell>
+                      <TableCell>{paidAmount}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={payStatus}
+                          size="small"
+                          color={
+                            payStatus === 'SUCCESS' ? 'success' :
+                            payStatus === 'PENDING' ? 'warning' : 'error'
+                          }
+                          sx={{ fontWeight: 'bold', fontSize: '0.75rem' }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {new Date(reg.created_at).toLocaleDateString('en-IN', {
+                          year: 'numeric', month: 'short', day: 'numeric'
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <Stack direction="row" spacing={0.5}>
+                          <IconButton size="small" color="primary" onClick={() => handleOpenDetails(reg)}>
+                            <VisibilityIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton size="small" color="secondary" onClick={() => handleOpenEdit(reg)}>
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          {payStatus === 'PENDING' && reg.payments?.[0]?.id && (
+                            <IconButton 
+                              size="small" 
+                              color="success" 
+                              title="Mark as Paid" 
+                              onClick={() => handleMarkAsPaid(reg.payments[0].id)}
+                            >
+                              <CheckCircleIcon fontSize="small" />
+                            </IconButton>
+                          )}
+                          {payStatus === 'SUCCESS' && (
+                            <IconButton 
+                              size="small" 
+                              color="info" 
+                              title="Resend Email" 
+                              onClick={() => handleResendEmail(reg.id)}
+                            >
+                              <EmailIcon fontSize="small" />
+                            </IconButton>
+                          )}
+                          <IconButton 
+                            size="small" 
+                            color="action" 
+                            disabled={payStatus !== 'SUCCESS'} 
+                            onClick={() => handleDownloadReceipt(reg.id)}
+                          >
+                            <DownloadIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton 
+                            size="small" 
+                            color="error" 
+                            title="Delete Record" 
+                            onClick={() => handleDeleteRegistration(reg.id)}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {registrations.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={15} align="center" sx={{ py: 6 }}>
+                      No Spot Registration Records match your filter criteria.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 20, 50, 100]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(e, newPage) => setPage(newPage)}
+            onRowsPerPageChange={(e) => {
+              setRowsPerPage(parseInt(e.target.value, 10));
+              setPage(0);
+            }}
+            sx={{ mt: 2 }}
+          />
+        </>
+      )}
+
+      {/* Details View Modal */}
+      <Dialog open={detailsOpen} onClose={() => setDetailsOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ fontWeight: 'bold', color: 'primary.main', borderBottom: '1px solid #e2e8f0' }}>
+          Registration Questionnaire Details
+        </DialogTitle>
+        <DialogContent sx={{ py: 3 }}>
+          {selectedReg && (
+            <Stack spacing={2.5}>
+              <Box>
+                <Typography variant="caption" color="textSecondary">Registration ID</Typography>
+                <Typography variant="body1" fontWeight="bold">{selectedReg.registration_id || 'PENDING'}</Typography>
+              </Box>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography variant="caption" color="textSecondary">Participant Name</Typography>
+                  <Typography variant="body2" fontWeight="500">{selectedReg.participant_name}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="caption" color="textSecondary">Phone Number</Typography>
+                  <Typography variant="body2" fontWeight="500">{selectedReg.participant_phone}</Typography>
+                </Grid>
+              </Grid>
+              
+              <Divider />
+              
+              <Typography variant="subtitle2" fontWeight="bold" color="secondary.main">Dynamic Questionnaire Answers</Typography>
+              
+              <Box sx={{ border: '1px solid #f1f5f9', borderRadius: '8px', overflow: 'hidden' }}>
+                {Object.entries(selectedReg.field_data || {}).map(([key, val], idx) => {
+                  let displayVal = String(val);
+                  let isFile = false;
+                  
+                  if (Array.isArray(val)) {
+                    displayVal = val.join(', ');
+                  } else if (typeof val === 'object' && val !== null) {
+                    displayVal = val.name || val.url || JSON.stringify(val);
+                    isFile = !!val.url;
+                  }
+
+                  const formattedLabel = key.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+                  return (
+                    <Box key={idx} sx={{ display: 'flex', flexDirection: 'column', p: 1.5, borderBottom: idx === Object.keys(selectedReg.field_data).length - 1 ? 'none' : '1px solid #f1f5f9', bgcolor: idx % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
+                      <Typography variant="caption" color="textSecondary" fontWeight="bold">{formattedLabel}</Typography>
+                      {isFile ? (
+                        <Button 
+                          size="small" 
+                          startIcon={<VisibilityIcon />} 
+                          sx={{ alignSelf: 'flex-start', mt: 0.5 }}
+                          href={val.url} 
+                          target="_blank"
+                          variant="text"
+                        >
+                          View Document
+                        </Button>
+                      ) : (
+                        <Typography variant="body2" color="textPrimary" sx={{ mt: 0.25 }}>{displayVal}</Typography>
+                      )}
+                    </Box>
+                  );
+                })}
+                {Object.keys(selectedReg.field_data || {}).length === 0 && (
+                  <Box p={2} textAlign="center">
+                    <Typography variant="caption" color="textSecondary">No dynamic fields filled.</Typography>
+                  </Box>
+                )}
+              </Box>
+            </Stack>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 2, borderTop: '1px solid #e2e8f0' }}>
+          <Button onClick={() => setDetailsOpen(false)} variant="contained" color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Details Modal */}
+      <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ fontWeight: 'bold', color: 'primary.main', borderBottom: '1px solid #e2e8f0' }}>
+          Edit Participant Profile
+        </DialogTitle>
+        <DialogContent sx={{ py: 3 }}>
+          <Stack spacing={2.5} mt={1.5}>
+            <TextField
+              fullWidth
+              label="Participant Name"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+            />
+            <TextField
+              fullWidth
+              label="Email Address"
+              value={editEmail}
+              onChange={(e) => setEditEmail(e.target.value)}
+            />
+            <TextField
+              fullWidth
+              label="Phone Number"
+              value={editPhone}
+              onChange={(e) => setEditPhone(e.target.value)}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, borderTop: '1px solid #e2e8f0' }}>
+          <Button onClick={() => setEditOpen(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleEditSubmit} 
+            variant="contained" 
+            color="primary"
+            disabled={editSubmitting}
+          >
+            {editSubmitting ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+    </Box>
+  );
+};
+
+export default AdminSpotRegistrations;
