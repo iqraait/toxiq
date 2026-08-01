@@ -48,7 +48,7 @@ const AdminSpotRegistrations = () => {
   const fetchRegistrations = async () => {
     setLoading(true);
     try {
-      const res = await API.get('registration/submissions/?is_spot=true&', {
+      const res = await API.get('registration/submissions/', {
         params: { 
           search, 
           payment_status: status,
@@ -125,7 +125,7 @@ const AdminSpotRegistrations = () => {
   const handleEditSubmit = async () => {
     setEditSubmitting(true);
     try {
-      await API.put(`registration/submissions/?is_spot=true&${selectedReg.id}/`, {
+      await API.put(`registration/submissions/${selectedReg.id}/`, {
         participant_name: editName,
         participant_email: editEmail,
         participant_phone: editPhone,
@@ -162,7 +162,7 @@ const AdminSpotRegistrations = () => {
   const handleResendEmail = async (regId) => {
     if (!window.confirm('Are you sure you want to resend the confirmation email and PDF receipt to this participant?')) return;
     try {
-      await API.post(`registration/submissions/?is_spot=true&${regId}/resend-email/`);
+      await API.post(`registration/submissions/${regId}/resend-email/`);
       alert('Confirmation email resent successfully.');
     } catch (err) {
       console.error('Error resending email:', err);
@@ -173,7 +173,7 @@ const AdminSpotRegistrations = () => {
   const handleDeleteRegistration = async (regId) => {
     if (!window.confirm('Are you sure you want to permanently delete this registration record? This action cannot be undone.')) return;
     try {
-      await API.delete(`registration/submissions/?is_spot=true&${regId}/`);
+      await API.delete(`registration/submissions/${regId}/`);
       alert('Registration record deleted successfully.');
       fetchRegistrations();
     } catch (err) {
@@ -189,7 +189,7 @@ const AdminSpotRegistrations = () => {
 
   const handleExport = async (format) => {
     try {
-      const response = await API.get('reports/export-registrations/?is_spot=true&', {
+      const response = await API.get('reports/export-registrations/', {
         params: {
           file_format: format,
           search: search,
